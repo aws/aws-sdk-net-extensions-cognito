@@ -12,9 +12,7 @@
     <LicenseUrl>http://aws.amazon.com/apache2.0/</LicenseUrl>
     <RepositoryUrl>https://github.com/aws/aws-sdk-net-extensions-cognito</RepositoryUrl>
     <PackageTags>AWS Amazon aws-sdk-v3</PackageTags>
-    <IconUrl>http://media.amazonwebservices.com/aws_singlebox_01.png</IconUrl>
-
-    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
+    <IconUrl>https://sdk-for-net.amazonwebservices.com/images/AWSLogo128x128.png</IconUrl>
 
     <SignAssembly>true</SignAssembly>
 
@@ -26,7 +24,6 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <AssemblyOriginatorKeyFile>awssdk.dll.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
@@ -47,6 +44,5 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.CognitoIdentity" Version="3.3.2.14" />
     <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.3.5" />
-    <PackageReference Include="System.Collections.NonGeneric" Version="4.0.1" />
   </ItemGroup>
 </Project>
