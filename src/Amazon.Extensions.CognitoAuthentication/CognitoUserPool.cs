@@ -159,17 +159,15 @@ namespace Amazon.Extensions.CognitoAuthentication
         public async Task<CognitoUser> FindByIdAsync(string userID)
         {
             if (string.IsNullOrEmpty(userID))
-            {
-                return null;
-            }
-            var request = new AdminGetUserRequest
-            {
-                Username = userID,
-                UserPoolId = this.PoolID
-            };
+                throw new ArgumentException(nameof(userID));
+
             try
             {
-                var response = await Provider.AdminGetUserAsync(request).ConfigureAwait(false);
+                var response = await Provider.AdminGetUserAsync(new AdminGetUserRequest
+                {
+                    Username = userID,
+                    UserPoolId = this.PoolID
+                }).ConfigureAwait(false);
 
                 var user = new CognitoUser(response.Username, ClientID, this, Provider, ClientSecret, response.UserStatus.Value, response.Username)
                 {
