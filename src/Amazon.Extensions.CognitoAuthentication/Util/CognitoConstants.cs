@@ -54,5 +54,14 @@ namespace Amazon.Extensions.CognitoAuthentication
 
         public static string DeviceChlgParamSalt = "salt";
         public static string DeviceChlgParamVerifier = "verifier";
+
+        // User status
+        public static string StatusUnconfirmed = "UNCONFIRMED";
+        public static string StatusConfirmed = "CONFIRMED";
+        public static string StatusArchivedd = "ARCHIVED";
+        public static string StatusCompromised = "COMPROMISED";
+        public static string StatusUnknown = "UNKNOWN";
+        public static string StatusResetRequired = "RESET_REQUIRED";
+        public static string StatusForceChangePassword = "FORCE_CHANGE_PASSWORD";
     }
 }
