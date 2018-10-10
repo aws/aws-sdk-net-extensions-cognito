@@ -184,11 +184,6 @@ namespace Amazon.Extensions.CognitoAuthentication
                 else
                     throw e;
             }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
         }
     }
 }
