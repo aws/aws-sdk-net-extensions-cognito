@@ -150,5 +150,40 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             return new CognitoUser(userID, ClientID, this, Provider, ClientSecret);
         }
+
+        /// <summary>
+        /// Queries Cognito and returns the CognitoUser with the corresponding userID
+        /// </summary>
+        /// <param name="userID">The userID of the corresponding user</param>
+        /// <returns>Returns a CognitoUser with the corresponding userID, with the Status and Attributes retrieved from Cognito</returns>
+        public async Task<CognitoUser> FindByIdAsync(string userID)
+        {
+            if (string.IsNullOrEmpty(userID))
+                throw new ArgumentException(nameof(userID));
+
+            try
+            {
+                var response = await Provider.AdminGetUserAsync(new AdminGetUserRequest
+                {
+                    Username = userID,
+                    UserPoolId = this.PoolID
+                }).ConfigureAwait(false);
+
+                var user = new CognitoUser(response.Username, ClientID, this, Provider, ClientSecret, response.UserStatus.Value, response.Username)
+                {
+                    Attributes = new Dictionary<string, string>()
+                };
+                response.UserAttributes.ForEach(attribute => user.Attributes.Add(attribute.Name, attribute.Value));
+
+                return user;
+            }
+            catch (AggregateException e)
+            {
+                if (e.InnerExceptions.Count == 1 && e.InnerExceptions[0] is UserNotFoundException)
+                    return null;
+                else
+                    throw e;
+            }
+        }
     }
 }

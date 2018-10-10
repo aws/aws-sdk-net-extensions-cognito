@@ -16,7 +16,6 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 
@@ -69,6 +68,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         public string ClientID { get; private set; }
 
         /// <summary>
+        /// The status of the associated user. 
+        /// </summary>
+        public string Status { get; set; }
+
+        /// <summary>
         /// The AmazonCognitoIdentityProviderClient of the associated user. Provider can 
         /// only be configured through the constructor, and once set it cannot be changed.
         /// </summary>
@@ -103,6 +107,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                            CognitoUserPool pool,
                            AmazonCognitoIdentityProviderClient provider,
                            string clientSecret = null,
+                           string status = null,
                            string username = null)
         {
             if(pool.PoolID.Contains("_"))
@@ -130,6 +135,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             {
                 this.Username = userID;
             }
+
+            this.Status = status;
 
             this.UserPool = pool;
             this.ClientID = clientID;
