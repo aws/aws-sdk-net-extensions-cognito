@@ -70,7 +70,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// The status of the associated user. 
         /// </summary>
-        public string Status { get; set; }
+        public string Status { get; private set; }
 
         /// <summary>
         /// The AmazonCognitoIdentityProviderClient of the associated user. Provider can 

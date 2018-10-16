@@ -19,6 +19,7 @@ using System.Collections.Generic;
 
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
+using System.Linq;
 
 namespace Amazon.Extensions.CognitoAuthentication
 {
@@ -169,20 +170,14 @@ namespace Amazon.Extensions.CognitoAuthentication
                     UserPoolId = this.PoolID
                 }).ConfigureAwait(false);
 
-                var user = new CognitoUser(response.Username, ClientID, this, Provider, ClientSecret, response.UserStatus.Value, response.Username)
+                return new CognitoUser(response.Username, ClientID, this, Provider, ClientSecret, response.UserStatus.Value, response.Username)
                 {
-                    Attributes = new Dictionary<string, string>()
+                    Attributes = response.UserAttributes.ToDictionary(attribute => attribute.Name, attribute => attribute.Value)
                 };
-                response.UserAttributes.ForEach(attribute => user.Attributes.Add(attribute.Name, attribute.Value));
-
-                return user;
             }
-            catch (AggregateException e)
+            catch (UserNotFoundException)
             {
-                if (e.InnerExceptions.Count == 1 && e.InnerExceptions[0] is UserNotFoundException)
-                    return null;
-                else
-                    throw e;
+                return null;
             }
         }
     }
