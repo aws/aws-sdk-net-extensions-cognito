@@ -156,7 +156,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Queries Cognito and returns the CognitoUser with the corresponding userID
         /// </summary>
         /// <param name="userID">The userID of the corresponding user</param>
-        ///<returns>The <see cref="Task"/> that represents the asynchronous operation, containing a CognitoUser with the corresponding userID, with the Status and Attributes retrieved from Cognito.</returns>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing a CognitoUser with the corresponding userID, with the Status and Attributes retrieved from Cognito.</returns>
         public async Task<CognitoUser> FindByIdAsync(string userID)
         {
             if (string.IsNullOrEmpty(userID))
