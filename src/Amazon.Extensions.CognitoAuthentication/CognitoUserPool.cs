@@ -156,7 +156,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Queries Cognito and returns the CognitoUser with the corresponding userID
         /// </summary>
         /// <param name="userID">The userID of the corresponding user</param>
-        /// <returns>Returns a CognitoUser with the corresponding userID, with the Status and Attributes retrieved from Cognito</returns>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing a CognitoUser with the corresponding userID, with the Status and Attributes retrieved from Cognito.</returns>
         public async Task<CognitoUser> FindByIdAsync(string userID)
         {
             if (string.IsNullOrEmpty(userID))
@@ -179,6 +179,20 @@ namespace Amazon.Extensions.CognitoAuthentication
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Queries Cognito and returns the PasswordPolicyType associated with the pool.
+        /// </summary>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the PasswordPolicyType of the pool.</returns>
+        public async Task<PasswordPolicyType> GetPasswordPolicyTypeAsync()
+        {
+            var response = await Provider.DescribeUserPoolAsync(new DescribeUserPoolRequest
+            {
+                UserPoolId = this.PoolID
+            }).ConfigureAwait(false);
+
+            return response.UserPool.Policies.PasswordPolicy;
         }
     }
 }
