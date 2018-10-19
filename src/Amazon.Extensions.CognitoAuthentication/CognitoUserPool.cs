@@ -194,5 +194,57 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             return response.UserPool.Policies.PasswordPolicy;
         }
+
+        /// <summary>
+        /// Signs up the user with the specified parameters using an asynchronous call end triggers a temporary password sms or email message.
+        /// </summary>
+        /// <param name="userID">The userID of the user being created</param>
+        /// <param name="userAttributes">The user attributes of the user being created</param>
+        /// <param name="validationData">The validation data of the user being created</param>
+        /// <returns>Returns the delivery details for the sign up request</returns>
+        public Task AdminSignupAsync(string userID,
+                           IDictionary<string, string> userAttributes,
+                           IDictionary<string, string> validationData)
+        {
+            AdminCreateUserRequest signUpUserRequest = CreateAdminSignUpRequest(userID, userAttributes, validationData);
+
+            return Provider.AdminCreateUserAsync(signUpUserRequest);
+        }
+
+        /// <summary>
+        /// Internal method to aid in the admin sign up flow for a new user
+        /// </summary>
+        /// <param name="userID">The userID of the user being created</param>
+        /// <param name="userAttributes">The user attributes of the user being created</param>
+        /// <param name="validationData">The validation data of the user being created</param>
+        /// <returns>Returns the SignUpResponse for the sign up API request using the provided information</returns>
+        private AdminCreateUserRequest CreateAdminSignUpRequest(string userID,
+                                              IDictionary<string, string> userAttributes,
+                                              IDictionary<string, string> validationData)
+        {
+            List<AttributeType> userAttributesList = null;
+            if (userAttributes != null)
+            {
+                userAttributesList = Util.CreateAttributeList(userAttributes);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(userAttributes), "userAttributes cannot be null.");
+            }
+
+            List<AttributeType> validationDataList =
+                validationData != null ? Util.CreateAttributeList(validationData) : null;
+
+            // Create User registration request
+            AdminCreateUserRequest adminCreateUserRequest = new AdminCreateUserRequest()
+            {
+                Username = userID,
+                UserPoolId = this.PoolID,
+                UserAttributes = userAttributesList,
+                ValidationData = validationDataList
+            };
+
+            return adminCreateUserRequest;
+        }
     }
 }
