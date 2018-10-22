@@ -236,15 +236,13 @@ namespace Amazon.Extensions.CognitoAuthentication
                 validationData != null ? Util.CreateAttributeList(validationData) : null;
 
             // Create User registration request
-            AdminCreateUserRequest adminCreateUserRequest = new AdminCreateUserRequest()
+            return new AdminCreateUserRequest()
             {
                 Username = userID,
                 UserPoolId = this.PoolID,
                 UserAttributes = userAttributesList,
                 ValidationData = validationDataList
             };
-
-            return adminCreateUserRequest;
         }
     }
 }
