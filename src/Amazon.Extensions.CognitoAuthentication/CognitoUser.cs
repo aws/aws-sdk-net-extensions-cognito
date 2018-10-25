@@ -142,6 +142,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             this.ClientID = clientID;
             this.SessionTokens = null;
 
+            this.Attributes = new Dictionary<string, string>();
+
             this.Provider = provider;
             this.Provider.BeforeRequestEvent += Util.ServiceClientBeforeRequestEvent;
         }
