@@ -81,7 +81,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// The attributes of the associated user. 
         /// </summary>
-        public Dictionary<string, string> Attributes { get; private set; }
+        public Dictionary<string, string> Attributes { get; private set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// The settings of the associated user.
@@ -143,11 +143,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             this.ClientID = clientID;
             this.SessionTokens = null;
 
-            if (attributes == null)
-            {
-                this.Attributes = new Dictionary<string, string>();
-            }
-            else
+            if (attributes != null)
             {
                 this.Attributes = attributes;
             }
