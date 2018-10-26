@@ -175,10 +175,10 @@ namespace Amazon.Extensions.CognitoAuthentication
                     UserPoolId = this.PoolID
                 }).ConfigureAwait(false);
 
-                return new CognitoUser(response.Username, ClientID, this, Provider, ClientSecret, response.UserStatus.Value, response.Username)
-                {
-                    Attributes = response.UserAttributes.ToDictionary(attribute => attribute.Name, attribute => attribute.Value)
-                };
+                return new CognitoUser(response.Username, ClientID, this, Provider, ClientSecret,
+                    response.UserStatus.Value, response.Username,
+                    response.UserAttributes.ToDictionary(attribute => attribute.Name, attribute => attribute.Value));
+
             }
             catch (UserNotFoundException)
             {
