@@ -158,6 +158,23 @@ namespace Amazon.Extensions.CognitoAuthentication
         }
 
         /// <summary>
+        /// Gets a CognitoUser with the corresponding userID, status and attributes
+        /// </summary>
+        /// <param name="userID">The userID of the corresponding user</param>
+        /// <param name="status">The status of the corresponding user</param>
+        /// <param name="attributes">The attributes of the corresponding user</param>
+        /// <returns>Returns a CognitoUser with the corresponding userID</returns>
+        public CognitoUser GetUser(string userID, string status, Dictionary<string,string> attributes)
+        {
+            if (string.IsNullOrEmpty(userID))
+            {
+                return GetUser();
+            }
+
+            return new CognitoUser(userID, ClientID, this, Provider, ClientSecret, status, userID, attributes);
+        }
+
+        /// <summary>
         /// Queries Cognito and returns the CognitoUser with the corresponding userID
         /// </summary>
         /// <param name="userID">The userID of the corresponding user</param>
