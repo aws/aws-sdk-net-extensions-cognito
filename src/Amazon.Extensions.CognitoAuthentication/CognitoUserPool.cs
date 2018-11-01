@@ -37,6 +37,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         public string ClientID { get; private set; }
 
+        /// <summary>
+        /// The ClientConfiguration associated with the user pool and the ClientID.
+        /// </summary>
+        private CognitoUserPoolClientConfiguration ClientConfiguration { get; set; }
+        
         internal AmazonCognitoIdentityProviderClient Provider { get; set; }
 
         private string ClientSecret { get; set; }
@@ -153,6 +158,23 @@ namespace Amazon.Extensions.CognitoAuthentication
         }
 
         /// <summary>
+        /// Gets a CognitoUser with the corresponding userID, status and attributes
+        /// </summary>
+        /// <param name="userID">The userID of the corresponding user</param>
+        /// <param name="status">The status of the corresponding user</param>
+        /// <param name="attributes">The attributes of the corresponding user</param>
+        /// <returns>Returns a CognitoUser with the corresponding userID</returns>
+        public CognitoUser GetUser(string userID, string status, Dictionary<string,string> attributes)
+        {
+            if (string.IsNullOrEmpty(userID))
+            {
+                return GetUser();
+            }
+
+            return new CognitoUser(userID, ClientID, this, Provider, ClientSecret, status, userID, attributes);
+        }
+
+        /// <summary>
         /// Queries Cognito and returns the CognitoUser with the corresponding userID
         /// </summary>
         /// <param name="userID">The userID of the corresponding user</param>
@@ -170,10 +192,10 @@ namespace Amazon.Extensions.CognitoAuthentication
                     UserPoolId = this.PoolID
                 }).ConfigureAwait(false);
 
-                return new CognitoUser(response.Username, ClientID, this, Provider, ClientSecret, response.UserStatus.Value, response.Username)
-                {
-                    Attributes = response.UserAttributes.ToDictionary(attribute => attribute.Name, attribute => attribute.Value)
-                };
+                return new CognitoUser(response.Username, ClientID, this, Provider, ClientSecret,
+                    response.UserStatus.Value, response.Username,
+                    response.UserAttributes.ToDictionary(attribute => attribute.Name, attribute => attribute.Value));
+
             }
             catch (UserNotFoundException)
             {
@@ -193,6 +215,27 @@ namespace Amazon.Extensions.CognitoAuthentication
             }).ConfigureAwait(false);
 
             return response.UserPool.Policies.PasswordPolicy;
+        }
+
+        /// <summary>
+        /// Queries Cognito and returns the CognitoUserPoolClientConfiguration associated with the current pool client.
+        /// Caches the value in the ClientConfiguration private property.
+        /// </summary>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the PasswordPolicyType of the pool.</returns>
+        public async Task<CognitoUserPoolClientConfiguration> GetUserPoolClientConfiguration()
+        {
+            if (ClientConfiguration == null)
+            {
+                var response = await Provider.DescribeUserPoolClientAsync(new DescribeUserPoolClientRequest
+                {
+                    ClientId = this.ClientID,
+                    UserPoolId = this.PoolID
+                }).ConfigureAwait(false);
+
+                ClientConfiguration = new CognitoUserPoolClientConfiguration(response.UserPoolClient.ReadAttributes, response.UserPoolClient.WriteAttributes);
+            }
+
+            return ClientConfiguration;
         }
 
         /// <summary>

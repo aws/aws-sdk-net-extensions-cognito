@@ -81,7 +81,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// The attributes of the associated user. 
         /// </summary>
-        public Dictionary<string, string> Attributes { get; set; }
+        public Dictionary<string, string> Attributes { get; private set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// The settings of the associated user.
@@ -108,7 +108,8 @@ namespace Amazon.Extensions.CognitoAuthentication
                            AmazonCognitoIdentityProviderClient provider,
                            string clientSecret = null,
                            string status = null,
-                           string username = null)
+                           string username = null,
+                           Dictionary<string, string> attributes = null)
         {
             if(pool.PoolID.Contains("_"))
             {
@@ -141,6 +142,11 @@ namespace Amazon.Extensions.CognitoAuthentication
             this.UserPool = pool;
             this.ClientID = clientID;
             this.SessionTokens = null;
+
+            if (attributes != null)
+            {
+                this.Attributes = attributes;
+            }
 
             this.Provider = provider;
             this.Provider.BeforeRequestEvent += Util.ServiceClientBeforeRequestEvent;
