@@ -13,13 +13,11 @@
  * permissions and limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
-
-using Amazon.Runtime;
-using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentity;
+using Amazon.CognitoIdentityProvider;
 using Amazon.IdentityManagement;
+using Amazon.Runtime;
+using System;
 
 namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 {
@@ -31,7 +29,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
     {
         protected RegionEndpoint clientRegion = FallbackRegionFactory.GetRegionEndpoint();
         
-        public AmazonCognitoIdentityProviderClient GetAmazonCognitoIdentityProviderClient()
+        public IAmazonCognitoIdentityProvider GetAmazonCognitoIdentityProviderClient()
         {
             return  new AmazonCognitoIdentityProviderClient();
         }    

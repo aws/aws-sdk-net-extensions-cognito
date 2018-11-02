@@ -73,10 +73,10 @@ namespace Amazon.Extensions.CognitoAuthentication
         public string Status { get; private set; }
 
         /// <summary>
-        /// The AmazonCognitoIdentityProviderClient of the associated user. Provider can 
+        /// The IAmazonCognitoIdentityProvider client of the associated user. Provider can 
         /// only be configured through the constructor, and once set it cannot be changed.
         /// </summary>
-        internal AmazonCognitoIdentityProviderClient Provider { get; private set; }
+        internal IAmazonCognitoIdentityProvider Provider { get; private set; }
 
         /// <summary>
         /// The attributes of the associated user. 
@@ -100,12 +100,12 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="userID">UserID of the specified user</param>
         /// <param name="clientID">ClientID associated with the user pool</param>
         /// <param name="pool">CognitoUserPool this user is associated with </param>
-        /// <param name="provider">AmazonCognitoIdentityProviderClient for the specified user pool</param>
+        /// <param name="provider">IAmazonCognitoIdentityProvider for the specified user pool</param>
         /// <param name="clientSecret">Client secret for the specified client, if exists</param>
         /// <param name="username">Username for user, if different from userID</param>
         public CognitoUser(string userID, string clientID,
                            CognitoUserPool pool,
-                           AmazonCognitoIdentityProviderClient provider,
+                           IAmazonCognitoIdentityProvider provider,
                            string clientSecret = null,
                            string status = null,
                            string username = null,
@@ -149,7 +149,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
 
             this.Provider = provider;
-            this.Provider.BeforeRequestEvent += Util.ServiceClientBeforeRequestEvent;
+            // TODO: metrics will be added as part of DOTNET-3061
+            //this.Provider.BeforeRequestEvent += Util.ServiceClientBeforeRequestEvent;
         }
 
         /// <summary>
