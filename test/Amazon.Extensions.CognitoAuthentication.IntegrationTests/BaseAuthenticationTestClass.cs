@@ -28,7 +28,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
     /// </summary>
     public partial class BaseAuthenticationTestClass : IDisposable
     {
-        protected AmazonCognitoIdentityProviderClient provider;
+        protected IAmazonCognitoIdentityProvider provider;
         protected CognitoUserPool pool;
         protected CognitoUser user;
 

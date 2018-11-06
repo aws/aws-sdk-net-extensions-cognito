@@ -42,7 +42,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         private CognitoUserPoolClientConfiguration ClientConfiguration { get; set; }
         
-        internal AmazonCognitoIdentityProviderClient Provider { get; set; }
+        internal IAmazonCognitoIdentityProvider Provider { get; set; }
 
         private string ClientSecret { get; set; }
 
@@ -51,11 +51,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="poolID">PoolID of the associated user pool</param>
         /// <param name="clientID">ClientID for the associated user pool</param>
-        /// <param name="provider">AmazonCognitoIdentityProviderClient for the specified user pool</param>
+        /// <param name="provider">IAmazonCognitoIdentityProvider for the specified user pool</param>
         /// <param name="clientSecret">Client secret for the corresponding clientID, if exists</param>
         public CognitoUserPool(string poolID, 
-                               string clientID, 
-                               AmazonCognitoIdentityProviderClient provider, 
+                               string clientID,
+                               IAmazonCognitoIdentityProvider provider, 
                                string clientSecret = null)
         {
             if(!poolID.Contains("_"))
@@ -68,7 +68,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             this.ClientSecret = clientSecret;
 
             this.Provider = provider;
-            this.Provider.BeforeRequestEvent += Util.ServiceClientBeforeRequestEvent;
+            //TODO : metrics will be added as part of DOTNET-3061
+            //this.Provider.BeforeRequestEvent += Util.ServiceClientBeforeRequestEvent;
         }
 
         /// <summary>
