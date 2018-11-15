@@ -28,98 +28,133 @@ Using the library to make calls to the Amazon Cognito Identity Provider API from
 - **CognitoUser** objects contain a user’s username, the pool they are associated with, session information, and other user properties.
 - **CognitoDevice** objects include device information, such as the device key.
 
-
 ## Authenticating with Secure Remote Protocol (SRP)
 
-You can do this by checking out the [Amazon.Extensions.CognitoAuthentication](https://github.com/aws/aws-sdk-net-extensions-cognito) project at the same level as this repository, along with you ASP.NET Core web application. Your ASP.NET Core web application csproj file can then include the following lines:
+Instead of implementing hundreds of lines of cryptographic methods yourself, you now only need to create the necessary **AmazonCognitoIdentityProviderClient**, **CognitoUserPool**, **CognitoUser**, and **InitiateSrpAuthRequest** objects and then call **StartWithSrpAuthAsync**:
+
 
 ```csharp
-<ProjectReference Include="..\..\..\aws-aspnet-cognito-identity-provider\src\Amazon.AspNetCore.Identity.AWSCognito\Amazon.AspNetCore.Identity.AWSCognito.csproj" />
-<ProjectReference Include="..\..\..\aws-sdk-net-extensions-cognito\src\Amazon.Extensions.CognitoAuthentication\Amazon.Extensions.CognitoAuthentication.csproj" />
-```
+using Amazon.Runtime;
+using Amazon.CognitoIdentityProvider;
+using Amazon.Extensions.CognitoAuthentication;
 
-## Adding Amazon Cognito as an Identity Provider
-
-To add Amazon Cognito as an Identity Provider, make the following change to your code:
-
-Startup.cs:
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
+public async void AuthenticateWithSrpAsync()
 {
-    // Adds Amazon Cognito as Identity Provider
-    services.AddCognitoIdentity();
-    ...
-}
+    var provider = new AmazonCognitoIdentityProviderClient(new AnonymousAWSCredentials(), FallbackRegionFactory.GetRegionEndpoint());
+    var userPool = new CognitoUserPool("poolID", "clientID", provider);
+    var user = new CognitoUser("username", "clientID", userPool, provider);
 
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    var password = "userPassword";
+
+    AuthFlowResponse authResponse = await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
+    {
+        Password = password
+    }).ConfigureAwait(false);
+}
+```
+
+The **AuthenticationResult** property of the **AuthFlowResponse** object contains the user’s session tokens if the user was successfully authenticated. If more challenge responses are required, this field is null and the **ChallengeName** property describes the next challenge, such as multi-factor authentication. You would then call the appropriate method to continue the authentication flow. 
+
+## Authenticating with Multiple Forms of Authentication
+
+Continuing the authentication flow with challenges, such as with **NewPasswordRequired** and **Multi-Factor Authentication (MFA)**, is simpler as well. 
+
+The following code shows one way of checking the challenge type and get the appropriate responses for MFA and NewPasswordRequired challenges during the authentication flow based on the **AuthFlowResponse** retrieved earlier:
+
+```csharp
+while (authResponse.AuthenticationResult == null)
 {
-    // If not already enabled, you will need to enable ASP.NET Core authentication
-    app.UseAuthentication();
-    ...
+    if (authResponse.ChallengeName == ChallengeNameType.NEW_PASSWORD_REQUIRED)
+    {
+        Console.WriteLine("Enter your desired new password:");
+        string newPassword = Console.ReadLine();
+
+        authResponse = 
+            await user.RespondToNewPasswordRequiredAsync(new RespondToNewPasswordRequiredRequest()
+            {
+                SessionID = authResponse.SessionID,
+                NewPassword = newPassword
+            }).ConfigureAwait(false);
+    }
+    else if (authResponse.ChallengeName == ChallengeNameType.SMS_MFA)
+    {
+        Console.WriteLine("Enter the MFA Code sent to your device:");
+        string mfaCode = Console.ReadLine();
+
+        authResponse = await user.RespondToSmsMfaAuthAsync(new RespondToSmsMfaRequest()
+        {
+                SessionID = authResponse.SessionID,
+                MfaCode = mfaCode
+        }).ConfigureAwait(false);
+        }
+        else
+        {
+            Console.WriteLine("Unrecognized authentication challenge.");
+            break;
+        }
 }
 ```
 
-In order to automatically inject Cognito service and user pool clients make the following changes to your appsettings.json:
+## Authenticating with Multiple Forms of Authentication
+
+Once a user is authenticated using the Amazon Cognito Authentication Extension Library, you can them allow them to access the specific AWS resources. 
+
+This requires you to create an identity pool through the **Amazon Cognito Federated Identities** console.
+
+You can also specify different roles for both unauthenticated and authenticated users to be able to access different resources. 
+These roles can be changed in the IAM console where you can add or remove permissions in the “Action” field of the role’s attached policy. 
+
+Then, using the appropriate identity pool, user pool, and Amazon Cognito user information, calls can be made to different AWS resources. The following shows a user authenticated with SRP accessing the developer’s different S3 buckets permitted by the associated identity pool’s role:
 
 ```csharp
-"AWS": {
-    "Region": "<your region id goes here>",
-    "UserPoolClientId": "<your user pool client id goes here>",
-    "UserPoolClientSecret": "<your user pool client secret goes here>",
-    "UserPoolId": "<your user pool id goes here>"
-}
-```
+using System;
 
-Alternatively, instead of using the appsettings.json you can directly inject your own instances of Amazon Cognito service and user pool clients to be used when calling AddCognitoIdentity():
+using Amazon;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.CognitoIdentity;
+using Amazon.CognitoIdentityProvider;
+using Amazon.Extensions.CognitoAuthentication;
 
-```csharp
-public void ConfigureServices(IServiceCollection services)
+public async void GetS3BucketsAsync()
 {
-    ...
-    // Adds your own instance of Amazon Cognito clients 
-    // cognitoIdentityProvider and cognitoUserPool are variables you would have instanciated yourself
-    services.AddSingleton<IAmazonCognitoIdentityProvider>(cognitoIdentityProvider);
-    services.AddSingleton<CognitoUserPool>(cognitoUserPool);
+    var provider = new AmazonCognitoIdentityProviderClient(new AnonymousAWSCredentials(),
+                                                            FallbackRegionFactory.GetRegionEndpoint());
+    var userPool = new CognitoUserPool("poolID", "clientID", provider);
+    var user = new CognitoUser("username", "clientID", userPool, provider);
 
-    // Adds Amazon Cognito as Identity Provider
-    services.AddCognitoIdentity();
-    ...
+    var password = "userPassword";
+
+    await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
+    {
+        Password = password
+    }).ConfigureAwait(false);
+
+    var credentials = 
+        user.GetCognitoAWSCredentials("identityPoolID", RegionEndpoint.<YourIdentityPoolRegion>);
+
+    using (var client = new AmazonS3Client(credentials))
+    {
+        ListBucketsResponse response = 
+            await client.ListBucketsAsync(new ListBucketsRequest()).ConfigureAwait(false);
+
+        foreach (S3Bucket bucket in response.Buckets)
+        {
+            Console.WriteLine(bucket.BucketName);
+        }
+    }
 }
 ```
 
-## Using the CognitoUser class as your web application user class
+## Other Forms of Authentication
 
-Once Amazon Cognito is added as the default ASP.NET Core Identity Provider, you will need to make changes to your code to use the newly introduced CognitoUser class instead of the default ApplicationUser class.
+In addition to SRP, NewPasswordRequired, and MFA, the Amazon Cognito Authentication Extension Library offers an easier authentication flow for:
 
-These changes will be required in existing RaZor views and controllers. Here is an example with a RaZor view:
-
-```csharp
-@using Microsoft.AspNetCore.Identity
-@using Amazon.Extensions.CognitoAuthentication
-
-@inject SignInManager<CognitoUser> SignInManager
-@inject UserManager<CognitoUser> UserManager
-```
-
-In addition, this library introduces two child classes of SigninManager and UserManager designed for Amazon Cognito authentication and user management workflow: CognitoSigninManager and CognitoUserManager classes.
-
-These two classes expose additional methods designed to support Amazon Cognito features, such as sending validation data to pre-signup [AWS Lambda triggers](https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-pre-sign-up.html) when registering a new user:
-
-```csharp
-/// <summary>
-/// Creates the specified <paramref name="user"/> in Cognito with the given password and validation data,
-/// as an asynchronous operation.
-/// </summary>
-/// <param name="user">The user to create.</param>
-/// <param name="password">The password for the user</param>
-/// <param name="validationData">The validation data to be sent to the pre sign-up lambda triggers.</param>
-/// <returns>
-/// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
-/// of the operation.
-/// </returns>
-public async Task<IdentityResult> CreateAsync(TUser user, string password, IDictionary<string, string> validationData)
-```
+- **Custom** – Begins with a call to StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest)
+- **RefreshToken** – Begins with a call to StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
+- **RefreshTokenSRP** – Begins with a call to StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
+- **AdminNoSRP** – Begins with a call to StartWithAdminNoSrpAuth(InitiateAdminNoSrpAuthRequest adminAuthRequest)
 
 # Getting Help
 
