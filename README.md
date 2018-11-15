@@ -8,6 +8,8 @@ The [Amazon Cognito](https://aws.amazon.com/cognito/) Extension Library simplifi
 
 It allows you to use various authentication methods for Amazon Cognito User Pools with only a few short method calls, along with making the process intuitive.
 
+[Learn more about Amazon Cognito User Pools.](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-getting-started.html)
+
 This library targets the .NET Standard 2.0 and introduces the following dependencies:
 
 * [AWSSDK.CognitoIdentity](https://www.nuget.org/packages/AWSSDK.CognitoIdentity/)
@@ -16,7 +18,7 @@ This library targets the .NET Standard 2.0 and introduces the following dependen
 
 # Getting Started
 
-To set up an AWS account and install the AWS SDK for .NET to take advantage of this library, see [Getting Started with the AWS SDK for .NET.](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-setup.html) 
+To set up an AWS account and install the AWS SDK for .NET to take advantage of this library, see [Getting Started with the AWS SDK for .NET.](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-setup.html).
 
 While this library is in development, you will need to build it manually.
 
@@ -95,6 +97,8 @@ while (authResponse.AuthenticationResult == null)
 }
 ```
 
+[Learn more about Amazon Cognito User Pool Authentication Flow.](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html)
+
 ## Authenticating with Multiple Forms of Authentication
 
 Once a user is authenticated using the Amazon Cognito Authentication Extension Library, you can them allow them to access the specific AWS resources. 
@@ -107,8 +111,6 @@ These roles can be changed in the IAM console where you can add or remove permis
 Then, using the appropriate identity pool, user pool, and Amazon Cognito user information, calls can be made to different AWS resources. The following shows a user authenticated with SRP accessing the developer’s different S3 buckets permitted by the associated identity pool’s role:
 
 ```csharp
-using System;
-
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
@@ -158,9 +160,9 @@ In addition to SRP, NewPasswordRequired, and MFA, the Amazon Cognito Authenticat
 
 # Getting Help
 
-We use the [GitHub issues](https://github.com/aws/aws-aspnet-cognito-identity-provider/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
+We use the [GitHub issues](https://github.com/aws/aws-sdk-net-extensions-cognito/issues) for tracking bugs and feature requests and have limited bandwidth to address them.
 
-If you think you may have found a bug, please open an [issue](https://github.com/aws/aws-aspnet-cognito-identity-provider/issues/new)
+If you think you may have found a bug, please open an [issue](https://github.com/aws/aws-sdk-net-extensions-cognito/issues/new)
 
 # Contributing
 
