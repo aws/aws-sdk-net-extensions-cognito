@@ -5,15 +5,19 @@
     <AssemblyName>Amazon.Extensions.CognitoAuthentication</AssemblyName>
     <RootNamespace>Amazon.Extensions.CognitoAuthentication</RootNamespace>
     <PackageId>Amazon.Extensions.CognitoAuthentication</PackageId>
-    <PackageVersion>1.0</PackageVersion>
-    <Title>CogntioAuthentication</Title>
+    <PackageVersion>0.9</PackageVersion>
+    <Title>Amazon Cognito Authentication Extension Library</Title>
+    <Product>Amazon.Extensions.CognitoAuthentication</Product>
     <Authors>Amazon Web Services</Authors>
+    <Copyright>2018</Copyright>
     <Description>An extension library to assist in the Amazon Cognito User Pools authentication process.</Description>
+    <PackageTags>AWS;Amazon;aws-sdk-v3;Cognito</PackageTags>
+    <PackageProjectUrl>https://github.com/aws/aws-sdk-net-extensions-cognito/</PackageProjectUrl>
+    <PackageLicenseUrl>http://aws.amazon.com/apache2.0/</PackageLicenseUrl>
+    <PackageIconUrl>https://sdk-for-net.amazonwebservices.com/images/AWSLogo128x128.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/aws/aws-sdk-net-extensions-cognito/</RepositoryUrl>
+    <Company>Amazon Web Services</Company>
     <LicenseUrl>http://aws.amazon.com/apache2.0/</LicenseUrl>
-    <RepositoryUrl>https://github.com/aws/aws-sdk-net-extensions-cognito</RepositoryUrl>
-    <PackageTags>AWS Amazon aws-sdk-v3</PackageTags>
-    <IconUrl>https://sdk-for-net.amazonwebservices.com/images/AWSLogo128x128.png</IconUrl>
-
     <SignAssembly>true</SignAssembly>
 
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -25,7 +29,8 @@
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <DelaySign>false</DelaySign>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.9.0</Version>
   </PropertyGroup>
 
   <Choose>
