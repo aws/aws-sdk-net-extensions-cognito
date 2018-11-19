@@ -51,14 +51,6 @@ namespace Amazon.Extensions.CognitoAuthentication
             RespondToAuthChallengeRequest challengeRequest =
                 CreateSrpPasswordVerifierAuthRequest(initiateResponse, srpRequest.Password, tupleAa);
 
-            bool challengeResponsesValid = challengeRequest != null && challengeRequest.ChallengeResponses != null;
-            bool deviceKeyValid = Device != null && !string.IsNullOrEmpty(Device.DeviceKey);
-
-            if (challengeResponsesValid && deviceKeyValid)
-            {
-                challengeRequest.ChallengeResponses.Add(CognitoConstants.ChlgParamDeviceKey, Device.DeviceKey);
-            }
-
             RespondToAuthChallengeResponse verifierResponse =
                 await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
 

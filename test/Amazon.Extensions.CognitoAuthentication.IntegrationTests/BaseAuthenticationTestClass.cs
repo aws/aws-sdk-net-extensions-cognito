@@ -28,6 +28,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
     /// </summary>
     public partial class BaseAuthenticationTestClass : IDisposable
     {
+        protected readonly DateTime testStartTimeUtc;
         protected IAmazonCognitoIdentityProvider provider;
         protected CognitoUserPool pool;
         protected CognitoUser user;
@@ -39,6 +40,8 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 
         public BaseAuthenticationTestClass()
         {
+            testStartTimeUtc = DateTime.UtcNow;
+
             UserPoolPolicyType passwordPolicy = new UserPoolPolicyType();
             List<SchemaAttributeType> requiredAttributes = new List<SchemaAttributeType>();
             List<string> verifiedAttributes = new List<string>();
