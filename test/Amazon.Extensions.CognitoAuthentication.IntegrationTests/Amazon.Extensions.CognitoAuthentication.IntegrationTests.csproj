@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\CognitoConstants.cs" Link="LinkedFiles\CognitoConstants.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.Core" Version="3.3.17.4" />
     <PackageReference Include="AWSSDK.IdentityManagement" Version="3.3.4.3" />
     <PackageReference Include="AWSSDK.S3" Version="3.3.10" />

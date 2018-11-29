@@ -5,13 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\AuthenticationHelper.cs" Link="LinkedFiles\AuthenticationHelper.cs" />
-    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\CognitoConstants.cs" Link="LinkedFiles\CognitoConstants.cs" />
-    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\CognitoDeviceHelper.cs" Link="LinkedFiles\CognitoDeviceHelper.cs" />
     <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\Hkdf.cs" Link="LinkedFiles\Hkdf.cs" />
-    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\ThirdParty\BigInteger.cs" Link="LinkedFiles\BigInteger.cs" />
-    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\ThirdParty\Platform.cs" Link="LinkedFiles\Platform.cs" />
-    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\Util.cs" Link="LinkedFiles\Util.cs" />
+    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\CognitoAuthHelper.cs" Link="LinkedFiles\CognitoAuthHelper.cs" />
+    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\CognitoConstants.cs" Link="LinkedFiles\CognitoConstants.cs" />
+    <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\BigIntegerExtensions.cs" Link="LinkedFiles\BigIntegerExtensions.cs" />
+      <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\AuthenticationHelper.cs" Link="LinkedFiles\AuthenticationHelper.cs" />
+      <Compile Include="..\..\src\Amazon.Extensions.CognitoAuthentication\Util\CognitoDeviceHelper.cs" Link="LinkedFiles\CognitoDeviceHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>

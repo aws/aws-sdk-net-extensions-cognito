@@ -38,8 +38,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
         private string identityPoolId;
 
         private AmazonCognitoIdentityClient identityClient;
-
-
+        AWSCredentials clientCredentials = FallbackCredentialsFactory.GetCredentials();
         private AmazonIdentityManagementServiceClient managementClient;
 
         [Fact]
@@ -57,9 +56,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                 }).ConfigureAwait(false);
 
             //Create identity pool
-
-            identityClient = GetAmazonCognitoIdentityClient();
-
+            identityClient = new AmazonCognitoIdentityClient(clientCredentials, clientRegion);
             CreateIdentityPoolResponse poolResponse =
                 await identityClient.CreateIdentityPoolAsync(new CreateIdentityPoolRequest()
                 {
@@ -74,9 +71,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
             identityPoolId = poolResponse.IdentityPoolId;
 
             //Create role for identity pool
-
-            managementClient = GetAmazonIdentityManagementServiceClient();
-
+            managementClient = new AmazonIdentityManagementServiceClient(clientCredentials, clientRegion);
             CreateRoleResponse roleResponse = managementClient.CreateRoleAsync(new CreateRoleRequest()
             {
                 RoleName = "_TestRole_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"),
@@ -120,29 +115,35 @@ namespace CognitoAuthentication.IntegrationTests.NET45
             using (var client = new AmazonS3Client(credentials, Amazon.RegionEndpoint.USEast1))
             {
                 int tries = 0;
+                string bufferExMsg = "Invalid identity pool configuration. Check assigned IAM roles for this pool.";
                 ListBucketsResponse bucketsResponse = null;
-                var retryLimit = 5;
-                Exception lastException = null;
 
-                for (; tries < retryLimit; tries++)
+                for (; tries < 5; tries++)
                 {
                     try
                     {
                         bucketsResponse = await client.ListBucketsAsync(new ListBucketsRequest()).ConfigureAwait(false);
-                        Assert.Equal(bucketsResponse.HttpStatusCode, System.Net.HttpStatusCode.OK);
                         break;
+                    }
+                    catch (NullReferenceException)
+                    {
+                        System.Threading.Thread.Sleep(3000);
                     }
                     catch (Exception ex)
                     {
-                        lastException = ex;
-                        System.Threading.Thread.Sleep(3000);
+                        if (string.Equals(bufferExMsg, ex.Message))
+                        {
+                            System.Threading.Thread.Sleep(3000);
+                        }
+                        else
+                        {
+                            throw ex;
+                        }
                     }
                 }
 
-                if (tries == retryLimit && lastException != null)
-                {
-                    throw lastException;
-                }
+                Assert.True(tries < 5, "Failed to list buckets after 5 tries");
+                Assert.Equal(bucketsResponse.HttpStatusCode, System.Net.HttpStatusCode.OK);
             }
         }
 

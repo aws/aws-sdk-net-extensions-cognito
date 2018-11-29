@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
+using Amazon.Extensions.CognitoAuthentication.Util;
 
 namespace Amazon.Extensions.CognitoAuthentication
 {
@@ -123,7 +124,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             this.ClientSecret = clientSecret;
             if (!string.IsNullOrEmpty(clientSecret))
             {
-                this.SecretHash = Util.GetUserPoolSecretHash(userID, clientID, clientSecret);
+                this.SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(userID, clientID, clientSecret);
             }
 
             this.UserID = userID;
@@ -519,7 +520,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             UpdateUserAttributesRequest updateUserAttributesRequest = new UpdateUserAttributesRequest()
             {
                 AccessToken = SessionTokens.AccessToken,
-                UserAttributes = Util.CreateAttributeList(attributes)
+                UserAttributes = CognitoAuthHelper.CreateAttributeList(attributes)
             };
 
             return updateUserAttributesRequest;

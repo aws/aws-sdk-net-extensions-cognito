@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 
-using Amazon.Runtime;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
+using Amazon.Extensions.CognitoAuthentication.Util;
 
 namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 {
@@ -28,8 +28,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
     /// </summary>
     public partial class BaseAuthenticationTestClass : IDisposable
     {
-        protected readonly DateTime testStartTimeUtc;
-        protected IAmazonCognitoIdentityProvider provider;
+        protected AmazonCognitoIdentityProviderClient provider;
         protected CognitoUserPool pool;
         protected CognitoUser user;
 
@@ -40,12 +39,11 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 
         public BaseAuthenticationTestClass()
         {
-            testStartTimeUtc = DateTime.UtcNow;
-
             UserPoolPolicyType passwordPolicy = new UserPoolPolicyType();
             List<SchemaAttributeType> requiredAttributes = new List<SchemaAttributeType>();
             List<string> verifiedAttributes = new List<string>();
-            provider = GetAmazonCognitoIdentityProviderClient();
+
+            provider = new AmazonCognitoIdentityProviderClient();
 
             AdminCreateUserConfigType adminCreateUser = new AdminCreateUserConfigType()
             {

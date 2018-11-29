@@ -22,9 +22,9 @@ using System.Reflection;
 using Amazon.Runtime;
 using Amazon.CognitoIdentityProvider.Model;
 
-namespace Amazon.Extensions.CognitoAuthentication
+namespace Amazon.Extensions.CognitoAuthentication.Util
 {
-    public static class Util
+    internal static class CognitoAuthHelper
     {
         [ThreadStatic] private static SHA256 sha256 = null;
 
@@ -152,7 +152,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
         internal static string GetAssemblyFileVersion()
         {
-            var assembly = typeof(Util).GetTypeInfo().Assembly;
+            var assembly = typeof(CognitoAuthHelper).GetTypeInfo().Assembly;
             AssemblyFileVersionAttribute attribute = assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
             return attribute == null ? "Unknown" : attribute.Version;
         }

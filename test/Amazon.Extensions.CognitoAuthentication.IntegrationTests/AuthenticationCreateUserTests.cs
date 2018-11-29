@@ -19,14 +19,12 @@ using Xunit;
 
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
-using System;
+using Amazon.Extensions.CognitoAuthentication.Util;
 
 namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 {
     public class AuthenticationCreateUserTests : BaseAuthenticationTestClass
     {
-        private const string password = "PassWord1!";
-
         public AuthenticationCreateUserTests() : base()
         {
             AdminCreateUserRequest createUserRequest = new AdminCreateUserRequest()
@@ -53,6 +51,8 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
         [Fact]
         public async Task TestNewPasswordRequiredFlow()
         {
+            string password = "PassWord1!";
+
             AuthFlowResponse context =
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
@@ -68,21 +68,6 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             });
 
             Assert.True(user.SessionTokens.IsValid());
-        }
-
-        // Tests the fix for https://github.com/aws/aws-sdk-net/issues/871
-        // Call StartWithSrpAuthAsync with a DeviceKey in the CognitoUser object
-        [Fact]
-        public async Task TestDeviceKeyOnCognitoUser()
-        {
-            user.Device = new CognitoDevice("NonExistentDeviceKey", new Dictionary<string, string>(),
-                testStartTimeUtc, testStartTimeUtc, testStartTimeUtc, user);
-
-            await Assert.ThrowsAsync<ResourceNotFoundException>(async () =>
-                await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
-                {
-                    Password = password
-                }).ConfigureAwait(false));
         }
     }
 }

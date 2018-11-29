@@ -20,6 +20,7 @@ using Xunit;
 using Amazon.Runtime;
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.CognitoIdentityProvider;
+using Amazon.Extensions.CognitoAuthentication.Util;
 using Amazon.IdentityManagement;
 using Amazon.IdentityManagement.Model;
 
@@ -71,7 +72,11 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             UserPoolPolicyType passwordPolicy = new UserPoolPolicyType();
             List<SchemaAttributeType> requiredAttributes = new List<SchemaAttributeType>();
             List<string> verifiedAttributes = new List<string>();
-            provider = GetAmazonCognitoIdentityProviderClient();
+
+            var creds = FallbackCredentialsFactory.GetCredentials();
+            var region = FallbackRegionFactory.GetRegionEndpoint();
+
+            provider = new AmazonCognitoIdentityProviderClient(creds, region);
 
             AdminCreateUserConfigType adminCreateUser = new AdminCreateUserConfigType()
             {
@@ -106,7 +111,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             verifiedAttributes.Add(CognitoConstants.UserAttrPhoneNumber);
 
             //Create Role for MFA
-            using ( var managementClient = GetAmazonIdentityManagementServiceClient() )
+            using (var managementClient = new AmazonIdentityManagementServiceClient())
             {
                 CreateRoleResponse roleResponse = managementClient.CreateRoleAsync(new CreateRoleRequest()
                 {
@@ -226,7 +231,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
         {
             try
             {
-                using (var client = GetAmazonIdentityManagementServiceClient())
+                using (var client = new AmazonIdentityManagementServiceClient())
                 {
                     client.DetachRolePolicyAsync(new DetachRolePolicyRequest()
                     {

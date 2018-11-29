@@ -14,15 +14,14 @@
  */
 
 using System;
-using System.Globalization;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-
+using System.Globalization;
+using System.Numerics;
+using System.Threading.Tasks;
+using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
-using Amazon.CognitoIdentity;
-
-using Amazon.Extensions.CognitoAuthentication.ThirdParty;
+using Amazon.Extensions.CognitoAuthentication.Util;
 
 namespace Amazon.Extensions.CognitoAuthentication
 {
@@ -50,6 +49,14 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             RespondToAuthChallengeRequest challengeRequest =
                 CreateSrpPasswordVerifierAuthRequest(initiateResponse, srpRequest.Password, tupleAa);
+
+            bool challengeResponsesValid = challengeRequest != null && challengeRequest.ChallengeResponses != null;
+            bool deviceKeyValid = Device != null && !string.IsNullOrEmpty(Device.DeviceKey);
+
+            if (challengeResponsesValid && deviceKeyValid)
+            {
+                challengeRequest.ChallengeResponses.Add(CognitoConstants.ChlgParamDeviceKey, Device.DeviceKey);
+            }
 
             RespondToAuthChallengeResponse verifierResponse =
                 await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
@@ -293,14 +300,14 @@ namespace Amazon.Extensions.CognitoAuthentication
                 AuthParameters = new Dictionary<string, string>(StringComparer.Ordinal)
                 {
                     { CognitoConstants.ChlgParamUsername, Username },
-                    { CognitoConstants.ChlgParamSrpA, tupleAa.Item1.ToString(16) }
+                    { CognitoConstants.ChlgParamSrpA, tupleAa.Item1.ToString("X") }
                 }
             };
 
             if (!string.IsNullOrEmpty(ClientSecret))
             {
                 initiateAuthRequest.AuthParameters.Add(CognitoConstants.ChlgParamSecretHash,
-                                                    Util.GetUserPoolSecretHash(Username, ClientID, ClientSecret));
+                                                    CognitoAuthHelper.GetUserPoolSecretHash(Username, ClientID, ClientSecret));
             }
 
             if (Device != null && !string.IsNullOrEmpty(Device.DeviceKey))
@@ -333,7 +340,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             if (!string.IsNullOrEmpty(ClientSecret))
             {
-                SecretHash = Util.GetUserPoolSecretHash(Username, ClientID, ClientSecret);
+                SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(Username, ClientID, ClientSecret);
             }
         }
 
@@ -417,9 +424,9 @@ namespace Amazon.Extensions.CognitoAuthentication
             string poolName = PoolName;
             string secretBlock = challenge.ChallengeParameters[CognitoConstants.ChlgParamSecretBlock];
             string salt = challenge.ChallengeParameters[CognitoConstants.ChlgParamSalt];
-            BigInteger srpb = new BigInteger(challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB], 16);
+            BigInteger srpb = BigIntegerExtensions.FromHexPositive(challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB]);
 
-            if (srpb.Mod(AuthenticationHelper.N).Equals(BigInteger.Zero))
+            if ((srpb.TrueMod(AuthenticationHelper.N)).Equals(BigInteger.Zero))
             {
                 throw new ArgumentException("SRP error, B mod N cannot be zero.", "challenge");
             }
@@ -441,7 +448,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             if (!string.IsNullOrEmpty(ClientSecret))
             {
-                SecretHash = Util.GetUserPoolSecretHash(Username, ClientID, ClientSecret);
+                SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(Username, ClientID, ClientSecret);
                 srpAuthResponses.Add(CognitoConstants.ChlgParamSecretHash, SecretHash);
             }
 
