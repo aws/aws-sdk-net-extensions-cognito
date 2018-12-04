@@ -251,7 +251,6 @@ namespace Amazon.Extensions.CognitoAuthentication
                            IDictionary<string, string> userAttributes,
                            IDictionary<string, string> validationData)
         {
-
             AdminCreateUserRequest signUpUserRequest = CreateAdminSignUpRequest(userID, userAttributes, validationData);
 
             return Provider.AdminCreateUserAsync(signUpUserRequest);
