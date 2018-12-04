@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using System.Linq;
+using System.Threading;
 
 namespace Amazon.Extensions.CognitoAuthentication
 {
@@ -287,6 +288,38 @@ namespace Amazon.Extensions.CognitoAuthentication
                 UserAttributes = userAttributesList,
                 ValidationData = validationDataList
             };
+        }
+
+        /// <summary>
+        /// Resets the <paramref name="user"/>'s password to the specified <paramref name="newPassword"/> after
+        /// validating the given password reset <paramref name="token"/>.
+        /// </summary>
+        /// <param name="user">The user whose password should be reset.</param>
+        /// <param name="token">The password reset token to verify.</param>
+        /// <param name="newPassword">The new password to set if reset token verification succeeds.</param>
+        /// <returns>
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+        /// of the operation.
+        /// </returns>
+        public Task ConfirmForgotPassword(string userID, string token, string newPassword, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var request = new ConfirmForgotPasswordRequest
+            {
+                Username = userID,
+                ClientId = ClientID,
+                ConfirmationCode = token,
+                Password = newPassword,
+
+            };
+
+            if (!string.IsNullOrEmpty(ClientSecret))
+            {
+                request.SecretHash = Util.GetUserPoolSecretHash(userID, ClientID, ClientSecret);
+            }
+
+            return Provider.ConfirmForgotPasswordAsync(request, cancellationToken);
         }
     }
 }
