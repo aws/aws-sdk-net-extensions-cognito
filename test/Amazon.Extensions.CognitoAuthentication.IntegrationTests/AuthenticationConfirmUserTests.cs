@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Xunit;
 
 using Amazon.CognitoIdentityProvider.Model;
+using Amazon.Extensions.CognitoAuthentication.Util;
 
 namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 {

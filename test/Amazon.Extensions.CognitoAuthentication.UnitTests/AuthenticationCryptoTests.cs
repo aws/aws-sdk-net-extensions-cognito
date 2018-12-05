@@ -15,13 +15,14 @@
 
 using System;
 using System.Globalization;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
+using Amazon.Extensions.CognitoAuthentication;
+using Amazon.Extensions.CognitoAuthentication.Util;
 using Xunit;
 
-using Amazon.Extensions.CognitoAuthentication.ThirdParty;
-
-namespace Amazon.Extensions.CognitoAuthentication.UnitTests
+namespace CognitoAuthentication.UnitTests
 {
     public class AuthenticationCryptoTests
     {
@@ -31,11 +32,11 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
         {
             // Choose hash algorithm, g, N, username, password, salt
             SHA256 sha256 = SHA256.Create();
-            BigInteger g = BigInteger.ValueOf(2);
+            BigInteger g = AuthenticationHelper.g;
             BigInteger N = AuthenticationHelper.N;
             string password = "password";
             string saltString = "fef2871d83ce2120f9c47a46db303d37"; //Does not have to always be this string
-            BigInteger salt = new BigInteger(saltString, 16);
+            BigInteger salt = BigIntegerExtensions.FromHexPositive(saltString);
 
             // Compute x = H(s,p)
             byte[] passBytes = Encoding.UTF8.GetBytes(password);
@@ -45,19 +46,19 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
             Buffer.BlockCopy(saltBytes, 0, xBytes, 0, saltBytes.Length);
             Buffer.BlockCopy(userIdHash, 0, xBytes, saltBytes.Length, userIdHash.Length);
             byte[] xDigest = sha256.ComputeHash(xBytes);
-            BigInteger x = new BigInteger(1, xDigest);
+            BigInteger x = BigIntegerExtensions.FromBigEndian(xDigest);
 
             // Compute v = g^x
-            BigInteger v = g.ModPow(x, N);
+            BigInteger v = g.TrueModPow(x, N);
 
             // Generate random a, b, A
             BigInteger a, b, A;
             do
             {
-                a = AuthenticationHelper.CreateEphemeralRandom();
-                b = AuthenticationHelper.CreateEphemeralRandom();
-                A = g.ModPow(a, N);
-            } while (A.Mod(N).Equals(BigInteger.Zero));
+                a = AuthenticationHelper.CreateBigIntegerRandom();
+                b = AuthenticationHelper.CreateBigIntegerRandom();
+                A = g.TrueModPow(a, N);
+            } while ((A.TrueMod(N)).Equals(BigInteger.Zero));
 
             // Calculate k = H(N, g)
             byte[] nBytes = N.ToByteArray();
@@ -66,10 +67,10 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
             Buffer.BlockCopy(nBytes, 0, content, 0, nBytes.Length);
             Buffer.BlockCopy(gBytes, 0, content, nBytes.Length, gBytes.Length);
             byte[] digest = sha256.ComputeHash(content);
-            BigInteger k = new BigInteger(1, digest);
+            BigInteger k = BigIntegerExtensions.FromBigEndian(digest);
 
             //Calculate B = kv + g^b
-            BigInteger B = (k.Multiply(v)).Add((g.ModPow(b, N)));
+            BigInteger B = k * v + (g.TrueModPow(b, N));
 
             // Calculate u = H(A,B)
             byte[] ABytes = A.ToByteArray();
@@ -78,23 +79,23 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
             Buffer.BlockCopy(ABytes, 0, ABcat, 0, ABytes.Length);
             Buffer.BlockCopy(BBytes, 0, ABcat, ABytes.Length, BBytes.Length);
             byte[] ABdigest = sha256.ComputeHash(ABcat);
-            BigInteger u = new BigInteger(1, ABdigest);
+            BigInteger u = BigIntegerExtensions.FromBigEndian(ABdigest);
 
             // Calculate user side userS = (B - kg^x) ^ (a + ux)
-            BigInteger userS = (B.Subtract((k.Multiply(g.ModPow(x, N))))).ModPow((a.Add(u.Multiply(x))), N);
+            BigInteger userS = (B - k * g.TrueModPow(x, N)).TrueModPow(a + u * x, N);
 
             // Calculate user side userK = H(userS)
             byte[] userSBytes = userS.ToByteArray();
             byte[] userSDigest = sha256.ComputeHash(userSBytes);
-            BigInteger userK = new BigInteger(1, userSDigest);
+            BigInteger userK = BigIntegerExtensions.FromBigEndian(userSDigest);
 
             // Calculate host side hostS = (Av^u) ^ b
-            BigInteger hostS = (A.Multiply((v.ModPow(u, N)))).ModPow(b, N);
+            BigInteger hostS = (A * v.TrueModPow(u, N)).TrueModPow(b, N);
 
             // Calculate host side hostK = H(hostS)
             byte[] hostSBytes = hostS.ToByteArray();
             byte[] hostSDigest = sha256.ComputeHash(hostSBytes);
-            BigInteger hostK = new BigInteger(1, hostSDigest);
+            BigInteger hostK = BigIntegerExtensions.FromBigEndian(hostSDigest);
 
             Assert.Equal(hostS, userS);
             Assert.Equal(hostK, userK);
@@ -107,10 +108,10 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
             Tuple<BigInteger, BigInteger> tuple = AuthenticationHelper.CreateAaTuple();
             BigInteger A = tuple.Item1;
             BigInteger a = tuple.Item2;
-            BigInteger g = BigInteger.ValueOf(2); //NOTE: this should match the PRIVATE variable g from the AuthenticationHelper class
+            BigInteger g = AuthenticationHelper.g;
 
-            Assert.Equal(A, g.ModPow(a, AuthenticationHelper.N));
-            Assert.NotEqual(A.Mod(AuthenticationHelper.N), BigInteger.Zero);
+            Assert.Equal(A, g.TrueModPow(a, AuthenticationHelper.N));
+            Assert.NotEqual(A.TrueMod(AuthenticationHelper.N), BigInteger.Zero);
         }
 
         // Using information from a known working claim, checks that authenticateUser correctly reproduces that claim
@@ -150,10 +151,10 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
             string timeStr = timestamp.ToString("ddd MMM d HH:mm:ss \"UTC\" yyyy", CultureInfo.InvariantCulture);
 
             byte[] bytes = new byte[1024];
-            for (int i = 0; i < bytes.Length - 1; i++)
+            for (int i = bytes.Length - 1; i > 0; i--)
             { bytes[i] = 2; }
             BigInteger a = new BigInteger(bytes);
-            BigInteger A = BigInteger.ValueOf(2).ModPow(a, AuthenticationHelper.N);
+            BigInteger A = AuthenticationHelper.g.TrueModPow(a, AuthenticationHelper.N);
             Tuple<BigInteger, BigInteger> tupleAa = Tuple.Create<BigInteger, BigInteger>(A, a);
 
             byte[] claim = AuthenticationHelper.AuthenticateUser(username, password, poolName,
@@ -172,10 +173,10 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
             string password = "Password1!";
             string poolName = "Pj8nlkpKR";
             byte[] bytes = new byte[1024];
-            for (int i = 0; i < bytes.Length - 1; i++)
+            for (int i = bytes.Length - 1; i > 0; i--)
             { bytes[i] = 2; }
             BigInteger a = new BigInteger(bytes);
-            BigInteger A = BigInteger.ValueOf(2).ModPow(a, AuthenticationHelper.N);
+            BigInteger A = AuthenticationHelper.g.TrueModPow(a, AuthenticationHelper.N);
             Tuple<BigInteger, BigInteger> tupleAa = Tuple.Create<BigInteger, BigInteger>(A, a);
             string srpb = "8d340308265ada665b1b2c730fb65ff0b6dc746b63c2d7e9f08b8aa9306d4848268bc0c17ee4a2999173ca62af59fd74b"
                 + "a5d00f16c96bea082b163f2c3a0b745455d62cb9577425b4b5d4dadba163a8e7759a7c0256795f464682770588c84e82f2c63d47017"
@@ -185,8 +186,8 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
                 + "d3e15f0e1078a9d89e5154391cde6111ac14fab9fa3b3a880da7dbd47fd5a055937581d26b5d225c076e82f980dcbd77b3950d270d8"
                 + "b622dca9c9bcd8fd6435a59b9690b3c9e2bdabf58cae3420c19066abc420145b1b66f226a6493c96588c2d53b637798fcaa573379f2"
                 + "251848065fe1fafb68ed5e79135e9";
-            BigInteger B = new BigInteger(srpb, 16);
-            BigInteger salt = new BigInteger("b704a27deb8cf5efec43a40eac5b60d2", 16);
+            BigInteger B = BigIntegerExtensions.FromHexPositive(srpb);
+            BigInteger salt = BigIntegerExtensions.FromHexPositive("b704a27deb8cf5efec43a40eac5b60d2");
 
             byte[] key = AuthenticationHelper.GetPasswordAuthenticationKey(username, password, poolName, tupleAa, B, salt);
             string testKey = Convert.ToBase64String(key);
@@ -199,7 +200,7 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
         [Fact]
         public void TestSecretHash()
         {
-            string hash = Util.GetUserPoolSecretHash("Mess", "age", "secret");
+            string hash = CognitoAuthHelper.GetUserPoolSecretHash("Mess", "age", "secret");
 
             Assert.Equal("qnR8UCqJggD55PohusaBNviGoOJ67HC6Btry4qXLVZc=", hash);
         }
@@ -224,14 +225,14 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
         public void TestHkdfVector1()
         {
             // Expected Values
-            byte[] prkFromSepc = Util.StringToByteArray("077709362c2e32df0ddc3f0dc47bba6390b6c73bb50f9c3" +
+            byte[] prkFromSepc = CognitoAuthHelper.StringToByteArray("077709362c2e32df0ddc3f0dc47bba6390b6c73bb50f9c3" +
                 "122ec844ad7c2b3e5");
-            byte[] okmFromSpec = Util.StringToByteArray("3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4" +
+            byte[] okmFromSpec = CognitoAuthHelper.StringToByteArray("3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4" +
                 "c5db02d56ecc4c5bf34007208d5b887185865");
 
-            byte[] ikmBytes = Util.StringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
-            byte[] saltBytes = Util.StringToByteArray("000102030405060708090a0b0c");
-            byte[] infoBytes = Util.StringToByteArray("f0f1f2f3f4f5f6f7f8f9");
+            byte[] ikmBytes = CognitoAuthHelper.StringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
+            byte[] saltBytes = CognitoAuthHelper.StringToByteArray("000102030405060708090a0b0c");
+            byte[] infoBytes = CognitoAuthHelper.StringToByteArray("f0f1f2f3f4f5f6f7f8f9");
             int length = 42;
 
             Hkdf hkdf = new Hkdf(saltBytes, ikmBytes);
@@ -246,19 +247,19 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
         public void TestHkdfVector2()
         {
             // Expected Values
-            byte[] prkFromSpec = Util.StringToByteArray("06a6b88c5853361a06104c9ceb35b45cef760014904671" +
+            byte[] prkFromSpec = CognitoAuthHelper.StringToByteArray("06a6b88c5853361a06104c9ceb35b45cef760014904671" +
                 "014a193f40c15fc244");
-            byte[] okmFromSpec = Util.StringToByteArray("b11e398dc80327a1c8e7f78c596a49344f012eda2d4efa" +
+            byte[] okmFromSpec = CognitoAuthHelper.StringToByteArray("b11e398dc80327a1c8e7f78c596a49344f012eda2d4efa" +
                 "d8a050cc4c19afa97c59045a99cac7827271cb41c65e590e09da3275600c2f09b8367793a9aca3db71c" +
                 "c30c58179ec3e87c14c01d5c1f3434f1d87");
 
-            byte[] ikmBytes = Util.StringToByteArray("000102030405060708090a0b0c0d0e0f101112131" +
+            byte[] ikmBytes = CognitoAuthHelper.StringToByteArray("000102030405060708090a0b0c0d0e0f101112131" +
                 "415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d" +
                 "3e3f404142434445464748494a4b4c4d4e4f");
-            byte[] saltBytes = Util.StringToByteArray("606162636465666768696a6b6c6d6e6f70717273" +
+            byte[] saltBytes = CognitoAuthHelper.StringToByteArray("606162636465666768696a6b6c6d6e6f70717273" +
                 "7475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9" +
                 "d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeaf");
-            byte[] infoBytes = Util.StringToByteArray("b0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3" +
+            byte[] infoBytes = CognitoAuthHelper.StringToByteArray("b0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3" +
                 "c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebece" +
                 "deeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff");
             int length = 82;
@@ -275,14 +276,14 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
         public void TestHkdfVector3()
         {
             // Expected Values
-            byte[] prkFromSpec = Util.StringToByteArray("19ef24a32c717b167f33a91d6f648bdf96596776afdb6" +
+            byte[] prkFromSpec = CognitoAuthHelper.StringToByteArray("19ef24a32c717b167f33a91d6f648bdf96596776afdb6" +
                 "377ac434c1c293ccb04");
-            byte[] okmFromSpec = Util.StringToByteArray("8da4e775a563c18f715f802a063c5a31b8a11f5c5ee18" +
+            byte[] okmFromSpec = CognitoAuthHelper.StringToByteArray("8da4e775a563c18f715f802a063c5a31b8a11f5c5ee18" +
                 "79ec3454e5f3c738d2d9d201395faa4b61a96c8");
 
-            byte[] ikmBytes = Util.StringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
-            byte[] saltBytes = Util.StringToByteArray("");
-            byte[] infoBytes = Util.StringToByteArray("");
+            byte[] ikmBytes = CognitoAuthHelper.StringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
+            byte[] saltBytes = CognitoAuthHelper.StringToByteArray("");
+            byte[] infoBytes = CognitoAuthHelper.StringToByteArray("");
             int length = 42;
 
             Hkdf hkdf = new Hkdf(saltBytes, ikmBytes);

@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using Amazon.Extensions.CognitoAuthentication.Util;
 using System;
 using System.Security.Cryptography;
 
@@ -69,7 +70,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             for (int i = 0; bytesRemaining > 0; i++)
             {
                 currentByte = Convert.ToByte(i+1);
-                currentBlock = Util.CombineBytes(new byte[][] { hashedBlock, info, new byte[] { currentByte } });
+                currentBlock = CognitoAuthHelper.CombineBytes(new byte[][] { hashedBlock, info, new byte[] { currentByte } });
                 hashedBlock = HmacSha256.ComputeHash(currentBlock);
 
                 Buffer.BlockCopy(hashedBlock, 0, outputKeyMaterial, length-bytesRemaining, Math.Min(hashedBlock.Length, bytesRemaining));

@@ -14,20 +14,19 @@
  */
 
 using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Amazon.Extensions.CognitoAuthentication.ThirdParty;
+using System.Numerics;
+using System.Text;
 
-namespace Amazon.Extensions.CognitoAuthentication
+namespace Amazon.Extensions.CognitoAuthentication.Util
 {
     /// <summary>
     /// Class that helps with device SRP authentication
     /// </summary>
     internal static class CognitoDeviceHelper
     {
-        internal static byte[] Salt { get; set; }
-        internal static BigInteger Verifier { get; set; }
+        public static byte[] Salt { get; set; }
+        public static BigInteger Verifier { get; set; }
      
         /// <summary>
         /// Generates the salt, verifier, and secret verification parameters for device SRP
@@ -36,7 +35,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="deviceGroup">The device group key for the associated CognitoDevice</param>
         /// <returns>Returns a dictionary with key-value pairings for the salt, verifier, and secret for 
         /// the associated CognitoDevice</returns>
-        internal static IDictionary<string, string> GenerateVerificationParameters(string deviceKey, string deviceGroup)
+        public static IDictionary<string, string> GenerateVerificationParameters(string deviceKey, string deviceGroup)
         {
             string deviceSecret = GenerateRandomString();
             GenerateDeviceSaltAndVerifier(deviceGroup, deviceKey, deviceSecret);
@@ -60,15 +59,13 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="deviceGroupKey">The device group key for the associated CognitoDevice</param>
         /// <param name="deviceKey">The device key for the CognitoDevice</param>
         /// <param name="password">The password for the CognitoUser associated with the device</param>
-        internal static void GenerateDeviceSaltAndVerifier(string deviceGroupKey, string deviceKey, string password)
+        public static void GenerateDeviceSaltAndVerifier(string deviceGroupKey, string deviceKey, string password)
         {
             byte[] deviceKeyHash = GetDeviceKeyHash(deviceGroupKey, deviceKey, password);
+            Random random = new Random();
 
             Salt = new byte[16];
-            using(var randomNumberGenerator = RandomNumberGenerator.Create())
-            {
-                randomNumberGenerator.GetBytes(Salt);
-            }
+            random.NextBytes(Salt);
 
             Verifier = CalculateVerifier(Salt, deviceKeyHash);
         }
@@ -79,13 +76,13 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="salt">The salt for the SHA256 hash to compute the device verifier</param>
         /// <param name="deviceKeyHash">The device key hash for the associated CognitoDevice</param>
         /// <returns>Returns the device verifier for the associated CognitoDevice</returns>
-        internal static BigInteger CalculateVerifier(byte[] salt, byte[] deviceKeyHash)
+        public static BigInteger CalculateVerifier(byte[] salt, byte[] deviceKeyHash)
         {
-            byte[] contentBytes = Util.CombineBytes(new byte[][] { salt, deviceKeyHash });
-            byte[] digest = Util.Sha256.ComputeHash(contentBytes);
+            byte[] contentBytes = CognitoAuthHelper.CombineBytes(new byte[][] { salt, deviceKeyHash });
+            byte[] digest = CognitoAuthHelper.Sha256.ComputeHash(contentBytes);
 
-            BigInteger x = new BigInteger(1, digest);
-            return (AuthenticationHelper.g).ModPow(x, (AuthenticationHelper.N));
+            BigInteger x = new BigInteger(digest);
+            return BigInteger.ModPow(AuthenticationHelper.g, x, AuthenticationHelper.N);
         }
 
         /// <summary>
@@ -95,19 +92,19 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="deviceKey">The device key for the CognitoDevice</param>
         /// <param name="password">The password for the CognitoUser associated with the device</param>
         /// <returns>Returns the device key hash for the given device</returns>
-        internal static byte[] GetDeviceKeyHash(string deviceGroupKey, string deviceKey, string password)
+        public static byte[] GetDeviceKeyHash(string deviceGroupKey, string deviceKey, string password)
         {
-            byte[] contentBytes = Util.CombineBytes(new byte[][] { Encoding.UTF8.GetBytes(deviceGroupKey),
+            byte[] contentBytes = CognitoAuthHelper.CombineBytes(new byte[][] { Encoding.UTF8.GetBytes(deviceGroupKey),
                 Encoding.UTF8.GetBytes(deviceKey), Encoding.UTF8.GetBytes(":"), Encoding.UTF8.GetBytes(password) });
 
-            return Util.Sha256.ComputeHash(contentBytes);
+            return CognitoAuthHelper.Sha256.ComputeHash(contentBytes);
         }
 
         /// <summary>
         /// Generates a random string using a globally unique identifier
         /// </summary>
         /// <returns>Returns a random string</returns>
-        internal static string GenerateRandomString()
+        public static string GenerateRandomString()
         {
             return Guid.NewGuid().ToString();
         }

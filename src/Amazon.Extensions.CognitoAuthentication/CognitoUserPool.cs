@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using System.Linq;
+using Amazon.Extensions.CognitoAuthentication.Util;
 using System.Threading;
 
 namespace Amazon.Extensions.CognitoAuthentication
@@ -107,7 +108,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             List<AttributeType> userAttributesList = null;
             if (userAttributes != null)
             {
-                userAttributesList = Util.CreateAttributeList(userAttributes);
+                userAttributesList = CognitoAuthHelper.CreateAttributeList(userAttributes);
             }
             else
             {
@@ -115,7 +116,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
 
             List<AttributeType> validationDataList = 
-                validationData != null ? Util.CreateAttributeList(validationData) : null;
+                validationData != null ? CognitoAuthHelper.CreateAttributeList(validationData) : null;
 
             // Create User registration request
             SignUpRequest signUpUserRequest = new SignUpRequest()
@@ -129,7 +130,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             if (!string.IsNullOrEmpty(ClientSecret))
             {
-                signUpUserRequest.SecretHash = Util.GetUserPoolSecretHash(userID, ClientID, ClientSecret);
+                signUpUserRequest.SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(userID, ClientID, ClientSecret);
             }
 
             return signUpUserRequest;
@@ -270,7 +271,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             List<AttributeType> userAttributesList = null;
             if (userAttributes != null)
             {
-                userAttributesList = Util.CreateAttributeList(userAttributes);
+                userAttributesList = CognitoAuthHelper.CreateAttributeList(userAttributes);
             }
             else
             {
@@ -278,7 +279,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
 
             List<AttributeType> validationDataList =
-                validationData != null ? Util.CreateAttributeList(validationData) : null;
+                validationData != null ? CognitoAuthHelper.CreateAttributeList(validationData) : null;
 
             // Create User registration request
             return new AdminCreateUserRequest()
