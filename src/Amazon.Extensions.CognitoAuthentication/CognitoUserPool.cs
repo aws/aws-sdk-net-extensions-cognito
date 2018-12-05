@@ -317,7 +317,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             if (!string.IsNullOrEmpty(ClientSecret))
             {
-                request.SecretHash = Util.GetUserPoolSecretHash(userID, ClientID, ClientSecret);
+                request.SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(userID, ClientID, ClientSecret);
             }
 
             return Provider.ConfirmForgotPasswordAsync(request, cancellationToken);
