@@ -424,7 +424,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             string poolName = PoolName;
             string secretBlock = challenge.ChallengeParameters[CognitoConstants.ChlgParamSecretBlock];
             string salt = challenge.ChallengeParameters[CognitoConstants.ChlgParamSalt];
-            BigInteger srpb = BigIntegerExtensions.FromHexPositive(challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB]);
+            BigInteger srpb = BigIntegerExtensions.FromUnsignedLittleEndianHex(challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB]);
 
             if ((srpb.TrueMod(AuthenticationHelper.N)).Equals(BigInteger.Zero))
             {

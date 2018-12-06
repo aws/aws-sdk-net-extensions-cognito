@@ -23,8 +23,10 @@ namespace Amazon.Extensions.CognitoAuthentication
     /// Class used to carry out the HKDF protocol
     /// Adapted from https://tools.ietf.org/html/rfc5869
     /// </summary>
-    internal class Hkdf
+    internal class HkdfSha256
     {
+        internal const int HLen = 32;
+
         /// <summary>
         /// The pseudorandom key for the HKDF protocol. Prk is generated in the
         /// constructor of Hkdf and once set cannot be changed.
@@ -43,7 +45,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="salt">The salt for the extraction hash</param>
         /// <param name="ikm">The input key material for the extraction hash</param>
-        internal Hkdf(byte[] salt, byte[] ikm)
+        internal HkdfSha256(byte[] salt, byte[] ikm)
         {
             HmacSha256 = new HMACSHA256(salt);
 
@@ -59,22 +61,27 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <returns>Returns the output key material for the expansion protion of the HKDF protocol</returns>
         internal byte[] Expand(byte[] info, int length)
         {
+            if (length > HLen * 255)
+            {
+                throw new ArgumentException("Length must be <= " + HLen * 255);
+            }
+
             byte[] outputKeyMaterial = new byte[length];
             HmacSha256 = new HMACSHA256(Prk);
 
-            byte currentByte;
+            byte currentByte = 1;
             byte[] hashedBlock = new byte[0];
             byte[] currentBlock;
             int bytesRemaining = length; 
 
-            for (int i = 0; bytesRemaining > 0; i++)
+            while(bytesRemaining > 0)
             {
-                currentByte = Convert.ToByte(i+1);
                 currentBlock = CognitoAuthHelper.CombineBytes(new byte[][] { hashedBlock, info, new byte[] { currentByte } });
                 hashedBlock = HmacSha256.ComputeHash(currentBlock);
 
                 Buffer.BlockCopy(hashedBlock, 0, outputKeyMaterial, length-bytesRemaining, Math.Min(hashedBlock.Length, bytesRemaining));
                 bytesRemaining -= hashedBlock.Length;
+                currentByte++;
             }
 
             return outputKeyMaterial;

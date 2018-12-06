@@ -82,7 +82,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
             byte[] digest = CognitoAuthHelper.Sha256.ComputeHash(contentBytes);
 
             BigInteger x = new BigInteger(digest);
-            return x.TrueModPow(AuthenticationHelper.g, AuthenticationHelper.N);
+            return BigInteger.ModPow(x, AuthenticationHelper.g, AuthenticationHelper.N);
         }
 
         /// <summary>

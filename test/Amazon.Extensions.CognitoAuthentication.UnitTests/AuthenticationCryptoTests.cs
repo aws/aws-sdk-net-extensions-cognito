@@ -36,7 +36,7 @@ namespace CognitoAuthentication.UnitTests
             BigInteger N = AuthenticationHelper.N;
             string password = "password";
             string saltString = "fef2871d83ce2120f9c47a46db303d37"; //Does not have to always be this string
-            BigInteger salt = BigIntegerExtensions.FromHexPositive(saltString);
+            BigInteger salt = BigIntegerExtensions.FromUnsignedLittleEndianHex(saltString);
 
             // Compute x = H(s,p)
             byte[] passBytes = Encoding.UTF8.GetBytes(password);
@@ -46,10 +46,10 @@ namespace CognitoAuthentication.UnitTests
             Buffer.BlockCopy(saltBytes, 0, xBytes, 0, saltBytes.Length);
             Buffer.BlockCopy(userIdHash, 0, xBytes, saltBytes.Length, userIdHash.Length);
             byte[] xDigest = sha256.ComputeHash(xBytes);
-            BigInteger x = BigIntegerExtensions.FromBigEndian(xDigest);
+            BigInteger x = BigIntegerExtensions.FromUnsignedBigEndian(xDigest);
 
             // Compute v = g^x
-            BigInteger v = g.TrueModPow(x, N);
+            BigInteger v = BigInteger.ModPow(g, x, N);
 
             // Generate random a, b, A
             BigInteger a, b, A;
@@ -57,7 +57,7 @@ namespace CognitoAuthentication.UnitTests
             {
                 a = AuthenticationHelper.CreateBigIntegerRandom();
                 b = AuthenticationHelper.CreateBigIntegerRandom();
-                A = g.TrueModPow(a, N);
+                A = BigInteger.ModPow(g, a, N);
             } while ((A.TrueMod(N)).Equals(BigInteger.Zero));
 
             // Calculate k = H(N, g)
@@ -67,10 +67,10 @@ namespace CognitoAuthentication.UnitTests
             Buffer.BlockCopy(nBytes, 0, content, 0, nBytes.Length);
             Buffer.BlockCopy(gBytes, 0, content, nBytes.Length, gBytes.Length);
             byte[] digest = sha256.ComputeHash(content);
-            BigInteger k = BigIntegerExtensions.FromBigEndian(digest);
+            BigInteger k = BigIntegerExtensions.FromUnsignedBigEndian(digest);
 
             //Calculate B = kv + g^b
-            BigInteger B = k * v + (g.TrueModPow(b, N));
+            BigInteger B = k * v + (BigInteger.ModPow(g, b, N));
 
             // Calculate u = H(A,B)
             byte[] ABytes = A.ToByteArray();
@@ -79,23 +79,23 @@ namespace CognitoAuthentication.UnitTests
             Buffer.BlockCopy(ABytes, 0, ABcat, 0, ABytes.Length);
             Buffer.BlockCopy(BBytes, 0, ABcat, ABytes.Length, BBytes.Length);
             byte[] ABdigest = sha256.ComputeHash(ABcat);
-            BigInteger u = BigIntegerExtensions.FromBigEndian(ABdigest);
+            BigInteger u = BigIntegerExtensions.FromUnsignedBigEndian(ABdigest);
 
             // Calculate user side userS = (B - kg^x) ^ (a + ux)
-            BigInteger userS = (B - k * g.TrueModPow(x, N)).TrueModPow(a + u * x, N);
+            BigInteger userS = BigInteger.ModPow((B - k * BigInteger.ModPow(g, x, N)), a + u * x, N);
 
             // Calculate user side userK = H(userS)
             byte[] userSBytes = userS.ToByteArray();
             byte[] userSDigest = sha256.ComputeHash(userSBytes);
-            BigInteger userK = BigIntegerExtensions.FromBigEndian(userSDigest);
+            BigInteger userK = BigIntegerExtensions.FromUnsignedBigEndian(userSDigest);
 
             // Calculate host side hostS = (Av^u) ^ b
-            BigInteger hostS = (A * v.TrueModPow(u, N)).TrueModPow(b, N);
+            BigInteger hostS = BigInteger.ModPow((A * BigInteger.ModPow(v, u, N)), b, N);
 
             // Calculate host side hostK = H(hostS)
             byte[] hostSBytes = hostS.ToByteArray();
             byte[] hostSDigest = sha256.ComputeHash(hostSBytes);
-            BigInteger hostK = BigIntegerExtensions.FromBigEndian(hostSDigest);
+            BigInteger hostK = BigIntegerExtensions.FromUnsignedBigEndian(hostSDigest);
 
             Assert.Equal(hostS, userS);
             Assert.Equal(hostK, userK);
@@ -110,7 +110,7 @@ namespace CognitoAuthentication.UnitTests
             BigInteger a = tuple.Item2;
             BigInteger g = AuthenticationHelper.g;
 
-            Assert.Equal(A, g.TrueModPow(a, AuthenticationHelper.N));
+            Assert.Equal(A, BigInteger.ModPow(g, a, AuthenticationHelper.N));
             Assert.NotEqual(A.TrueMod(AuthenticationHelper.N), BigInteger.Zero);
         }
 
@@ -154,7 +154,7 @@ namespace CognitoAuthentication.UnitTests
             for (int i = bytes.Length - 1; i > 0; i--)
             { bytes[i] = 2; }
             BigInteger a = new BigInteger(bytes);
-            BigInteger A = AuthenticationHelper.g.TrueModPow(a, AuthenticationHelper.N);
+            BigInteger A = BigInteger.ModPow(AuthenticationHelper.g, a, AuthenticationHelper.N);
             Tuple<BigInteger, BigInteger> tupleAa = Tuple.Create<BigInteger, BigInteger>(A, a);
 
             byte[] claim = AuthenticationHelper.AuthenticateUser(username, password, poolName,
@@ -176,7 +176,7 @@ namespace CognitoAuthentication.UnitTests
             for (int i = bytes.Length - 1; i > 0; i--)
             { bytes[i] = 2; }
             BigInteger a = new BigInteger(bytes);
-            BigInteger A = AuthenticationHelper.g.TrueModPow(a, AuthenticationHelper.N);
+            BigInteger A = BigInteger.ModPow(AuthenticationHelper.g, a, AuthenticationHelper.N);
             Tuple<BigInteger, BigInteger> tupleAa = Tuple.Create<BigInteger, BigInteger>(A, a);
             string srpb = "8d340308265ada665b1b2c730fb65ff0b6dc746b63c2d7e9f08b8aa9306d4848268bc0c17ee4a2999173ca62af59fd74b"
                 + "a5d00f16c96bea082b163f2c3a0b745455d62cb9577425b4b5d4dadba163a8e7759a7c0256795f464682770588c84e82f2c63d47017"
@@ -186,8 +186,8 @@ namespace CognitoAuthentication.UnitTests
                 + "d3e15f0e1078a9d89e5154391cde6111ac14fab9fa3b3a880da7dbd47fd5a055937581d26b5d225c076e82f980dcbd77b3950d270d8"
                 + "b622dca9c9bcd8fd6435a59b9690b3c9e2bdabf58cae3420c19066abc420145b1b66f226a6493c96588c2d53b637798fcaa573379f2"
                 + "251848065fe1fafb68ed5e79135e9";
-            BigInteger B = BigIntegerExtensions.FromHexPositive(srpb);
-            BigInteger salt = BigIntegerExtensions.FromHexPositive("b704a27deb8cf5efec43a40eac5b60d2");
+            BigInteger B = BigIntegerExtensions.FromUnsignedLittleEndianHex(srpb);
+            BigInteger salt = BigIntegerExtensions.FromUnsignedLittleEndianHex("b704a27deb8cf5efec43a40eac5b60d2");
 
             byte[] key = AuthenticationHelper.GetPasswordAuthenticationKey(username, password, poolName, tupleAa, B, salt);
             string testKey = Convert.ToBase64String(key);
@@ -235,10 +235,10 @@ namespace CognitoAuthentication.UnitTests
             byte[] infoBytes = CognitoAuthHelper.StringToByteArray("f0f1f2f3f4f5f6f7f8f9");
             int length = 42;
 
-            Hkdf hkdf = new Hkdf(saltBytes, ikmBytes);
-            byte[] hkdfResult = hkdf.Expand(infoBytes, length);
+            HkdfSha256 hkdfSha256 = new HkdfSha256(saltBytes, ikmBytes);
+            byte[] hkdfResult = hkdfSha256.Expand(infoBytes, length);
 
-            Assert.Equal(prkFromSepc, hkdf.Prk);
+            Assert.Equal(prkFromSepc, hkdfSha256.Prk);
             Assert.Equal(okmFromSpec, hkdfResult);
         }
 
@@ -264,10 +264,10 @@ namespace CognitoAuthentication.UnitTests
                 "deeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff");
             int length = 82;
 
-            Hkdf hkdf = new Hkdf(saltBytes, ikmBytes);
-            byte[] hkdfResult = hkdf.Expand(infoBytes, length);
+            HkdfSha256 hkdfSha256 = new HkdfSha256(saltBytes, ikmBytes);
+            byte[] hkdfResult = hkdfSha256.Expand(infoBytes, length);
 
-            Assert.Equal(prkFromSpec, hkdf.Prk);
+            Assert.Equal(prkFromSpec, hkdfSha256.Prk);
             Assert.Equal(okmFromSpec, hkdfResult);
         }
 
@@ -286,10 +286,10 @@ namespace CognitoAuthentication.UnitTests
             byte[] infoBytes = CognitoAuthHelper.StringToByteArray("");
             int length = 42;
 
-            Hkdf hkdf = new Hkdf(saltBytes, ikmBytes);
-            byte[] hkdfResult = hkdf.Expand(infoBytes, length);
+            HkdfSha256 hkdfSha256 = new HkdfSha256(saltBytes, ikmBytes);
+            byte[] hkdfResult = hkdfSha256.Expand(infoBytes, length);
 
-            Assert.Equal(prkFromSpec, hkdf.Prk);
+            Assert.Equal(prkFromSpec, hkdfSha256.Prk);
             Assert.Equal(okmFromSpec, hkdfResult);
         }
     }

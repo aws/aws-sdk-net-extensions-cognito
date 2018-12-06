@@ -6,31 +6,38 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
 {
     internal static class BigIntegerExtensions
     {
-        public static BigInteger FromHexPositive(string hex) => BigInteger.Parse("0" + hex, NumberStyles.HexNumber);
+        /// <summary>
+        /// Turn a hex string into a BigInteger assuming it's an unsigned, little endian hex string.
+        /// </summary>
+        /// <param name="hex"></param>
+        /// <returns></returns>
+        public static BigInteger FromUnsignedLittleEndianHex(string hex) => BigInteger.Parse("0" + hex, NumberStyles.HexNumber);
 
+        /// <summary>
+        /// If the sign of the remainder of self % other is &lt; 0 then add other so that the answer is always positive.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public static BigInteger TrueMod(this BigInteger self, BigInteger other)
         {
             var remainder = self % other;
             return remainder.Sign >= 0 ? remainder : remainder + other;
         }
 
-        public static BigInteger TrueModPow(this BigInteger self, BigInteger exponent, BigInteger modulus)
-        {
-            var ret = BigInteger.ModPow(self, exponent, modulus);
-            if(ret.Sign < 0)
-            {
-                ret += ((ret * -1) / modulus) * modulus;
-                if(ret.Sign < 0)
-                {
-                    ret += modulus;
-                }
-            }
-            return ret;
-        }
-
+        /// <summary>
+        /// Return a big endian byte array that's equivalent to this BigInteger.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         public static byte[] ToBigEndianByteArray(this BigInteger self) => self.ToByteArray().Reverse();
 
-        public static BigInteger FromBigEndian(byte[] bytes)
+        /// <summary>
+        /// Turn a byte array into a BigInteger, assuming it's an unsigned big endian integer.
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static BigInteger FromUnsignedBigEndian(byte[] bytes)
         {
             var reverse = bytes.Reverse();
 
