@@ -70,8 +70,11 @@ namespace Amazon.Extensions.CognitoAuthentication
             this.ClientSecret = clientSecret;
 
             this.Provider = provider;
-            //TODO : metrics will be added as part of DOTNET-3061
-            //this.Provider.BeforeRequestEvent += Util.ServiceClientBeforeRequestEvent;
+
+            if (this.Provider is AmazonCognitoIdentityProviderClient eventProvider)
+            {
+                eventProvider.BeforeRequestEvent += CognitoAuthHelper.ServiceClientBeforeRequestEvent;
+            }
         }
 
         /// <summary>
