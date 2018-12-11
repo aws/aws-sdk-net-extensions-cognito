@@ -146,8 +146,11 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
             if (args == null || !args.Headers.ContainsKey(UserAgentHeader))
                 return;
 
-
-            args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " AWSDotNetCognito/" + GetAssemblyFileVersion();
+            var metric = " AWSDotNetCognito/" + GetAssemblyFileVersion();
+            if (!args.Headers[UserAgentHeader].Contains(metric))
+            {
+                args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + metric;
+            }
         }
 
         internal static string GetAssemblyFileVersion()
