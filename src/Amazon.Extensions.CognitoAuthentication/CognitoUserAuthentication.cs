@@ -63,14 +63,11 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             UpdateSessionIfAuthenticationComplete(verifierResponse.ChallengeName, verifierResponse.AuthenticationResult);
 
-            return new AuthFlowResponse()
-            {
-                SessionID = verifierResponse.Session,
-                ChallengeName = verifierResponse.ChallengeName,
-                AuthenticationResult = verifierResponse.AuthenticationResult,
-                ChallengeParameters = verifierResponse.ChallengeParameters,
-                ClientMetadata = new Dictionary<string, string>(verifierResponse.ResponseMetadata.Metadata)
-            };
+            return new AuthFlowResponse(verifierResponse.Session,
+                verifierResponse.AuthenticationResult,
+                verifierResponse.ChallengeName,
+                verifierResponse.ChallengeParameters,
+                new Dictionary<string, string>(verifierResponse.ResponseMetadata.Metadata));
         }
 
         /// <summary>
@@ -95,14 +92,11 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             UpdateSessionIfAuthenticationComplete(initiateResponse.ChallengeName, initiateResponse.AuthenticationResult);
 
-            return new AuthFlowResponse()
-            {
-                SessionID = initiateResponse.Session,
-                ChallengeName = initiateResponse.ChallengeName,
-                AuthenticationResult = initiateResponse.AuthenticationResult,
-                ChallengeParameters = initiateResponse.ChallengeParameters,
-                ClientMetadata = new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata)
-            };
+            return new AuthFlowResponse(initiateResponse.Session,
+                initiateResponse.AuthenticationResult,
+                initiateResponse.ChallengeName,
+                initiateResponse.ChallengeParameters,
+                new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata));
         }
 
         /// <summary>
@@ -128,14 +122,11 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             UpdateSessionIfAuthenticationComplete(authResponse.ChallengeName, authResponse.AuthenticationResult);
 
-            return new AuthFlowResponse()
-            {
-                SessionID = authResponse.Session,
-                ChallengeName = authResponse.ChallengeName,
-                AuthenticationResult = authResponse.AuthenticationResult,
-                ChallengeParameters = authResponse.ChallengeParameters,
-                ClientMetadata = new Dictionary<string, string>(authResponse.ResponseMetadata.Metadata)
-            };
+            return new AuthFlowResponse(authResponse.Session,
+                authResponse.AuthenticationResult,
+                authResponse.ChallengeName,
+                authResponse.ChallengeParameters,
+                new Dictionary<string, string>(authResponse.ResponseMetadata.Metadata));
         }
 
         /// <summary>
@@ -170,14 +161,11 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             UpdateSessionIfAuthenticationComplete(challengeResponse.ChallengeName, challengeResponse.AuthenticationResult);
 
-            return new AuthFlowResponse()
-            {
-                SessionID = challengeResponse.Session,
-                ChallengeName = challengeResponse.ChallengeName,
-                AuthenticationResult = challengeResponse.AuthenticationResult,
-                ChallengeParameters = challengeResponse.ChallengeParameters,
-                ClientMetadata = new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata)
-            };
+            return new AuthFlowResponse(challengeResponse.Session,
+                challengeResponse.AuthenticationResult,
+                challengeResponse.ChallengeName,
+                challengeResponse.ChallengeParameters,
+                new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata));
         }
 
         /// <summary>
@@ -212,14 +200,11 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             UpdateSessionIfAuthenticationComplete(challengeResponse.ChallengeName, challengeResponse.AuthenticationResult);
 
-            return new AuthFlowResponse()
-            {
-                SessionID = challengeResponse.Session,
-                ChallengeName = challengeResponse.ChallengeName,
-                AuthenticationResult = challengeResponse.AuthenticationResult,
-                ChallengeParameters = challengeResponse.ChallengeParameters,
-                ClientMetadata = new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata)
-            };
+            return new AuthFlowResponse(challengeResponse.Session,
+                challengeResponse.AuthenticationResult,
+                challengeResponse.ChallengeName,
+                challengeResponse.ChallengeParameters,
+                new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata));
         }
 
         /// <summary>
@@ -238,14 +223,11 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             UpdateSessionIfAuthenticationComplete(initiateResponse.ChallengeName, initiateResponse.AuthenticationResult);
 
-            return new AuthFlowResponse()
-            {
-                SessionID = initiateResponse.Session,
-                ChallengeName = initiateResponse.ChallengeName,
-                AuthenticationResult = initiateResponse.AuthenticationResult,
-                ChallengeParameters = initiateResponse.ChallengeParameters,
-                ClientMetadata = new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata)
-            };
+            return new AuthFlowResponse(initiateResponse.Session,
+                initiateResponse.AuthenticationResult,
+                initiateResponse.ChallengeName,
+                initiateResponse.ChallengeParameters,
+                new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata));
         }
 
         /// <summary>
@@ -264,14 +246,11 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             UpdateSessionIfAuthenticationComplete(initiateResponse.ChallengeName, initiateResponse.AuthenticationResult);
 
-            return new AuthFlowResponse()
-            {
-                SessionID = initiateResponse.Session,
-                ChallengeName = initiateResponse.ChallengeName,
-                AuthenticationResult = initiateResponse.AuthenticationResult,
-                ChallengeParameters = initiateResponse.ChallengeParameters,
-                ClientMetadata = new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata)
-            };
+            return new AuthFlowResponse(initiateResponse.Session,
+                initiateResponse.AuthenticationResult,
+                initiateResponse.ChallengeName,
+                initiateResponse.ChallengeParameters,
+                new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata));
         }
 
         /// <summary>

@@ -27,30 +27,47 @@ namespace Amazon.Extensions.CognitoAuthentication
     public class AuthFlowResponse
     {
         /// <summary>
+        /// Constructs an AuthFlowResponse object
+        /// </summary>
+        /// <param name="sessionId">The authentication workflow session id.</param>
+        /// <param name="authenticationResult">The result of the Authentication workflow</param>
+        /// <param name="challengeName">The challenge name if any.</param>
+        /// <param name="challengeParameters">The challenge parameters if any.</param>
+        /// <param name="clientMetadata">The client metadata.</param>
+        public AuthFlowResponse(string sessionId, AuthenticationResultType authenticationResult, ChallengeNameType challengeName, IDictionary<string, string> challengeParameters, IDictionary<string, string> clientMetadata)
+        {
+            SessionID = sessionId;
+            ChallengeName = challengeName;
+            AuthenticationResult = authenticationResult;
+            ChallengeParameters = challengeParameters;
+            ClientMetadata = clientMetadata;
+        }
+
+        /// <summary>
         /// The sessionID for the current authentication flow.
         /// </summary>
-        public string SessionID { get; internal set; }
+        public string SessionID { get; }
 
         /// <summary>
         /// The current challenge name for the authentication flow.
         /// </summary>
-        public ChallengeNameType ChallengeName { get; internal set; }
+        public ChallengeNameType ChallengeName { get; }
 
         /// <summary>
         /// The current authentication result for the authentication flow.
         /// </summary>
-        public AuthenticationResultType AuthenticationResult { get; internal set; }
+        public AuthenticationResultType AuthenticationResult { get; }
 
         /// <summary>
         /// The challenge parameters for the current authentication flow.
         /// </summary>
-        public IDictionary<string, string> ChallengeParameters { get; internal set; }
+        public IDictionary<string, string> ChallengeParameters { get; }
 
         /// <summary>
         /// The client metadata for the current authentication flow. Only 
         /// applicable for custom authentication.
         /// </summary>
-        public IDictionary<string, string> ClientMetadata { get; internal set; }
+        public IDictionary<string, string> ClientMetadata { get; }
     }
 
     /// <summary>
