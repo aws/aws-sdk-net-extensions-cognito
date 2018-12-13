@@ -46,28 +46,28 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// The sessionID for the current authentication flow.
         /// </summary>
-        public string SessionID { get; internal set; }
+        public string SessionID { get; }
 
         /// <summary>
         /// The current challenge name for the authentication flow.
         /// </summary>
-        public ChallengeNameType ChallengeName { get; internal set; }
+        public ChallengeNameType ChallengeName { get; }
 
         /// <summary>
         /// The current authentication result for the authentication flow.
         /// </summary>
-        public AuthenticationResultType AuthenticationResult { get; internal set; }
+        public AuthenticationResultType AuthenticationResult { get; }
 
         /// <summary>
         /// The challenge parameters for the current authentication flow.
         /// </summary>
-        public IDictionary<string, string> ChallengeParameters { get; internal set; }
+        public IDictionary<string, string> ChallengeParameters { get; }
 
         /// <summary>
         /// The client metadata for the current authentication flow. Only 
         /// applicable for custom authentication.
         /// </summary>
-        public IDictionary<string, string> ClientMetadata { get; internal set; }
+        public IDictionary<string, string> ClientMetadata { get; }
     }
 
     /// <summary>
