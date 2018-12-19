@@ -4,7 +4,7 @@
 
 [![nuget](https://img.shields.io/nuget/v/Amazon.Extensions.CognitoAuthentication.svg)](https://www.nuget.org/packages/Amazon.Extensions.CognitoAuthentication/)
 
-[The Amazon Cognito Extension Library](https://www.nuget.org/packages/Amazon.Extensions.CognitoAuthentication/) simplifies the authentication process of [Amazon Cognito User Pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html) for .NET developers.
+[Amazon.Extensions.CognitoAuthentication](https://www.nuget.org/packages/Amazon.Extensions.CognitoAuthentication/) simplifies the authentication process of [Amazon Cognito User Pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html) for .NET developers.
 
 It allows you to use various authentication methods for Amazon Cognito User Pools with only a few short method calls, along with making the process intuitive.
 
