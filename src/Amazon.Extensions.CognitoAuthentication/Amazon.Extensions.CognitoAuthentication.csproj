@@ -17,7 +17,6 @@
     <PackageIconUrl>https://sdk-for-net.amazonwebservices.com/images/AWSLogo128x128.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/aws/aws-sdk-net-extensions-cognito/</RepositoryUrl>
     <Company>Amazon Web Services</Company>
-    <LicenseUrl>LICENSE</LicenseUrl>
     <SignAssembly>true</SignAssembly>
 
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
