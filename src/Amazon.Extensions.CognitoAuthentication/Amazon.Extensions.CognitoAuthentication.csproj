@@ -5,7 +5,7 @@
     <AssemblyName>Amazon.Extensions.CognitoAuthentication</AssemblyName>
     <RootNamespace>Amazon.Extensions.CognitoAuthentication</RootNamespace>
     <PackageId>Amazon.Extensions.CognitoAuthentication</PackageId>
-    <PackageVersion>1.0</PackageVersion>
+    <PackageVersion>1.0.1</PackageVersion>
     <Title>Amazon Cognito Authentication Extension Library</Title>
     <Product>Amazon.Extensions.CognitoAuthentication</Product>
     <Authors>Amazon Web Services</Authors>
@@ -13,11 +13,10 @@
     <Description>An extension library to assist in the Amazon Cognito User Pools authentication process.</Description>
     <PackageTags>AWS;Amazon;aws-sdk-v3;Cognito</PackageTags>
     <PackageProjectUrl>https://github.com/aws/aws-sdk-net-extensions-cognito/</PackageProjectUrl>
-    <PackageLicenseUrl>http://aws.amazon.com/apache2.0/</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIconUrl>https://sdk-for-net.amazonwebservices.com/images/AWSLogo128x128.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/aws/aws-sdk-net-extensions-cognito/</RepositoryUrl>
     <Company>Amazon Web Services</Company>
-    <LicenseUrl>http://aws.amazon.com/apache2.0/</LicenseUrl>
     <SignAssembly>true</SignAssembly>
 
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -30,7 +29,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <DelaySign>false</DelaySign>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <Choose>
@@ -47,7 +46,11 @@
   </Choose>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CognitoIdentity" Version="3.3.2.14" />
-    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.3.5" />
+    <PackageReference Include="AWSSDK.CognitoIdentity" Version="[3.3.100, 3.4)" />
+    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="[3.3.100, 3.4)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../LICENSE" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
