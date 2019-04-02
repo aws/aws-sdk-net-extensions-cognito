@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Amazon.Extensions.CognitoAuthentication.Util
@@ -62,11 +63,12 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         public static void GenerateDeviceSaltAndVerifier(string deviceGroupKey, string deviceKey, string password)
         {
             byte[] deviceKeyHash = GetDeviceKeyHash(deviceGroupKey, deviceKey, password);
-            Random random = new Random();
 
             Salt = new byte[16];
-            random.NextBytes(Salt);
-
+            using (var cryptoRandom = RandomNumberGenerator.Create())
+            {
+                cryptoRandom.GetBytes(Salt);
+            }
             Verifier = CalculateVerifier(Salt, deviceKeyHash);
         }
 
