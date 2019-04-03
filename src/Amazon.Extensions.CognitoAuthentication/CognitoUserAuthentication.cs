@@ -176,10 +176,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest)
+        public Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest)
         {
-            var result = await RespondToNewPasswordRequiredAsync(newPasswordRequest, null).ConfigureAwait(false);
-            return result;
+            return RespondToNewPasswordRequiredAsync(newPasswordRequest, null);
         }
 
         /// <summary>
