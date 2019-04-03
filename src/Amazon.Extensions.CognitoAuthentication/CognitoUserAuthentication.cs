@@ -176,15 +176,41 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest)
+        public Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest)
         {
+            return RespondToNewPasswordRequiredAsync(newPasswordRequest, null);
+        }
+
+        /// <summary>
+        /// Uses the properties of the RespondToNewPasswordRequiredRequest object to respond to the current new 
+        /// password required authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="newPasswordRequest">RespondToNewPasswordRequiredRequest object containing the necessary 
+        /// <param name="requiredAttributes">Optional dictionnary of attributes that may be required by the user pool
+        /// Each attribute key must be prefixed by "userAttributes."
+        /// parameters to respond to the current SMS MFA authentication challenge</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes)
+        {
+            var challengeResponses = new Dictionary<string, string>()
+            {
+                { CognitoConstants.ChlgParamNewPassword, newPasswordRequest.NewPassword},
+                { CognitoConstants.ChlgParamUsername, Username }
+            };
+
+            if (requiredAttributes != null)
+            {
+                foreach (KeyValuePair<string, string> attribute in requiredAttributes)
+                {
+                    challengeResponses.Add(attribute.Key, attribute.Value);
+                }
+            }
+
             RespondToAuthChallengeRequest challengeRequest = new RespondToAuthChallengeRequest
             {
-                ChallengeResponses = new Dictionary<string, string>
-                    {
-                        { CognitoConstants.ChlgParamNewPassword, newPasswordRequest.NewPassword},
-                        { CognitoConstants.ChlgParamUsername, Username }
-                    },
+                
+                ChallengeResponses = challengeResponses,
                 Session = newPasswordRequest.SessionID,
                 ClientId = ClientID,
                 ChallengeName = ChallengeNameType.NEW_PASSWORD_REQUIRED
