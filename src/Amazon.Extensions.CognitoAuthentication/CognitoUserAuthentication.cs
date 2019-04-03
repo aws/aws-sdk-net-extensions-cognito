@@ -202,9 +202,9 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             if (requiredAttributes != null)
             {
-                foreach (var attributeName in requiredAttributes.Keys)
+                foreach (KeyValuePair<string, string> attribute in requiredAttributes)
                 {
-                    challengeResponses.Add(attributeName, requiredAttributes[attributeName]);
+                    challengeResponses.Add(attribute.Key, attribute.Value);
                 }
             }
 
