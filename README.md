@@ -6,7 +6,7 @@
 
 [Amazon.Extensions.CognitoAuthentication](https://www.nuget.org/packages/Amazon.Extensions.CognitoAuthentication/) simplifies the authentication process of [Amazon Cognito User Pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html) for .NET developers.
 
-It allows you to use various authentication methods for Amazon Cognito User Pools with only a few short method calls, along with making the process intuitive.
+It allows you to use various authentication methods for Amazon Cognito User Pools with only a few short method calls, and makes the process intuitive.
 
 [Learn more about Amazon Cognito User Pools.](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-getting-started.html)
 
@@ -18,7 +18,7 @@ This library targets the .NET Standard 2.0 and introduces the following dependen
 
 # Getting Started
 
-To set up an AWS account and install the AWS SDK for .NET to take advantage of this library, see [Getting Started with the AWS SDK for .NET.](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-setup.html).
+To take advantage of this library, set up an AWS account and install the AWS SDK for .NET as described in [Getting Started with the AWS SDK for .NET](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-setup.html).
 
 While this library is in development, you will need to build it manually.
 
@@ -61,7 +61,7 @@ The **AuthenticationResult** property of the **AuthFlowResponse** object contain
 
 Continuing the authentication flow with challenges, such as with **NewPasswordRequired** and **Multi-Factor Authentication (MFA)**, is simpler as well. 
 
-The following code shows one way of checking the challenge type and get the appropriate responses for MFA and NewPasswordRequired challenges during the authentication flow based on the **AuthFlowResponse** retrieved earlier:
+The following code shows one way to check the challenge type and get appropriate responses for MFA and NewPasswordRequired challenges. This processing might be necessary as the authentication flow proceeds, depending on the properties of the **AuthFlowResponse** object that was retrieved earlier.
 
 ```csharp
 while (authResponse.AuthenticationResult == null)
@@ -99,16 +99,16 @@ while (authResponse.AuthenticationResult == null)
 
 [Learn more about Amazon Cognito User Pool Authentication Flow.](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html)
 
-## Authenticating with Multiple Forms of Authentication
+## Authenticating with Different Levels of Authentication
 
-Once a user is authenticated using the Amazon Cognito Authentication Extension Library, you can them allow them to access the specific AWS resources. 
+After a user is authenticated by using the Amazon Cognito Authentication Extension Library, you can then allow them to access specific AWS resources.
 
-This requires you to create an identity pool through the **Amazon Cognito Federated Identities** console.
+To allow users to access specific AWS resources, you must create an identity pool through the **Amazon Cognito Federated Identities** console.
 
-You can also specify different roles for both unauthenticated and authenticated users to be able to access different resources. 
-These roles can be changed in the IAM console where you can add or remove permissions in the “Action” field of the role’s attached policy. 
+You can also specify different roles for both unauthenticated and authenticated users so that they can access different resources. 
+These roles can be changed in the IAM console where you can add or remove permissions in the **Action** field of the role’s attached policy. Then, using the appropriate identity pool, user pool, and Amazon Cognito user information, calls can be made to different AWS resources.
 
-Then, using the appropriate identity pool, user pool, and Amazon Cognito user information, calls can be made to different AWS resources. The following shows a user authenticated with SRP accessing the developer’s different S3 buckets permitted by the associated identity pool’s role:
+The following code shows how a user, who was authenticated with SRP, can access various S3 buckets as permitted by the associated identity pool’s role.
 
 ```csharp
 using Amazon;
@@ -151,7 +151,7 @@ public async void GetS3BucketsAsync()
 
 ## Other Forms of Authentication
 
-In addition to SRP, NewPasswordRequired, and MFA, the Amazon Cognito Authentication Extension Library offers an easier authentication flow for:
+In addition to SRP, NewPasswordRequired, and MFA, the Amazon Cognito Authentication Extension Library offers an easier authentication flow for the following:
 
 - **Custom** – Begins with a call to StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest)
 - **RefreshToken** – Begins with a call to StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
@@ -176,10 +176,10 @@ environment and submit code.
 GitHub home for .NET development on AWS. You'll find libraries, tools, and resources to help you build .NET applications and services on AWS.
 
 [AWS Developer Center - Explore .NET on AWS](https://aws.amazon.com/developer/language/net/)  
-Find all the .NET code samples, step-by-step guides, videos, blog content, tools, and information about live events that you need in one place. 
+Find .NET code samples, step-by-step guides, videos, blog content, tools, and information about live events all in one place. 
 
 [AWS Developer Blog - .NET](https://aws.amazon.com/blogs/developer/category/programing-language/dot-net/)  
-Come see what .NET developers at AWS are up to!  Learn about new .NET software announcements, guides, and how-to's.
+Come and see what .NET developers at AWS are up to! Learn about new .NET software announcements, guides, and how-to's.
 
 [@awsfornet](https://twitter.com/awsfornet)  
 Follow us on twitter!
