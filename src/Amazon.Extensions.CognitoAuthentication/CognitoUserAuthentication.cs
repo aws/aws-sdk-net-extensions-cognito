@@ -173,12 +173,26 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// password required authentication challenge using an asynchronous call
         /// </summary>
         /// <param name="newPasswordRequest">RespondToNewPasswordRequiredRequest object containing the necessary 
+        /// parameters to respond to the current SMS MFA authentication challenge</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest)
+        {
+            var result = await RespondToNewPasswordRequiredAsync(newPasswordRequest, null).ConfigureAwait(false);
+            return result;
+        }
+
+        /// <summary>
+        /// Uses the properties of the RespondToNewPasswordRequiredRequest object to respond to the current new 
+        /// password required authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="newPasswordRequest">RespondToNewPasswordRequiredRequest object containing the necessary 
         /// <param name="requiredAttributes">Optional dictionnary of attributes that may be required by the user pool
         /// Each attribute key must be prefixed by "userAttributes."
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes = null)
+        public async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes)
         {
             var challengeResponses = new Dictionary<string, string>()
             {
