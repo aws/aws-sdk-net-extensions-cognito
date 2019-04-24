@@ -147,8 +147,7 @@ namespace CognitoAuthentication.UnitTests
                 + "8ySzho6e8vHxNodJX+xwCxRyKl6wbEdSEulWgm5WaUmsfySrNqLKassfrTdKLHyWUvjbWucEFzS0ddu+Q7j5RGaZ4MO7Qf1hN57WUE7ir"
                 + "wXBc9UoAWI3Sggb+oDDuVKN5PMF6cL+3/yfetGX0Wrh9tk34z5pizLmOgqOqkMW5yFDqw8/pRqQA4Qo+VrpHL1a4vANgmOHw98918pFiC"
                 + "G5lacOQn4FmA2QGWfNxU72qy6MLPnTgN/olShAFNFgckIn2F";
-            DateTime timestamp = TimeZoneInfo.ConvertTime(new DateTime(2017, 6, 15), TimeZoneInfo.Utc);
-            string timeStr = timestamp.ToString("ddd MMM d HH:mm:ss \"UTC\" yyyy", CultureInfo.InvariantCulture);
+            string timeStr = "Thu Jun 15 07:00:00 UTC 2017";
 
             byte[] bytes = new byte[1024];
             for (int i = bytes.Length - 1; i > 0; i--)
