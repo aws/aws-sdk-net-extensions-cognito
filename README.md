@@ -149,13 +149,42 @@ public async void GetS3BucketsAsync()
 }
 ```
 
+## Authenticating using a Refresh Token from a Previous Session
+
+Access and ID tokens provided by Cognito are only valid for one hour but the refresh token can be configured to be valid for much longer. Below is an example of how to retrieve new Access and ID tokens using a refresh token which is still valid.
+
+See [here](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-with-identity-providers.html) to learn more about using the tokens returned by Amazon Cognito.
+
+```csharp
+using Amazon;
+using Amazon.Runtime;
+using Amazon.CognitoIdentity;
+using Amazon.CognitoIdentityProvider;
+using Amazon.Extensions.CognitoAuthentication;
+
+public async void GetCredsFromRefreshAsync(string refreshToken)
+{
+    AmazonCognitoIdentityProviderClient provider = new AmazonCognitoIdentityProviderClient(new Amazon.Runtime.AnonymousAWSCredentials(), FallbackRegionFactory.GetRegionEndpoint());
+    CognitoUserPool userPool = new CognitoUserPool("poolID", "clientID", provider);
+
+    CognitoUser user = new CognitoUser("username", "clientID", userPool, provider);
+
+    user.SessionTokens = new CognitoUserSession(null, null, refreshToken, DateTime.Now, DateTime.Now.AddHours(1));
+
+    InitiateRefreshTokenAuthRequest refreshRequest = new InitiateRefreshTokenAuthRequest()
+    {
+        AuthFlowType = AuthFlowType.REFRESH_TOKEN_AUTH
+    };
+    
+    AuthFlowResponse authResponse = await user.StartWithRefreshTokenAuthAsync(refreshRequest).ConfigureAwait(false);
+}
+```
+
 ## Other Forms of Authentication
 
-In addition to SRP, NewPasswordRequired, and MFA, the Amazon Cognito Authentication Extension Library offers an easier authentication flow for the following:
+In addition to SRP, NewPasswordRequired, MFA and Refresh the Amazon Cognito Authentication Extension Library offers an easier authentication flow for the following:
 
 - **Custom** – Begins with a call to StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest)
-- **RefreshToken** – Begins with a call to StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
-- **RefreshTokenSRP** – Begins with a call to StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
 - **AdminNoSRP** – Begins with a call to StartWithAdminNoSrpAuth(InitiateAdminNoSrpAuthRequest adminAuthRequest)
 
 # Getting Help
