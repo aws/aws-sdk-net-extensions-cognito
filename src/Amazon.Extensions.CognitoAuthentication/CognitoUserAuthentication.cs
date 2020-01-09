@@ -55,11 +55,33 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             if (challengeResponsesValid && deviceKeyValid)
             {
-                challengeRequest.ChallengeResponses.Add(CognitoConstants.ChlgParamDeviceKey, Device.DeviceKey);
+                challengeRequest.ChallengeResponses[CognitoConstants.ChlgParamDeviceKey] = Device.DeviceKey;
             }
+
 
             RespondToAuthChallengeResponse verifierResponse =
                 await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
+
+            #region Device-level authentication
+            if (verifierResponse.AuthenticationResult == null)
+            {
+                if (verifierResponse == null || string.IsNullOrEmpty(srpRequest.DeviceGroupKey) || string.IsNullOrEmpty(srpRequest.DevicePass))
+                {
+                    throw new ArgumentNullException("Device Group Key and Device Pass required for authentication.", "srpRequest");
+                }
+
+                #region Device SRP Auth
+                var deviceAuthRequest = CreateDeviceSrpAuthRequest(verifierResponse, tupleAa);
+                var deviceAuthResponse = await Provider.RespondToAuthChallengeAsync(deviceAuthRequest).ConfigureAwait(false); 
+                #endregion
+
+                #region Device Password Verifier
+                var devicePasswordChallengeRequest = CreateDevicePasswordVerifierAuthRequest(deviceAuthResponse, srpRequest.DeviceGroupKey, srpRequest.DevicePass, tupleAa);
+                verifierResponse = await Provider.RespondToAuthChallengeAsync(devicePasswordChallengeRequest).ConfigureAwait(false);
+                #endregion
+
+            }
+            #endregion
 
             UpdateSessionIfAuthenticationComplete(verifierResponse.ChallengeName, verifierResponse.AuthenticationResult);
 
@@ -68,6 +90,89 @@ namespace Amazon.Extensions.CognitoAuthentication
                 verifierResponse.ChallengeName,
                 verifierResponse.ChallengeParameters,
                 new Dictionary<string, string>(verifierResponse.ResponseMetadata.Metadata));
+        }
+
+        private RespondToAuthChallengeRequest CreateDeviceSrpAuthRequest(RespondToAuthChallengeResponse challenge, Tuple<BigInteger, BigInteger> tupleAa)
+        {
+            
+            RespondToAuthChallengeRequest authChallengeRequest = new RespondToAuthChallengeRequest()
+            {
+                ChallengeName = "DEVICE_SRP_AUTH",
+                ClientId = ClientID,
+                Session = challenge.Session,
+                ChallengeResponses = new Dictionary<string, string>
+                {
+                    {CognitoConstants.ChlgParamUsername, Username},
+                    {CognitoConstants.ChlgParamDeviceKey, Device.DeviceKey},
+                    {CognitoConstants.ChlgParamSrpA, tupleAa.Item1.ToString("X") },
+                }
+
+            };
+            if (!string.IsNullOrEmpty(ClientSecret))
+            {
+                SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(Username, ClientID, ClientSecret);
+                authChallengeRequest.ChallengeResponses.Add(CognitoConstants.ChlgParamSecretHash, SecretHash);
+            }
+            return authChallengeRequest;
+        }
+
+
+        /// <summary>
+        /// Internal method which responds to the DEVICE_PASSWORD_VERIFIER challenge in SRP authentication
+        /// </summary>
+        /// <param name="challenge">Response from the InitiateAuth challenge</param>
+        /// <param name="devicePassword">Password for the CognitoDevice, needed for authentication</param>
+        /// <param name="deviceKeyGroup">Group Key for the CognitoDevice, needed for authentication</param>
+        /// <param name="tupleAa">Tuple of BigIntegers containing the A,a pair for the SRP protocol flow</param>
+        /// <returns>Returns the RespondToAuthChallengeRequest for an SRP authentication flow</returns>
+        private RespondToAuthChallengeRequest CreateDevicePasswordVerifierAuthRequest(RespondToAuthChallengeResponse challenge,
+                                                                                   string deviceKeyGroup,
+                                                                                   string devicePassword,
+                                                                                   Tuple<BigInteger, BigInteger> tupleAa)
+        {
+            string deviceKey = challenge.ChallengeParameters[CognitoConstants.ChlgParamDeviceKey];
+            string username = challenge.ChallengeParameters[CognitoConstants.ChlgParamUsername];
+            string secretBlock = challenge.ChallengeParameters[CognitoConstants.ChlgParamSecretBlock];
+            string salt = challenge.ChallengeParameters[CognitoConstants.ChlgParamSalt];
+            BigInteger srpb = BigIntegerExtensions.FromUnsignedLittleEndianHex(challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB]);
+
+            if ((srpb.TrueMod(AuthenticationHelper.N)).Equals(BigInteger.Zero))
+            {
+                throw new ArgumentException("SRP error, B mod N cannot be zero.", "challenge");
+            }
+
+            DateTime timestamp = DateTime.UtcNow;
+            string timeStr = timestamp.ToString("ddd MMM d HH:mm:ss \"UTC\" yyyy", CultureInfo.InvariantCulture);
+
+            var claimBytes = AuthenticationHelper.AuthenticateDevice(deviceKey, devicePassword, deviceKeyGroup, salt,
+                challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB], secretBlock, timeStr, tupleAa);
+
+
+            string claimB64 = Convert.ToBase64String(claimBytes);
+            Dictionary<string, string> srpAuthResponses = new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                {CognitoConstants.ChlgParamPassSecretBlock, secretBlock},
+                {CognitoConstants.ChlgParamPassSignature, claimB64},
+                {CognitoConstants.ChlgParamUsername, username },
+                {CognitoConstants.ChlgParamTimestamp, timeStr },
+                {CognitoConstants.ChlgParamDeviceKey, Device.DeviceKey }
+            };
+
+            if (!string.IsNullOrEmpty(ClientSecret))
+            {
+                SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(Username, ClientID, ClientSecret);
+                srpAuthResponses.Add(CognitoConstants.ChlgParamSecretHash, SecretHash);
+            }
+
+            RespondToAuthChallengeRequest authChallengeRequest = new RespondToAuthChallengeRequest()
+            {
+                ChallengeName = challenge.ChallengeName,
+                ClientId = ClientID,
+                Session = challenge.Session,
+                ChallengeResponses = srpAuthResponses
+            };
+
+            return authChallengeRequest;
         }
 
         /// <summary>
@@ -127,6 +232,40 @@ namespace Amazon.Extensions.CognitoAuthentication
                 authResponse.ChallengeName,
                 authResponse.ChallengeParameters,
                 new Dictionary<string, string>(authResponse.ResponseMetadata.Metadata));
+        }
+
+        public DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string deviceKey, string devicePass)
+        {
+            return AuthenticationHelper.GenerateDeviceVerifier(deviceGroupKey, deviceKey, devicePass);
+        }
+
+        public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt)
+        {
+            var request = new ConfirmDeviceRequest
+            {
+                AccessToken = accessToken,
+                DeviceKey = deviceKey,
+                DeviceName = deviceName,
+                DeviceSecretVerifierConfig = new DeviceSecretVerifierConfigType
+                {
+                    PasswordVerifier = passwordVerifier,
+                    Salt = salt
+                }
+            };
+
+            return await Provider.ConfirmDeviceAsync(request);
+        }
+
+        public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus)
+        {
+            var request = new UpdateDeviceStatusRequest
+            {
+                AccessToken = accessToken,
+                DeviceKey = deviceKey,
+                DeviceRememberedStatus = deviceRememberedStatus
+            };
+
+            return await Provider.UpdateDeviceStatusAsync(request);
         }
 
         /// <summary>

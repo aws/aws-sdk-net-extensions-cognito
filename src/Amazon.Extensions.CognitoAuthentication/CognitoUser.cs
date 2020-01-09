@@ -95,6 +95,8 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         private string PoolName { get; set; }
 
+       
+
         /// <summary>
         /// Creates an instance of CognitoUser
         /// </summary>

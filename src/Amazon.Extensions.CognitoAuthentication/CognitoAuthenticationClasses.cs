@@ -79,6 +79,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// The password for the corresponding CognitoUser.
         /// </summary>
         public string Password { get; set; }
+        public string DevicePass { get; set; }
+        public string DeviceVerifier { get; set; }
+        public string DeviceGroupKey { get; set; }
     }
 
     /// <summary>
