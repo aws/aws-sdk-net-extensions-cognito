@@ -58,7 +58,6 @@ namespace Amazon.Extensions.CognitoAuthentication
                 challengeRequest.ChallengeResponses[CognitoConstants.ChlgParamDeviceKey] = Device.DeviceKey;
             }
 
-
             RespondToAuthChallengeResponse verifierResponse =
                 await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
 
@@ -240,11 +239,27 @@ namespace Amazon.Extensions.CognitoAuthentication
                 new Dictionary<string, string>(authResponse.ResponseMetadata.Metadata));
         }
 
+        /// <summary>
+        /// Generates a DeviceSecretVerifierConfigType object for a device associated with a CognitoUser for SRP Authentication
+        /// </summary>
+        /// <param name="deviceGroupKey">The DeviceKey Group for the associated CognitoDevice</param>
+        /// <param name="deviceKey">The DeviceKey for the associated CognitoDevice</param>
+        /// <param name="devicePass">The random password for the associated CognitoDevice</param>
+        /// <returns></returns>
         public DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string deviceKey, string devicePass)
         {
             return AuthenticationHelper.GenerateDeviceVerifier(deviceGroupKey, deviceKey, devicePass);
         }
 
+        /// <summary>
+        /// Sends a confirmation request to Cognito for a new CognitoDevice
+        /// </summary>
+        /// <param name="accessToken">The user pool access token for from the InitiateAuth or other challenge response</param>
+        /// <param name="deviceKey">The device key for the associated CognitoDevice</param>
+        /// <param name="deviceName">The friendly name to be associated with the corresponding CognitoDevice</param>
+        /// <param name="passwordVerifier">The password verifier generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
+        /// <param name="salt">The salt generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
+        /// <returns></returns>
         public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt)
         {
             var request = new ConfirmDeviceRequest
@@ -262,6 +277,13 @@ namespace Amazon.Extensions.CognitoAuthentication
             return await Provider.ConfirmDeviceAsync(request);
         }
 
+        /// <summary>
+        /// Updates the remembered status for a given CognitoDevice
+        /// </summary>
+        /// <param name="accessToken">The user pool access token for from the InitiateAuth or other challenge response</param>
+        /// <param name="deviceKey">The device key for the associated CognitoDevice</param>
+        /// <param name="deviceRememberedStatus">The device remembered status for the associated CognitoDevice</param>
+        /// <returns></returns>
         public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus)
         {
             var request = new UpdateDeviceStatusRequest
