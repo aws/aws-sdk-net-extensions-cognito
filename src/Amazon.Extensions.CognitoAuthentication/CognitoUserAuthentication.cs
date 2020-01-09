@@ -92,6 +92,12 @@ namespace Amazon.Extensions.CognitoAuthentication
                 new Dictionary<string, string>(verifierResponse.ResponseMetadata.Metadata));
         }
 
+        /// <summary>
+        /// Internal method which responds to the DEVICE_SRP_AUTH challenge in SRP authentication
+        /// </summary>
+        /// <param name="challenge">The response from the PASSWORD_VERIFIER challenge</param>
+        /// <param name="tupleAa">Tuple of BigIntegers containing the A,a pair for the SRP protocol flow</param>
+        /// <returns></returns>
         private RespondToAuthChallengeRequest CreateDeviceSrpAuthRequest(RespondToAuthChallengeResponse challenge, Tuple<BigInteger, BigInteger> tupleAa)
         {
             
