@@ -169,6 +169,45 @@ namespace Amazon.Extensions.CognitoAuthentication
         }
 
         /// <summary>
+        /// Uses the properties of the RespondToSoftwareTokenMfaRequest object to respond to the current MFA 
+        /// authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="softwareTokenMfaRequest">RespondToSoftwareTokenMfaRequest object containing the necessary parameters to
+        /// respond to the current SOFTWARE TOKEN MFA authentication challenge</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public async Task<AuthFlowResponse> RespondToSoftwareTokenMfaAuthAsync(RespondToSoftwareTokenMfaRequest softwareTokenMfaRequest)
+        {
+            RespondToAuthChallengeRequest challengeRequest = new RespondToAuthChallengeRequest
+            {
+                ChallengeResponses = new Dictionary<string, string>
+                    {
+                        { CognitoConstants.ChlgParamSoftwareTokenMfaCode, softwareTokenMfaRequest.MfaCode},
+                        { CognitoConstants.ChlgParamUsername, Username }
+                    },
+                Session = softwareTokenMfaRequest.SessionID,
+                ClientId = ClientID,
+                ChallengeName = ChallengeNameType.SOFTWARE_TOKEN_MFA
+            };
+
+            if (!string.IsNullOrEmpty(SecretHash))
+            {
+                challengeRequest.ChallengeResponses.Add(CognitoConstants.ChlgParamSecretHash, SecretHash);
+            }
+
+            RespondToAuthChallengeResponse challengeResponse =
+                await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
+
+            UpdateSessionIfAuthenticationComplete(challengeResponse.ChallengeName, challengeResponse.AuthenticationResult);
+
+            return new AuthFlowResponse(challengeResponse.Session,
+                challengeResponse.AuthenticationResult,
+                challengeResponse.ChallengeName,
+                challengeResponse.ChallengeParameters,
+                new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata));
+        }
+
+        /// <summary>
         /// Uses the properties of the RespondToNewPasswordRequiredRequest object to respond to the current new 
         /// password required authentication challenge using an asynchronous call
         /// </summary>

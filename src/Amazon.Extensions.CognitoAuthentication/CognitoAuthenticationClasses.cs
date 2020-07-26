@@ -127,6 +127,22 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
+    /// Class containing the necessary properities to respond to an SOFTWARE TOKEN MFA authentication challenge
+    /// </summary>
+    public class RespondToSoftwareTokenMfaRequest
+    {
+        /// <summary>
+        /// The session ID for the current authentication flow.
+        /// </summary>
+        public string SessionID { get; set; }
+
+        /// <summary>
+        /// The MFA verification code needed to authenticate the user.
+        /// </summary>
+        public string MfaCode { get; set; }
+    }
+
+    /// <summary>
     /// Class containing the necessary properities to respond to a new password required authentication challenge
     /// </summary>
     public class RespondToNewPasswordRequiredRequest

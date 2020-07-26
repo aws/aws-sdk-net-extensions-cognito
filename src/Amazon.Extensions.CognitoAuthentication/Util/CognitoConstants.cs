@@ -35,6 +35,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         public static readonly string ChlgParamDeliveryMed = "CODE_DELIVERY_DELIVERY_MEDIUM";
 
         public static readonly string ChlgParamSmsMfaCode = "SMS_MFA_CODE";
+        public static readonly string ChlgParamSoftwareTokenMfaCode = "SOFTWARE_TOKEN_MFA_CODE";
         public static readonly string ChlgParamDeviceKey = "DEVICE_KEY";
 
         public static readonly string ChlgParamUserAttrs = "userAttributes";
