@@ -139,16 +139,29 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// if one exists</returns>
         public async Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest)
         {
+            return await RespondToMfaAuthAsync(smsMfaRequest).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Uses the properties of the RespondToSmsMfaRequest object to respond to the current MFA 
+        /// authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="smsMfaRequest">RespondToSmsMfaRequest object containing the necessary parameters to
+        /// respond to the current MFA authentication challenge</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public async Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest)
+        {
             RespondToAuthChallengeRequest challengeRequest = new RespondToAuthChallengeRequest
             {
                 ChallengeResponses = new Dictionary<string, string>
                     {
-                        { CognitoConstants.ChlgParamSmsMfaCode, smsMfaRequest.MfaCode},
+                        { ChallengeParamCodeType(mfaRequest.ChallengeType), mfaRequest.MfaCode},
                         { CognitoConstants.ChlgParamUsername, Username }
                     },
-                Session = smsMfaRequest.SessionID,
+                Session = mfaRequest.SessionID,
                 ClientId = ClientID,
-                ChallengeName = ChallengeNameType.SMS_MFA
+                ChallengeName = mfaRequest.ChallengeType
             };
 
             if (!string.IsNullOrEmpty(SecretHash))
@@ -166,6 +179,14 @@ namespace Amazon.Extensions.CognitoAuthentication
                 challengeResponse.ChallengeName,
                 challengeResponse.ChallengeParameters,
                 new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata));
+        }    
+        
+        private string ChallengeParamCodeType(ChallengeNameType challengeType)
+        {
+            if (challengeType == ChallengeNameType.SMS_MFA) return CognitoConstants.ChlgParamSmsMfaCode;
+            if (challengeType == ChallengeNameType.SOFTWARE_TOKEN_MFA) return CognitoConstants.ChlgParamSoftwareTokenMfaCode;
+            
+            return null;
         }
 
         /// <summary>

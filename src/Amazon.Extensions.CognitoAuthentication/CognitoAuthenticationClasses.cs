@@ -111,19 +111,35 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
-    /// Class containing the necessary properities to respond to an SMS MFA authentication challenge
+    /// Class containing the necessary properities to respond to an MFA authentication challenge
     /// </summary>
-    public class RespondToSmsMfaRequest
+    public class RespondToMfaRequest
     {
         /// <summary>
         /// The session ID for the current authentication flow.
         /// </summary>
-        public string SessionID { get; set; }
+        public virtual string SessionID { get; set; }
 
         /// <summary>
         /// The MFA verification code needed to authenticate the user.
         /// </summary>
-        public string MfaCode { get; set; }
+        public virtual string MfaCode { get; set; }
+
+        /// <summary>
+        /// The MFA verification code needed to authenticate the user.
+        /// </summary>
+        public virtual ChallengeNameType ChallengeType { get; set; }        
+    }
+
+    /// <summary>
+    /// Class containing the necessary properities to respond to an MFA authentication challenge
+    /// </summary>
+    public class RespondToSmsMfaRequest : RespondToMfaRequest
+    {
+        /// <summary>
+        /// The MFA verification code needed to authenticate the user.
+        /// </summary>
+        public virtual ChallengeNameType ChallengeType { get { return ChallengeNameType.SMS_MFA; } set { } }
     }
 
     /// <summary>
