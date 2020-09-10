@@ -128,7 +128,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// The MFA verification code needed to authenticate the user.
         /// </summary>
-        public virtual ChallengeNameType ChallengeType { get; set; }        
+        public virtual ChallengeNameType ChallengeNameType { get; set; }        
     }
 
     /// <summary>
