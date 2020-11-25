@@ -16,6 +16,7 @@
 using Amazon.CognitoIdentityProvider.Model;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
@@ -162,29 +163,27 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// <param name="deviceKey">The device key of the CognitoDevice</param>
         /// <param name="devicePass">A random password for the CognitoDevice (used in the future for logging in via this device)</param>
         /// <returns></returns>
-        public static DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string deviceKey, string devicePass)
+        public static DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string devicePass, string username)
         {
-
             byte[] userIdContent = CognitoAuthHelper.CombineBytes(new byte[][] {
                 Encoding.UTF8.GetBytes(deviceGroupKey),
-                Encoding.UTF8.GetBytes(deviceKey),
+                Encoding.UTF8.GetBytes(username),
                 Encoding.UTF8.GetBytes(":"),
                 Encoding.UTF8.GetBytes(devicePass)
             });
 
             byte[] userIdHash = CognitoAuthHelper.Sha256.ComputeHash(userIdContent);
-
-            var randomBytes = new byte[16];
-            new Random().NextBytes(randomBytes);
-            var salt = BigInteger.Parse(BitConverter.ToString(randomBytes).Replace("-", string.Empty), NumberStyles.HexNumber);
-            var saltBytes = salt.ToBigEndianByteArray();
+            
+            // padding salt with 0 to avoid negative salt or password verifier error
+            byte[] saltBytes = new byte[17];
+            RandomNumberGenerator.Create().GetBytes(saltBytes, 1, 16);
 
             byte[] xBytes = CognitoAuthHelper.CombineBytes(new byte[][] { saltBytes, userIdHash });
             byte[] xDigest = CognitoAuthHelper.Sha256.ComputeHash(xBytes);
             BigInteger x = BigIntegerExtensions.FromUnsignedBigEndian(xDigest);
 
             var v = BigInteger.ModPow(g, x, N);
-            var vBytes = v.ToBigEndianByteArray();
+            byte[] vBytes = v.ToBigEndianByteArray();
 
             return new DeviceSecretVerifierConfigType
             {

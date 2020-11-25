@@ -246,9 +246,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="deviceKey">The DeviceKey for the associated CognitoDevice</param>
         /// <param name="devicePass">The random password for the associated CognitoDevice</param>
         /// <returns></returns>
-        public DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string deviceKey, string devicePass)
+        public DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string devicePass, string username)
         {
-            return AuthenticationHelper.GenerateDeviceVerifier(deviceGroupKey, deviceKey, devicePass);
+            return AuthenticationHelper.GenerateDeviceVerifier(deviceGroupKey, devicePass, username);
         }
 
         /// <summary>
