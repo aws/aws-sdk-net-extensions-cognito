@@ -64,7 +64,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             #region Device-level authentication
             if (verifierResponse.AuthenticationResult == null)
             {
-                if (verifierResponse == null || string.IsNullOrEmpty(srpRequest.DeviceGroupKey) || string.IsNullOrEmpty(srpRequest.DevicePass))
+                if (string.IsNullOrEmpty(srpRequest.DeviceGroupKey) || string.IsNullOrEmpty(srpRequest.DevicePass))
                 {
                     throw new ArgumentNullException("Device Group Key and Device Pass required for authentication.", "srpRequest");
                 }
@@ -126,8 +126,8 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Internal method which responds to the DEVICE_PASSWORD_VERIFIER challenge in SRP authentication
         /// </summary>
         /// <param name="challenge">Response from the InitiateAuth challenge</param>
-        /// <param name="devicePassword">Password for the CognitoDevice, needed for authentication</param>
         /// <param name="deviceKeyGroup">Group Key for the CognitoDevice, needed for authentication</param>
+        /// <param name="devicePassword">Password for the CognitoDevice, needed for authentication</param>
         /// <param name="tupleAa">Tuple of BigIntegers containing the A,a pair for the SRP protocol flow</param>
         /// <returns>Returns the RespondToAuthChallengeRequest for an SRP authentication flow</returns>
         private RespondToAuthChallengeRequest CreateDevicePasswordVerifierAuthRequest(RespondToAuthChallengeResponse challenge,
@@ -146,8 +146,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 throw new ArgumentException("SRP error, B mod N cannot be zero.", "challenge");
             }
 
-            DateTime timestamp = DateTime.UtcNow;
-            string timeStr = timestamp.ToString("ddd MMM d HH:mm:ss \"UTC\" yyyy", CultureInfo.InvariantCulture);
+            string timeStr = DateTime.UtcNow.ToString("ddd MMM d HH:mm:ss \"UTC\" yyyy", CultureInfo.InvariantCulture);
 
             var claimBytes = AuthenticationHelper.AuthenticateDevice(deviceKey, devicePassword, deviceKeyGroup, salt,
                 challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB], secretBlock, timeStr, tupleAa);

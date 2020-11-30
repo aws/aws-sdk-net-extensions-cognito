@@ -76,7 +76,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             while(bytesRemaining > 0)
             {
-                currentBlock = CognitoAuthHelper.CombineBytes(new byte[][] { hashedBlock, info, new byte[] { currentByte } });
+                currentBlock = CognitoAuthHelper.CombineBytes(hashedBlock, info, new byte[] { currentByte });
                 hashedBlock = HmacSha256.ComputeHash(currentBlock);
 
                 Buffer.BlockCopy(hashedBlock, 0, outputKeyMaterial, length-bytesRemaining, Math.Min(hashedBlock.Length, bytesRemaining));

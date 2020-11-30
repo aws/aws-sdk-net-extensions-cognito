@@ -70,7 +70,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// </summary>
         /// <param name="values">An array of byte[] to be combined</param>
         /// <returns>Returns a byte array which combines all of the byte[] in values</returns>
-        internal static byte[] CombineBytes(byte[][] values)
+        internal static byte[] CombineBytes(params byte[][] values)
         {
             int combinedLength = 0;
             byte[] returnBytes;
