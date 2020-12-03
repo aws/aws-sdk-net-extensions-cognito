@@ -166,6 +166,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// <returns></returns>
         public static DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string devicePass, string username)
         {
+            Random r = new Random();
             byte[] userIdContent = CognitoAuthHelper.CombineBytes(
                 Encoding.UTF8.GetBytes(deviceGroupKey),
                 Encoding.UTF8.GetBytes(username),
@@ -175,10 +176,11 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
 
             byte[] userIdHash = CognitoAuthHelper.Sha256.ComputeHash(userIdContent);
             
-            // padding salt with 0 to avoid negative salt or password verifier error
-            byte[] saltBytes = new byte[17];
-            RandomNumberGenerator.Create().GetBytes(saltBytes, 1, 16);
-
+            byte[] saltBytes = new byte[16];
+            RandomNumberGenerator.Create().GetBytes(saltBytes);
+            // setting the initial byte to 0-127 to avoid negative salt or password verifier error
+            saltBytes[0] = (byte) r.Next(sbyte.MaxValue);
+            
             byte[] xBytes = CognitoAuthHelper.CombineBytes(saltBytes, userIdHash);
             byte[] xDigest = CognitoAuthHelper.Sha256.ComputeHash(xBytes);
             BigInteger x = BigIntegerExtensions.FromUnsignedBigEndian(xDigest);
