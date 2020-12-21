@@ -14,7 +14,7 @@
     <PackageTags>AWS;Amazon;aws-sdk-v3;Cognito</PackageTags>
     <PackageProjectUrl>https://github.com/aws/aws-sdk-net-extensions-cognito/</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageIconUrl>https://sdk-for-net.amazonwebservices.com/images/AWSLogo128x128.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/aws/aws-sdk-net-extensions-cognito/</RepositoryUrl>
     <Company>Amazon Web Services</Company>
     <SignAssembly>true</SignAssembly>
@@ -52,5 +52,6 @@
 
   <ItemGroup>
     <None Include="../../LICENSE" Pack="true" PackagePath=""/>
+    <None Include="../../icon.png" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
