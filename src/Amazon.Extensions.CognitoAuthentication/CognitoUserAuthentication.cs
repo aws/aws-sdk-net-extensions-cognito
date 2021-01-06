@@ -60,9 +60,10 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             RespondToAuthChallengeResponse verifierResponse =
                 await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
-
+            var isDeviceAuthRequest = verifierResponse.AuthenticationResult == null && (!string.IsNullOrEmpty(srpRequest.DeviceGroupKey)
+                || !string.IsNullOrEmpty(srpRequest.DevicePass));
             #region Device-level authentication
-            if (verifierResponse.AuthenticationResult == null)
+            if (isDeviceAuthRequest)
             {
                 if (string.IsNullOrEmpty(srpRequest.DeviceGroupKey) || string.IsNullOrEmpty(srpRequest.DevicePass))
                 {
