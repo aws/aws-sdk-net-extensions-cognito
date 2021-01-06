@@ -414,6 +414,10 @@ namespace Amazon.Extensions.CognitoAuthentication
             InitiateAuthResponse initiateResponse =
                 await Provider.InitiateAuthAsync(initiateAuthRequest).ConfigureAwait(false);
 
+            // Service does not return the refresh token. Hence, set it to the old refresh token that was used.
+            if (string.IsNullOrEmpty(initiateResponse.ChallengeName) && string.IsNullOrEmpty(initiateResponse.AuthenticationResult.RefreshToken))
+                initiateResponse.AuthenticationResult.RefreshToken = initiateAuthRequest.AuthParameters[CognitoConstants.ChlgParamRefreshToken];
+
             UpdateSessionIfAuthenticationComplete(initiateResponse.ChallengeName, initiateResponse.AuthenticationResult);
 
             return new AuthFlowResponse(initiateResponse.Session,
