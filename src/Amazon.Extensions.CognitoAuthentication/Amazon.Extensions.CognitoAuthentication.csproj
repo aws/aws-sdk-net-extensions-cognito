@@ -5,7 +5,7 @@
     <AssemblyName>Amazon.Extensions.CognitoAuthentication</AssemblyName>
     <RootNamespace>Amazon.Extensions.CognitoAuthentication</RootNamespace>
     <PackageId>Amazon.Extensions.CognitoAuthentication</PackageId>
-    <PackageVersion>2.0.2</PackageVersion>
+    <PackageVersion>2.0.3</PackageVersion>
     <Title>Amazon Cognito Authentication Extension Library</Title>
     <Product>Amazon.Extensions.CognitoAuthentication</Product>
     <Authors>Amazon Web Services</Authors>
@@ -29,7 +29,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <DelaySign>false</DelaySign>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.0.2</Version>
+    <Version>2.0.3</Version>
   </PropertyGroup>
 
   <Choose>

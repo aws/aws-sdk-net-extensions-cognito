@@ -13,6 +13,11 @@
  * permissions and limitations under the License.
  */
 
+/* The following knowledge base was used as guide for the implementation 
+ * of some of the below Cognito challenges.
+ * https://aws.amazon.com/premiumsupport/knowledge-center/cognito-user-pool-remembered-devices/?nc1=h_ls
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -60,9 +65,10 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             RespondToAuthChallengeResponse verifierResponse =
                 await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
-
+            var isDeviceAuthRequest = verifierResponse.AuthenticationResult == null && (!string.IsNullOrEmpty(srpRequest.DeviceGroupKey)
+                || !string.IsNullOrEmpty(srpRequest.DevicePass));
             #region Device-level authentication
-            if (verifierResponse.AuthenticationResult == null)
+            if (isDeviceAuthRequest)
             {
                 if (string.IsNullOrEmpty(srpRequest.DeviceGroupKey) || string.IsNullOrEmpty(srpRequest.DevicePass))
                 {
@@ -148,7 +154,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             string timeStr = DateTime.UtcNow.ToString("ddd MMM d HH:mm:ss \"UTC\" yyyy", CultureInfo.InvariantCulture);
 
-            var claimBytes = AuthenticationHelper.AuthenticateDevice(deviceKey, devicePassword, deviceKeyGroup, salt,
+            var claimBytes = AuthenticationHelper.AuthenticateDevice(username, deviceKey, devicePassword, deviceKeyGroup, salt,
                 challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB], secretBlock, timeStr, tupleAa);
 
 
