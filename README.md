@@ -210,7 +210,7 @@ Find .NET code samples, step-by-step guides, videos, blog content, tools, and in
 [AWS Developer Blog - .NET](https://aws.amazon.com/blogs/developer/category/programing-language/dot-net/)  
 Come and see what .NET developers at AWS are up to! Learn about new .NET software announcements, guides, and how-to's.
 
-[@awsfornet](https://twitter.com/awsfornet)  
+[@dotnetonaws](https://twitter.com/dotnetonaws)
 Follow us on twitter!
 
 # License
