@@ -126,7 +126,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         public virtual string MfaCode { get; set; }
 
         /// <summary>
-        /// The MFA verification code needed to authenticate the user.
+        /// The challenge name type for the current authentication flow.
         /// </summary>
         public virtual ChallengeNameType ChallengeNameType { get; set; }        
     }
@@ -137,9 +137,9 @@ namespace Amazon.Extensions.CognitoAuthentication
     public class RespondToSmsMfaRequest : RespondToMfaRequest
     {
         /// <summary>
-        /// The MFA verification code needed to authenticate the user.
+        /// The challenge name type for the current authentication flow.
         /// </summary>
-        public virtual ChallengeNameType ChallengeType { get { return ChallengeNameType.SMS_MFA; } set { } }
+        public override ChallengeNameType ChallengeNameType { get { return ChallengeNameType.SMS_MFA; } set { } }
     }
 
     /// <summary>
