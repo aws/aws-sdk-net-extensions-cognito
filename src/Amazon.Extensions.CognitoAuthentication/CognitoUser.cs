@@ -163,7 +163,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="confirmationCode">Confirmation code sent to user via email or SMS</param>
         /// <param name="forcedAliasCreation">Boolean specifying whether forced alias creation is desired</param>
-        public Task ConfirmSignUpAsync(string confirmationCode, bool forcedAliasCreation)
+        public virtual Task ConfirmSignUpAsync(string confirmationCode, bool forcedAliasCreation)
         {
             ConfirmSignUpRequest confirmRequest = CreateConfirmSignUpRequest(confirmationCode, forcedAliasCreation);
 
@@ -174,7 +174,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Request to resend registration confirmation code for a user using an asynchronous call
         /// </summary>
         /// <returns>Returns the delivery details for the confirmation code request</returns>
-        public Task ResendConfirmationCodeAsync()
+        public virtual Task ResendConfirmationCodeAsync()
         {
             ResendConfirmationCodeRequest resendRequest = CreateResendConfirmationCodeRequest();
 
@@ -185,7 +185,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Allows the user to reset their password using an asynchronous call. Should be used in 
         /// conjunction with the ConfirmPasswordAsync method 
         /// </summary>
-        public Task ForgotPasswordAsync()
+        public virtual Task ForgotPasswordAsync()
         {
             ForgotPasswordRequest forgotPassRequest = CreateForgotPasswordRequest();
 
@@ -198,7 +198,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="confirmationCode">The confirmation code sent to the suer</param>
         /// <param name="newPassword">The new desired password for the user</param>
-        public Task ConfirmForgotPasswordAsync(string confirmationCode, string newPassword)
+        public virtual Task ConfirmForgotPasswordAsync(string confirmationCode, string newPassword)
         {
             ConfirmForgotPasswordRequest confirmResetPassRequest =
                 CreateConfirmPasswordRequest(confirmationCode, newPassword);
@@ -212,7 +212,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="oldPass">The user's old password</param>
         /// <param name="newPass">The desired new password</param>
-        public Task ChangePasswordAsync(string oldPass, string newPass)
+        public virtual Task ChangePasswordAsync(string oldPass, string newPass)
         {
             ChangePasswordRequest changePassRequest = CreateChangePasswordRequest(oldPass, newPass);
 
@@ -223,7 +223,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Gets the details for the current user using an asynchronous call
         /// </summary>
         /// <returns>Returns a tuple containing the user attributes and settings, in that order</returns>
-        public Task<GetUserResponse> GetUserDetailsAsync()
+        public virtual Task<GetUserResponse> GetUserDetailsAsync()
         {
             EnsureUserAuthenticated();
 
@@ -242,7 +242,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="medium">Name of the attribute the verification code is being sent to.
         /// Should be either email or phone_number.</param>
         /// <returns>Returns the delivery details for the attribute verification code request</returns>
-        public Task GetAttributeVerificationCodeAsync(string medium)
+        public virtual Task GetAttributeVerificationCodeAsync(string medium)
         {
             GetUserAttributeVerificationCodeRequest getAttributeCodeRequest =
                     CreateGetUserAttributeVerificationCodeRequest(medium);
@@ -253,7 +253,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// Sign-out from all devices associated with this user using an asynchronous call
         /// </summary>
-        public Task GlobalSignOutAsync()
+        public virtual Task GlobalSignOutAsync()
         {
             EnsureUserAuthenticated();
 
@@ -269,7 +269,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// Deletes the current user using an asynchronous call
         /// </summary>
-        public Task DeleteUserAsync()
+        public virtual Task DeleteUserAsync()
         {
             EnsureUserAuthenticated();
 
@@ -286,7 +286,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="attributeName">Attribute to be verified. Should either be email or phone_number</param>
         /// <param name="verificationCode">The verification code for the attribute being verified</param>
-        public Task VerifyAttributeAsync(string attributeName, string verificationCode)
+        public virtual Task VerifyAttributeAsync(string attributeName, string verificationCode)
         {
             VerifyUserAttributeRequest verifyUserAttributeRequest =
                 CreateVerifyUserAttributeRequest(attributeName, verificationCode);
@@ -299,7 +299,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// using an asynchronous call
         /// </summary>
         /// <param name="attributes">The attributes to be updated</param>
-        public async Task UpdateAttributesAsync(IDictionary<string, string> attributes)
+        public virtual async Task UpdateAttributesAsync(IDictionary<string, string> attributes)
         {
             UpdateUserAttributesRequest updateUserAttributesRequest =
                 CreateUpdateUserAttributesRequest(attributes);
@@ -318,7 +318,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// an asynchronous call
         /// </summary>
         /// <param name="attributeNamesToDelete">List of attributes to delete</param>
-        public async Task DeleteAttributesAsync(IList<string> attributeNamesToDelete)
+        public virtual async Task DeleteAttributesAsync(IList<string> attributeNamesToDelete)
         {
             DeleteUserAttributesRequest deleteUserAttributesRequest =
                 CreateDeleteUserAttributesRequest(attributeNamesToDelete);
@@ -340,7 +340,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// using an asynchronous call
         /// </summary>
         /// <param name="userSettings">Dictionary for the user MFA settings of the form [attribute, delivery medium]</param>
-        public async Task SetUserSettingsAsync(IDictionary<string, string> userSettings)
+        public virtual async Task SetUserSettingsAsync(IDictionary<string, string> userSettings)
         {
             SetUserSettingsRequest setUserSettingsRequest = CreateSetUserSettingsRequest(userSettings);
 
@@ -359,7 +359,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="limit">Maxmimum number of devices to be returned in this call</param>
         /// <param name="paginationToken">Token to continue earlier search</param>
         /// <returns>Returns a list of CognitoDevices associated with this user</returns>
-        public async Task<List<CognitoDevice>> ListDevicesAsync(int limit, string paginationToken)
+        public virtual async Task<List<CognitoDevice>> ListDevicesAsync(int limit, string paginationToken)
         {
             ListDevicesRequest listDevicesRequest = CreateListDevicesRequest(limit, paginationToken);
             ListDevicesResponse listDevicesReponse = await Provider.ListDevicesAsync(listDevicesRequest).ConfigureAwait(false);
