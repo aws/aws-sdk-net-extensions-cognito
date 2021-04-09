@@ -169,7 +169,7 @@ public async void GetCredsFromRefreshAsync(string refreshToken)
 
     CognitoUser user = new CognitoUser("username", "clientID", userPool, provider);
 
-    user.SessionTokens = new CognitoUserSession(null, null, refreshToken, DateTime.Now, DateTime.Now.AddHours(1));
+    user.SessionTokens = new CognitoUserSession(null, null, refreshToken, DateTime.UtcNow, DateTime.UtcNow.AddHours(1));
 
     InitiateRefreshTokenAuthRequest refreshRequest = new InitiateRefreshTokenAuthRequest()
     {
