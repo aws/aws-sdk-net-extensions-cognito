@@ -71,7 +71,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 
             CreateUserPoolRequest createPoolRequest = new CreateUserPoolRequest
             {
-                PoolName = "testPool_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                PoolName = "testPool_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
                 Policies = passwordPolicy,
                 Schema = requiredAttributes,
                 AdminCreateUserConfig = adminCreateUser,
@@ -88,7 +88,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 
             CreateUserPoolClientRequest clientRequest = new CreateUserPoolClientRequest()
             {
-                ClientName = "App_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                ClientName = "App_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
                 UserPoolId = userPoolCreated.Id,
                 GenerateSecret = false,
 

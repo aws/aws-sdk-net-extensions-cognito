@@ -480,7 +480,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             string idToken = authResult.IdToken;
             string accessToken = authResult.AccessToken;
             string refreshToken;
-            DateTime currentTime = DateTime.Now;
+            DateTime currentTime = DateTime.UtcNow;
 
             if (!string.IsNullOrEmpty(refreshTokenOverride))
             {

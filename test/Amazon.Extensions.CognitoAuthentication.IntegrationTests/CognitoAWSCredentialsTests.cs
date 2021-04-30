@@ -65,7 +65,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                     {
                         new CognitoIdentityProviderInfo() { ProviderName = providerName, ClientId = user.ClientID}
                     },
-                    IdentityPoolName = "TestIdentityPool" + DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                    IdentityPoolName = "TestIdentityPool" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
 
                 }).ConfigureAwait(false);
             identityPoolId = poolResponse.IdentityPoolId;
@@ -74,7 +74,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
             managementClient = new AmazonIdentityManagementServiceClient(clientCredentials, clientRegion);
             CreateRoleResponse roleResponse = managementClient.CreateRoleAsync(new CreateRoleRequest()
             {
-                RoleName = "_TestRole_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                RoleName = "_TestRole_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
                 AssumeRolePolicyDocument = "{\"Version\": \"2012-10-17\",\"Statement\": [{\"Effect" +
                 "\": \"Allow\",\"Principal\": {\"Federated\": \"cognito-identity.amazonaws.com\"}," +
                 "\"Action\": \"sts:AssumeRoleWithWebIdentity\"}]}"
@@ -87,7 +87,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                 PolicyDocument = "{\"Version\": \"2012-10-17\",\"Statement\": " +
                 "[{\"Effect\": \"Allow\",\"Action\": [\"mobileanalytics:PutEvents\",\"cog" +
                 "nito-sync:*\",\"cognito-identity:*\",\"s3:*\"],\"Resource\": [\"*\"]}]}",
-                PolicyName = "_Cognito_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                PolicyName = "_Cognito_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
             }).Result;
             policyArn = policyResponse.Policy.Arn;
 
