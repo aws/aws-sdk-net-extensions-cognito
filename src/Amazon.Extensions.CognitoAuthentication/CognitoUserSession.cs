@@ -73,7 +73,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <returns>Returns a boolean whether the user's tokens are still valid</returns>
         public bool IsValid()
         {
-            DateTime currentTimeStamp = DateTime.Now;
+            DateTime currentTimeStamp = DateTime.UtcNow;
 
             return (currentTimeStamp.CompareTo(ExpirationTime) < 0);
         }

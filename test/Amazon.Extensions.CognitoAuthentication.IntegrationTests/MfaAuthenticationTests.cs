@@ -115,7 +115,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             {
                 CreateRoleResponse roleResponse = managementClient.CreateRoleAsync(new CreateRoleRequest()
                 {
-                    RoleName = "TestRole_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                    RoleName = "TestRole_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
                     AssumeRolePolicyDocument = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"\",\"Effect\":\"Allow" +
                     "\",\"Principal\":{\"Service\":\"cognito-idp.amazonaws.com\"},\"Action\":\"sts:AssumeRole\",\"Condition" +
                     "\":{\"StringEquals\":{\"sts:ExternalId\":\"8327d096-57c0-4fb7-ad24-62ea8fc692c0\"}}}]}"
@@ -129,7 +129,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 {
                     PolicyDocument = "{\"Version\": \"2012-10-17\",\"Statement\": [{\"Effect\": \"Allow\",\"Action" +
                     "\": [\"sns:publish\"],\"Resource\": [\"*\"]}]}",
-                    PolicyName = "Cognito_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                    PolicyName = "Cognito_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
                 }).Result;
 
                 policyName = createPolicyResponse.Policy.PolicyName;
@@ -145,7 +145,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             //Create user pool and client
             CreateUserPoolRequest createPoolRequest = new CreateUserPoolRequest
             {
-                PoolName = "mfaTestPool_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"),
+                PoolName = "mfaTestPool_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
                 Policies = passwordPolicy,
                 Schema = requiredAttributes,
                 AdminCreateUserConfig = adminCreateUser,
