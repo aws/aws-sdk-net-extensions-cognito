@@ -585,8 +585,6 @@ namespace Amazon.Extensions.CognitoAuthentication
 
         private InitiateAuthRequest CreateRefreshTokenAuthRequest(AuthFlowType authFlowType)
         {
-            EnsureUserAuthenticated();
-
             if (authFlowType != AuthFlowType.REFRESH_TOKEN && authFlowType != AuthFlowType.REFRESH_TOKEN_AUTH)
             {
                 throw new ArgumentException("authFlowType must be either \"REFRESH_TOKEN\" or \"REFRESH_TOKEN_AUTH\"", "authFlowType");
