@@ -63,8 +63,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             this.IdToken = idToken;
             this.AccessToken = accessToken;
             this.RefreshToken = refreshToken;
-            this.IssuedTime = issuedTime;
-            this.ExpirationTime = expirationTime;
+            this.IssuedTime = issuedTime.ToUniversalTime();
+            this.ExpirationTime = expirationTime.ToUniversalTime();
         }
 
         /// <summary>
