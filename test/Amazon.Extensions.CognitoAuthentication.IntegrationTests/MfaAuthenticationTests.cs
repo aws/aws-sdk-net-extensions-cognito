@@ -161,6 +161,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             //Build in buffer time for role/policy to be created
             CreateUserPoolResponse createPoolResponse = null;
             string bufferExMsg = "Role does not have a trust relationship allowing Cognito to assume the role";
+            string bufferExMsgSNSPublish = "Role does not have permission to publish with SNS";
             while (true)
             {
                 try
@@ -168,16 +169,9 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                     createPoolResponse = provider.CreateUserPoolAsync(createPoolRequest).Result;
                     break;
                 }
-                catch(Exception ex)
+                catch (Exception ex) when (ex.InnerException != null && (bufferExMsg.Equals(ex.InnerException.Message) || bufferExMsgSNSPublish.Equals(ex.InnerException.Message)))
                 {
-                    if (string.Equals(bufferExMsg, ex.InnerException.Message))
-                    {
-                        System.Threading.Thread.Sleep(3000);
-                    }
-                    else
-                    {
-                        throw ex;
-                    }
+                    System.Threading.Thread.Sleep(3000);
                 }
              }
 

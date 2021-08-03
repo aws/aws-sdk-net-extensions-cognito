@@ -109,7 +109,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                     { "unauthenticated", roleResponse.Role.Arn }
                 },
             }).ConfigureAwait(false);
-
+            
             //Create and test credentials
             CognitoAWSCredentials credentials = user.GetCognitoAWSCredentials(identityPoolId, clientRegion);
 
@@ -126,7 +126,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                     }
                     catch (Exception ex)
                     {
-                        System.Threading.Thread.Sleep(3000);
+                        System.Threading.Thread.Sleep(5000);
                     }
                 }
 
@@ -139,30 +139,30 @@ namespace CognitoAuthentication.IntegrationTests.NET45
         /// Internal method that cleans up the created identity pool (along with associated 
         /// clients/roles) for testing
         /// </summary>
-        public override async void Dispose()
+        public override void Dispose()
         {
             try
             {
-                await identityClient.DeleteIdentityPoolAsync(new DeleteIdentityPoolRequest()
+                identityClient.DeleteIdentityPoolAsync(new DeleteIdentityPoolRequest()
                 {
                     IdentityPoolId = identityPoolId
-                }).ConfigureAwait(false);
+                }).GetAwaiter().GetResult();
 
-                await managementClient.DetachRolePolicyAsync(new DetachRolePolicyRequest()
+                managementClient.DetachRolePolicyAsync(new DetachRolePolicyRequest()
                 {
                     PolicyArn = policyArn,
                     RoleName = roleName
-                }).ConfigureAwait(false);
+                }).GetAwaiter().GetResult();
 
-                await managementClient.DeletePolicyAsync(new DeletePolicyRequest()
+                managementClient.DeletePolicyAsync(new DeletePolicyRequest()
                 {
                     PolicyArn = policyArn
-                }).ConfigureAwait(false);
+                }).GetAwaiter().GetResult();
 
-                await managementClient.DeleteRoleAsync(new DeleteRoleRequest()
+                managementClient.DeleteRoleAsync(new DeleteRoleRequest()
                 {
                     RoleName = roleName
-                }).ConfigureAwait(false);
+                }).GetAwaiter().GetResult();
 
                 identityClient.Dispose();
                 managementClient.Dispose();
