@@ -181,6 +181,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         public IDictionary<string, string> ChallengeParameters { get; set; }
 
         /// <summary>
+        /// The client metadata for any custom workflows that this action triggers
+        /// </summary>
+        public IDictionary<string, string> ClientMetadata { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
         /// The sessionID for the current authentication flow.
         /// </summary>
         public string SessionID { get; set; }

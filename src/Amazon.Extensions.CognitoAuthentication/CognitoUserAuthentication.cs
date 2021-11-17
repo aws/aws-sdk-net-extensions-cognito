@@ -229,6 +229,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 ChallengeName = ChallengeNameType.CUSTOM_CHALLENGE,
                 ClientId = ClientID,
                 ChallengeResponses = new Dictionary<string, string>(customRequest.ChallengeParameters),
+                ClientMetadata = new Dictionary<string, string>(customRequest.ClientMetadata),
                 Session = customRequest.SessionID
             };
 
