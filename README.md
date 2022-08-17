@@ -174,7 +174,6 @@ public async Task GetCredsFromRefreshAsync(string refreshToken, string deviceKey
 
     // If the user pool is configured to track and remember user devices, it must be attached to the user before initiating the flow:
     // user.Device = new CognitoDevice(new DeviceType { DeviceKey = deviceKey }, user);
-    user.Device = new CognitoDevice(new DeviceType { DeviceKey = deviceKey }, user);
 
     var authResponse = await user.StartWithRefreshTokenAuthAsync(new InitiateRefreshTokenAuthRequest
     {
