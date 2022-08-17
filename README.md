@@ -162,21 +162,24 @@ using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
 
-public async void GetCredsFromRefreshAsync(string refreshToken)
+public async Task GetCredsFromRefreshAsync(string refreshToken, string deviceKey)
 {
-    AmazonCognitoIdentityProviderClient provider = new AmazonCognitoIdentityProviderClient(new Amazon.Runtime.AnonymousAWSCredentials(), FallbackRegionFactory.GetRegionEndpoint());
-    CognitoUserPool userPool = new CognitoUserPool("poolID", "clientID", provider);
+    using var provider = new AmazonCognitoIdentityProviderClient();
+    var userPool = new CognitoUserPool("poolID", "clientID", provider);
 
-    CognitoUser user = new CognitoUser("username", "clientID", userPool, provider);
+    var user = new CognitoUser("username", "clientID", userPool, provider, "clientSecret")
+    {
+        SessionTokens = new CognitoUserSession(null, null, refreshToken, DateTime.UtcNow, DateTime.UtcNow.AddHours(1))
+    };
 
-    user.SessionTokens = new CognitoUserSession(null, null, refreshToken, DateTime.UtcNow, DateTime.UtcNow.AddHours(1));
+    // If the user pool is configured to track and remember user devices, it must be attached to the user before initiating the flow:
+    // user.Device = new CognitoDevice(new DeviceType { DeviceKey = deviceKey }, user);
+    user.Device = new CognitoDevice(new DeviceType { DeviceKey = deviceKey }, user);
 
-    InitiateRefreshTokenAuthRequest refreshRequest = new InitiateRefreshTokenAuthRequest()
+    var authResponse = await user.StartWithRefreshTokenAuthAsync(new InitiateRefreshTokenAuthRequest
     {
         AuthFlowType = AuthFlowType.REFRESH_TOKEN_AUTH
-    };
-    
-    AuthFlowResponse authResponse = await user.StartWithRefreshTokenAuthAsync(refreshRequest).ConfigureAwait(false);
+    });
 }
 ```
 
