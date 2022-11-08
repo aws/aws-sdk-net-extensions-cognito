@@ -40,6 +40,10 @@ namespace Amazon.Extensions.CognitoAuthentication
         public string ClientID { get; private set; }
 
         /// <summary>
+        /// The PasswordPolicy associated with the user pool.
+        private PasswordPolicyType PasswordPolicy { get; set; }
+
+        /// <summary>
         /// The ClientConfiguration associated with the user pool and the ClientID.
         /// </summary>
         private CognitoUserPoolClientConfiguration ClientConfiguration { get; set; }
@@ -215,12 +219,19 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the PasswordPolicyType of the pool.</returns>
         public async Task<PasswordPolicyType> GetPasswordPolicyTypeAsync()
         {
-            var response = await Provider.DescribeUserPoolAsync(new DescribeUserPoolRequest
+            // Cache a copy of the password policy for the duration of this instance. 
+            //    (DescribeUserPool has a very low unchangeable quota, which leads to throttled operations)
+            if (PasswordPolicy == null)
             {
-                UserPoolId = this.PoolID
-            }).ConfigureAwait(false);
+                var response = await Provider.DescribeUserPoolAsync(new DescribeUserPoolRequest
+                {
+                    UserPoolId = this.PoolID
+                }).ConfigureAwait(false);
 
-            return response.UserPool.Policies.PasswordPolicy;
+                PasswordPolicy = response.UserPool.Policies.PasswordPolicy;
+            }
+
+            return PasswordPolicy;
         }
 
         /// <summary>
