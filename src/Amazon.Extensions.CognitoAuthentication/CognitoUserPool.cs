@@ -143,7 +143,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Gets a CognitoUser with no userID set
         /// </summary>
         /// <returns>Returns a user with no userID set</returns>
-        public CognitoUser GetUser()
+        public virtual CognitoUser GetUser()
         {
             return new CognitoUser(null, ClientID, this, Provider, ClientSecret);
         }
@@ -153,7 +153,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="userID">The userID of the corresponding user</param>
         /// <returns>Returns a CognitoUser with the corresponding userID</returns>
-        public CognitoUser GetUser(string userID)
+        public virtual CognitoUser GetUser(string userID)
         {
             if (string.IsNullOrEmpty(userID))
             {
@@ -170,7 +170,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="status">The status of the corresponding user</param>
         /// <param name="attributes">The attributes of the corresponding user</param>
         /// <returns>Returns a CognitoUser with the corresponding userID</returns>
-        public CognitoUser GetUser(string userID, string status, Dictionary<string,string> attributes)
+        public virtual CognitoUser GetUser(string userID, string status, Dictionary<string,string> attributes)
         {
             if (string.IsNullOrEmpty(userID))
             {
@@ -185,7 +185,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="userID">The userID of the corresponding user</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing a CognitoUser with the corresponding userID, with the Status and Attributes retrieved from Cognito.</returns>
-        public async Task<CognitoUser> FindByIdAsync(string userID)
+        public virtual async Task<CognitoUser> FindByIdAsync(string userID)
         {
             if (string.IsNullOrEmpty(userID))
                 throw new ArgumentException(nameof(userID));
