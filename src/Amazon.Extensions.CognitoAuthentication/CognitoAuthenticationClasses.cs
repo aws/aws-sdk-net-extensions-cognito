@@ -95,6 +95,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// The client metadata for the current authentication flow.
         /// </summary>
         public IDictionary<string, string> ClientMetadata { get; set; }
+        /// <summary>
+        /// Enable custom auth flow
+        /// https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#Using-SRP-password-verification-in-custom-authentication-flow
+        /// </summary>
+        public bool IsCustomAuthFlow { get; set; }
     }
 
     /// <summary>
