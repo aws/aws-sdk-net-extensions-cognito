@@ -1,3 +1,7 @@
+### 2.3.0 (2023-02-08)
+* Pull Request [#104](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/104) Allow CognitoUser to be inheritant, thanks [petrenslavik](https://github.com/petrenslavik)
+* Pull Request [#97](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/97) Add support for CUSTOM_AUTH, thanks [konectech](https://github.com/konectech)
+
 ### 2.2.4 (2023-01-11)
 * Add ClientMetadata to SRP auth flow.
 
