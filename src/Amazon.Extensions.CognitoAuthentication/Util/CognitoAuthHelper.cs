@@ -18,7 +18,6 @@ using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Reflection;
-using System.Runtime.Caching;
 using Amazon.Runtime;
 using Amazon.CognitoIdentityProvider.Model;
 
@@ -28,6 +27,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
     {
         [ThreadStatic] private static SHA256 sha256 = null;
 
+        private static string assemblyFileVersion = null;
         /// <summary>
         /// Property to access the thread-safe SHA256 member variable. 
         /// Creates a SHA256 instance if one does not exist.
@@ -44,7 +44,23 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
                 return sha256;
             }
         }
+    
+        internal static string AssemblyFileVersion
+        {
+            get
+            {
+                if (assemblyFileVersion == null)
+                {
+                    var assembly = typeof(CognitoAuthHelper).GetTypeInfo().Assembly;
+                    AssemblyFileVersionAttribute attribute = assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
 
+                    assemblyFileVersion = attribute == null ? "Unknown" : attribute.Version;
+                }
+                
+                return assemblyFileVersion;
+            }
+        }
+        
         private const string AssemblyFileVersionCachePath = "Cognito.AssemblyFileVersion";
 
         /// <summary>
@@ -151,26 +167,11 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
             if (args == null || !args.Headers.ContainsKey(UserAgentHeader))
                 return;
 
-            var metric = " AWSDotNetCognito/" + GetAssemblyFileVersion();
+            var metric = " AWSDotNetCognito/" + AssemblyFileVersion;
             if (!args.Headers[UserAgentHeader].Contains(metric))
             {
                 args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + metric;
             }
-        }
-
-        internal static string GetAssemblyFileVersion()
-        {
-            if (MemoryCache.Default.Contains(AssemblyFileVersionCachePath))
-            {
-                return MemoryCache.Default.Get(AssemblyFileVersionCachePath) as string;
-            }
-
-            var assembly = typeof(CognitoAuthHelper).GetTypeInfo().Assembly;
-            AssemblyFileVersionAttribute attribute = assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
-
-            var assemblyFileVersion = attribute == null ? "Unknown" : attribute.Version;
-            MemoryCache.Default.Set(new CacheItem(AssemblyFileVersionCachePath, assemblyFileVersion), new CacheItemPolicy());
-            return assemblyFileVersion;
         }
     }
 }

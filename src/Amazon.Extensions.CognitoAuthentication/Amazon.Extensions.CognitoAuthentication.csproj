@@ -48,7 +48,6 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.CognitoIdentity" Version="3.7.0.2" />
     <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.7.0.2" />
-    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
