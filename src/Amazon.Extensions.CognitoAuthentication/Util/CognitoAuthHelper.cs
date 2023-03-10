@@ -61,8 +61,6 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
             }
         }
         
-        private const string AssemblyFileVersionCachePath = "Cognito.AssemblyFileVersion";
-
         /// <summary>
         /// Computes the secret hash for the user pool using the corresponding userID, clientID, 
         /// and client secret
