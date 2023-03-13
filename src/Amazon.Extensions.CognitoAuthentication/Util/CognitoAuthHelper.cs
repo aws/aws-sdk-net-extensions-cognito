@@ -18,7 +18,6 @@ using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Reflection;
-
 using Amazon.Runtime;
 using Amazon.CognitoIdentityProvider.Model;
 
@@ -28,6 +27,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
     {
         [ThreadStatic] private static SHA256 sha256 = null;
 
+        private static string assemblyFileVersion = null;
         /// <summary>
         /// Property to access the thread-safe SHA256 member variable. 
         /// Creates a SHA256 instance if one does not exist.
@@ -40,10 +40,27 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
                 {
                     sha256 = SHA256.Create();
                 }
+
                 return sha256;
             }
         }
+    
+        internal static string AssemblyFileVersion
+        {
+            get
+            {
+                if (assemblyFileVersion == null)
+                {
+                    var assembly = typeof(CognitoAuthHelper).GetTypeInfo().Assembly;
+                    AssemblyFileVersionAttribute attribute = assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
 
+                    assemblyFileVersion = attribute == null ? "Unknown" : attribute.Version;
+                }
+                
+                return assemblyFileVersion;
+            }
+        }
+        
         /// <summary>
         /// Computes the secret hash for the user pool using the corresponding userID, clientID, 
         /// and client secret
@@ -99,7 +116,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// <returns>Returns the byte array for the corresponding string</returns>
         internal static byte[] StringToByteArray(string hexString)
         {
-            if(hexString.Length % 2 != 0)
+            if (hexString.Length % 2 != 0)
             {
                 throw new ArgumentException("Malformed hexString.", "hexString");
             }
@@ -133,6 +150,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
 
                 attributeList.Add(attribute);
             }
+
             return attributeList;
         }
 
@@ -140,24 +158,18 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// Internal method for handling metrics
         /// </summary>
         private const string UserAgentHeader = "User-Agent";
+
         internal static void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
         {
             Amazon.Runtime.WebServiceRequestEventArgs args = e as Amazon.Runtime.WebServiceRequestEventArgs;
             if (args == null || !args.Headers.ContainsKey(UserAgentHeader))
                 return;
 
-            var metric = " AWSDotNetCognito/" + GetAssemblyFileVersion();
+            var metric = " AWSDotNetCognito/" + AssemblyFileVersion;
             if (!args.Headers[UserAgentHeader].Contains(metric))
             {
                 args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + metric;
             }
-        }
-
-        internal static string GetAssemblyFileVersion()
-        {
-            var assembly = typeof(CognitoAuthHelper).GetTypeInfo().Assembly;
-            AssemblyFileVersionAttribute attribute = assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
-            return attribute == null ? "Unknown" : attribute.Version;
         }
     }
 }
