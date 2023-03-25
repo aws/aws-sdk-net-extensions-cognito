@@ -359,6 +359,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="limit">Maxmimum number of devices to be returned in this call</param>
         /// <param name="paginationToken">Token to continue earlier search</param>
         /// <returns>Returns a list of CognitoDevices associated with this user</returns>
+        [Obsolete("This method is deprecated since it only lists the first page of devices. The method ListDevicesV2Async should be used instead which allows listing additional pages of devices.")]
         public virtual async Task<List<CognitoDevice>> ListDevicesAsync(int limit, string paginationToken)
         {
             ListDevicesRequest listDevicesRequest = CreateListDevicesRequest(limit, paginationToken);
@@ -371,6 +372,20 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
 
             return devicesList;
+        }
+
+        /// <summary>
+        /// Executes the ListDevicesAsync service call to access device types associated with this user using an asynchronous call. 
+        /// The response returned contains DeviceType objects which could be used to construct list of CognitoDevice type objects and 
+        /// a PaginationToken which could be used to access remaining device types (if any).
+        /// </summary>
+        /// <param name="limit">Maxmimum number of devices to be returned in this call</param>
+        /// <param name="paginationToken">Token to continue earlier search</param>
+        /// <returns>Returns underlying ListDevicesResponse that contains list of DeviceType objects along with PaginationToken.</returns>
+        public virtual async Task<ListDevicesResponse> ListDevicesV2Async(int limit, string paginationToken)
+        {
+            ListDevicesRequest listDevicesRequest = CreateListDevicesRequest(limit, paginationToken);
+            return await Provider.ListDevicesAsync(listDevicesRequest).ConfigureAwait(false);
         }
 
         private ConfirmSignUpRequest CreateConfirmSignUpRequest(string confirmationCode, bool forcedAliasCreation)
