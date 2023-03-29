@@ -1,3 +1,6 @@
+### 2.4.0 (2023-03-29)
+* Added new ListDevicesV2Async method and obsoleted ListDevicesAsync method in CognitoUser class.
+
 ### 2.3.1 (2023-03-13)
 * Pull Request [#108](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/108), add caching for determining assembly version number. Thanks [mojotheo](https://github.com/mojotheo)
 
