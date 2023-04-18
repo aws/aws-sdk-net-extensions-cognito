@@ -373,6 +373,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             if (challengeNameType == ChallengeNameType.SMS_MFA) return CognitoConstants.ChlgParamSmsMfaCode;
             if (challengeNameType == ChallengeNameType.SOFTWARE_TOKEN_MFA) return CognitoConstants.ChlgParamSoftwareTokenMfaCode;
+            if (challengeNameType == ChallengeNameType.CUSTOM_CHALLENGE) return CognitoConstants.ChlgParamAnswer;
 
             return null;
         }
@@ -678,7 +679,8 @@ namespace Amazon.Extensions.CognitoAuthentication
                 ChallengeName = challenge.ChallengeName,
                 ClientId = ClientID,
                 Session = challenge.Session,
-                ChallengeResponses = srpAuthResponses
+                ChallengeResponses = srpAuthResponses,
+                ClientMetadata = ClientMetadata
             };
 
             return authChallengeRequest;

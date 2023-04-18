@@ -35,6 +35,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         internal string SecretHash { get; set; }
 
         /// <summary>
+        /// The metadata for the associated client
+        /// </summary>
+        public Dictionary<string, string> ClientMetadata { get; set; }
+
+        /// <summary>
         /// The session for the associated user.
         /// </summary>
         public CognitoUserSession SessionTokens { get; set; }
@@ -143,6 +148,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             this.UserPool = pool;
             this.ClientID = clientID;
             this.SessionTokens = null;
+            this.ClientMetadata = new Dictionary<string, string>();
 
             if (attributes != null)
             {

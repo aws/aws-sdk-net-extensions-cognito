@@ -43,6 +43,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         public static readonly string ChlgParamUserAttrPrefix = "userAttributes.";
         public static readonly string ChlgParamNewPassword = "NEW_PASSWORD";
         public static readonly string ChlgParamPassword = "PASSWORD";
+        public static readonly string ChlgParamAnswer = "ANSWER";
 
         // User Attributes
         public static readonly string UserAttrEmail = "email";
