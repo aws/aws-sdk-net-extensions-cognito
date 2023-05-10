@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
@@ -39,7 +40,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// create an InitiateAuthAsync API call for SRP authentication</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithSrpAuthAsync(InitiateSrpAuthRequest srpRequest)
+        public virtual async Task<AuthFlowResponse> StartWithSrpAuthAsync(InitiateSrpAuthRequest srpRequest, CancellationToken cancellationToken = default)
         {
             if (srpRequest == null || string.IsNullOrEmpty(srpRequest.Password))
             {
@@ -54,7 +55,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 initiateRequest.AuthFlow = AuthFlowType.CUSTOM_AUTH;
                 initiateRequest.AuthParameters.Add("CHALLENGE_NAME", "SRP_A");
             }
-            InitiateAuthResponse initiateResponse = await Provider.InitiateAuthAsync(initiateRequest).ConfigureAwait(false);
+            InitiateAuthResponse initiateResponse = await Provider.InitiateAuthAsync(initiateRequest, cancellationToken).ConfigureAwait(false);
             UpdateUsernameAndSecretHash(initiateResponse.ChallengeParameters);
 
             RespondToAuthChallengeRequest challengeRequest =
@@ -74,7 +75,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
 
             RespondToAuthChallengeResponse verifierResponse =
-                await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
+                await Provider.RespondToAuthChallengeAsync(challengeRequest, cancellationToken).ConfigureAwait(false);
             var isDeviceAuthRequest = verifierResponse.AuthenticationResult == null && (!string.IsNullOrEmpty(srpRequest.DeviceGroupKey)
                 || !string.IsNullOrEmpty(srpRequest.DevicePass));
             #region Device-level authentication
@@ -87,12 +88,12 @@ namespace Amazon.Extensions.CognitoAuthentication
 
                 #region Device SRP Auth
                 var deviceAuthRequest = CreateDeviceSrpAuthRequest(verifierResponse, tupleAa);
-                var deviceAuthResponse = await Provider.RespondToAuthChallengeAsync(deviceAuthRequest).ConfigureAwait(false); 
+                var deviceAuthResponse = await Provider.RespondToAuthChallengeAsync(deviceAuthRequest, cancellationToken).ConfigureAwait(false); 
                 #endregion
 
                 #region Device Password Verifier
                 var devicePasswordChallengeRequest = CreateDevicePasswordVerifierAuthRequest(deviceAuthResponse, srpRequest.DeviceGroupKey, srpRequest.DevicePass, tupleAa);
-                verifierResponse = await Provider.RespondToAuthChallengeAsync(devicePasswordChallengeRequest).ConfigureAwait(false);
+                verifierResponse = await Provider.RespondToAuthChallengeAsync(devicePasswordChallengeRequest, cancellationToken).ConfigureAwait(false);
                 #endregion
 
             }
@@ -202,7 +203,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// create an InitiateAuthAsync API call for custom authentication</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest)
+        public virtual async Task<AuthFlowResponse> StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest, CancellationToken cancellationToken = default)
         {
             InitiateAuthRequest authRequest = new InitiateAuthRequest()
             {
@@ -212,7 +213,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 ClientMetadata = new Dictionary<string, string>(customRequest.ClientMetadata)
             };
 
-            InitiateAuthResponse initiateResponse = await Provider.InitiateAuthAsync(authRequest).ConfigureAwait(false);
+            InitiateAuthResponse initiateResponse = await Provider.InitiateAuthAsync(authRequest, cancellationToken).ConfigureAwait(false);
             UpdateUsernameAndSecretHash(initiateResponse.ChallengeParameters);
 
             UpdateSessionIfAuthenticationComplete(initiateResponse.ChallengeName, initiateResponse.AuthenticationResult);
@@ -232,7 +233,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// respond to the current custom authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToCustomAuthAsync(RespondToCustomChallengeRequest customRequest)
+        public virtual async Task<AuthFlowResponse> RespondToCustomAuthAsync(RespondToCustomChallengeRequest customRequest, CancellationToken cancellationToken = default)
         {
             RespondToAuthChallengeRequest request = new RespondToAuthChallengeRequest()
             {
@@ -244,7 +245,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             };
 
             RespondToAuthChallengeResponse authResponse =
-                await Provider.RespondToAuthChallengeAsync(request).ConfigureAwait(false);
+                await Provider.RespondToAuthChallengeAsync(request, cancellationToken).ConfigureAwait(false);
 
             UpdateSessionIfAuthenticationComplete(authResponse.ChallengeName, authResponse.AuthenticationResult);
 
@@ -276,7 +277,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="passwordVerifier">The password verifier generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
         /// <param name="salt">The salt generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
         /// <returns></returns>
-        public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt)
+        public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt, CancellationToken cancellationToken = default)
         {
             var request = new ConfirmDeviceRequest
             {
@@ -290,7 +291,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 }
             };
 
-            return await Provider.ConfirmDeviceAsync(request);
+            return await Provider.ConfirmDeviceAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -300,7 +301,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="deviceKey">The device key for the associated CognitoDevice</param>
         /// <param name="deviceRememberedStatus">The device remembered status for the associated CognitoDevice</param>
         /// <returns></returns>
-        public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus)
+        public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus, CancellationToken cancellationToken = default)
         {
             var request = new UpdateDeviceStatusRequest
             {
@@ -309,7 +310,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 DeviceRememberedStatus = deviceRememberedStatus
             };
 
-            return await Provider.UpdateDeviceStatusAsync(request);
+            return await Provider.UpdateDeviceStatusAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -320,9 +321,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest)
+        public virtual async Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest, CancellationToken cancellationToken = default)
         {
-            return await RespondToMfaAuthAsync(smsMfaRequest).ConfigureAwait(false);
+            return await RespondToMfaAuthAsync(smsMfaRequest, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -333,7 +334,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// respond to the current MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public async Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest)
+        public async Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest, CancellationToken cancellationToken = default)
         {
             RespondToAuthChallengeRequest challengeRequest = new RespondToAuthChallengeRequest
             {
@@ -353,7 +354,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
 
             RespondToAuthChallengeResponse challengeResponse =
-                await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
+                await Provider.RespondToAuthChallengeAsync(challengeRequest, cancellationToken).ConfigureAwait(false);
 
             UpdateSessionIfAuthenticationComplete(challengeResponse.ChallengeName, challengeResponse.AuthenticationResult);
 
@@ -385,9 +386,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest)
+        public virtual Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, CancellationToken cancellationToken = default)
         {
-            return RespondToNewPasswordRequiredAsync(newPasswordRequest, null);
+            return RespondToNewPasswordRequiredAsync(newPasswordRequest, null, cancellationToken);
         }
 
         /// <summary>
@@ -400,7 +401,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes)
+        public virtual async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes, CancellationToken cancellationToken = default)
         {
             var challengeResponses = new Dictionary<string, string>()
             {
@@ -431,7 +432,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
 
             RespondToAuthChallengeResponse challengeResponse =
-                await Provider.RespondToAuthChallengeAsync(challengeRequest).ConfigureAwait(false);
+                await Provider.RespondToAuthChallengeAsync(challengeRequest, cancellationToken).ConfigureAwait(false);
 
             UpdateSessionIfAuthenticationComplete(challengeResponse.ChallengeName, challengeResponse.AuthenticationResult);
 
@@ -449,12 +450,12 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to initiate the refresh token authentication flow</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
+        public virtual async Task<AuthFlowResponse> StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest, CancellationToken cancellationToken = default)
         {
             InitiateAuthRequest initiateAuthRequest = CreateRefreshTokenAuthRequest(refreshTokenRequest.AuthFlowType);
 
             InitiateAuthResponse initiateResponse =
-                await Provider.InitiateAuthAsync(initiateAuthRequest).ConfigureAwait(false);
+                await Provider.InitiateAuthAsync(initiateAuthRequest, cancellationToken).ConfigureAwait(false);
 
             // Service does not return the refresh token. Hence, set it to the old refresh token that was used.
             if (string.IsNullOrEmpty(initiateResponse.ChallengeName) && string.IsNullOrEmpty(initiateResponse.AuthenticationResult.RefreshToken))
@@ -476,12 +477,12 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to initiate the ADMIN_NO_SRP_AUTH authentication flow</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithAdminNoSrpAuthAsync(InitiateAdminNoSrpAuthRequest adminAuthRequest)
+        public virtual async Task<AuthFlowResponse> StartWithAdminNoSrpAuthAsync(InitiateAdminNoSrpAuthRequest adminAuthRequest, CancellationToken cancellationToken = default)
         {
             AdminInitiateAuthRequest initiateAuthRequest = CreateAdminAuthRequest(adminAuthRequest);
 
             AdminInitiateAuthResponse initiateResponse =
-                await Provider.AdminInitiateAuthAsync(initiateAuthRequest).ConfigureAwait(false);
+                await Provider.AdminInitiateAuthAsync(initiateAuthRequest, cancellationToken).ConfigureAwait(false);
 
             UpdateSessionIfAuthenticationComplete(initiateResponse.ChallengeName, initiateResponse.AuthenticationResult);
 

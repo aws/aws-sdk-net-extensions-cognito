@@ -16,7 +16,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
+using System.Threading;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication.Util;
@@ -156,12 +156,12 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Gets the device from the Cognito service using the device key and user's access 
         /// token using an asynchronous call
         /// </summary>
-        public async Task GetDeviceAsync()
+        public async Task GetDeviceAsync(CancellationToken cancellationToken = default)
         {
             GetDeviceRequest getDeviceRequest = CreateGetDeviceRequest();
 
             GetDeviceResponse getDeviceResponse =
-                await User.Provider.GetDeviceAsync(getDeviceRequest).ConfigureAwait(false);
+                await User.Provider.GetDeviceAsync(getDeviceRequest, cancellationToken).ConfigureAwait(false);
 
             UpdateThisDevice(getDeviceResponse.Device);
         }
@@ -170,32 +170,32 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Forgets the device associated with the CognitoDevice's device key using
         /// an asynchronous call
         /// </summary>
-        public Task ForgetDeviceAsync()
+        public Task ForgetDeviceAsync(CancellationToken cancellationToken = default)
         {
             ForgetDeviceRequest forgetDeviceRequest = CreateForgetDeviceRequest();
-            return User.Provider.ForgetDeviceAsync(forgetDeviceRequest);
+            return User.Provider.ForgetDeviceAsync(forgetDeviceRequest, cancellationToken);
         }
 
         /// <summary>
         /// Updates the device status to be remembered using an asynchronous call
         /// </summary>
-        public Task RememberThisDeviceAsync()
+        public Task RememberThisDeviceAsync(CancellationToken cancellationToken = default)
         {
             UpdateDeviceStatusRequest updateRequest =
                 CreateUpdateDeviceStatusRequest(new DeviceRememberedStatusType(CognitoConstants.DeviceAttrRemembered));
 
-            return User.Provider.UpdateDeviceStatusAsync(updateRequest);
+            return User.Provider.UpdateDeviceStatusAsync(updateRequest, cancellationToken);
         }
 
         /// <summary>
         /// Updates the device status to not be remembered using an asynchronous call
         /// </summary>
-        public Task DoNotRememberThisDeviceAsync()
+        public Task DoNotRememberThisDeviceAsync(CancellationToken cancellationToken = default)
         {
             UpdateDeviceStatusRequest updateRequest =
                     CreateUpdateDeviceStatusRequest(new DeviceRememberedStatusType(CognitoConstants.DeviceAttrNotRemembered));
 
-            return User.Provider.UpdateDeviceStatusAsync(updateRequest);
+            return User.Provider.UpdateDeviceStatusAsync(updateRequest, cancellationToken);
         }
 
         private GetDeviceRequest CreateGetDeviceRequest()
