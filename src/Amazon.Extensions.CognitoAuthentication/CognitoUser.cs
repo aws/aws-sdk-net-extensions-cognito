@@ -157,6 +157,16 @@ namespace Amazon.Extensions.CognitoAuthentication
                 eventProvider.BeforeRequestEvent += CognitoAuthHelper.ServiceClientBeforeRequestEvent;
             }
         }
+        /// <summary>
+        /// Confirms the sign up of the associated user using the provided confirmation code
+        /// using an asynchronous call
+        /// </summary>
+        /// <param name="confirmationCode">Confirmation code sent to user via email or SMS</param>
+        /// <param name="forcedAliasCreation">Boolean specifying whether forced alias creation is desired</param>
+        public virtual Task ConfirmSignUpAsync(string confirmationCode, bool forcedAliasCreation)
+        {
+            return ConfirmSignUpAsync(confirmationCode, forcedAliasCreation, default);
+        }
 
         /// <summary>
         /// Confirms the sign up of the associated user using the provided confirmation code
@@ -164,7 +174,8 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="confirmationCode">Confirmation code sent to user via email or SMS</param>
         /// <param name="forcedAliasCreation">Boolean specifying whether forced alias creation is desired</param>
-        public virtual Task ConfirmSignUpAsync(string confirmationCode, bool forcedAliasCreation, CancellationToken cancellationToken = default)
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual Task ConfirmSignUpAsync(string confirmationCode, bool forcedAliasCreation, CancellationToken cancellationToken)
         {
             ConfirmSignUpRequest confirmRequest = CreateConfirmSignUpRequest(confirmationCode, forcedAliasCreation);
 
@@ -175,7 +186,17 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Request to resend registration confirmation code for a user using an asynchronous call
         /// </summary>
         /// <returns>Returns the delivery details for the confirmation code request</returns>
-        public virtual Task ResendConfirmationCodeAsync(CancellationToken cancellationToken = default)
+        public virtual Task ResendConfirmationCodeAsync()
+        {
+            return ResendConfirmationCodeAsync(default);
+        }
+
+        /// <summary>
+        /// Request to resend registration confirmation code for a user using an asynchronous call
+        /// </summary>
+        /// <returns>Returns the delivery details for the confirmation code request</returns>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual Task ResendConfirmationCodeAsync(CancellationToken cancellationToken)
         {
             ResendConfirmationCodeRequest resendRequest = CreateResendConfirmationCodeRequest();
 
@@ -186,20 +207,41 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Allows the user to reset their password using an asynchronous call. Should be used in 
         /// conjunction with the ConfirmPasswordAsync method 
         /// </summary>
-        public virtual Task ForgotPasswordAsync(CancellationToken cancellationToken = default)
+        public virtual Task ForgotPasswordAsync()
+        {
+            return ForgotPasswordAsync(default);
+        }
+
+        /// <summary>
+        /// Allows the user to reset their password using an asynchronous call. Should be used in 
+        /// conjunction with the ConfirmPasswordAsync method 
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual Task ForgotPasswordAsync(CancellationToken cancellationToken)
         {
             ForgotPasswordRequest forgotPassRequest = CreateForgotPasswordRequest();
 
             return Provider.ForgotPasswordAsync(forgotPassRequest, cancellationToken);
+        }
+        /// <summary>
+        /// Confirms the user's new password using the confirmation code sent to them using
+        /// an asynchronous call
+        /// </summary>
+        /// <param name="confirmationCode">The confirmation code sent to the user</param>
+        /// <param name="newPassword">The new desired password for the user</param>
+        public virtual Task ConfirmForgotPasswordAsync(string confirmationCode, string newPassword)
+        {
+            return ConfirmForgotPasswordAsync(confirmationCode, newPassword, default);
         }
 
         /// <summary>
         /// Confirms the user's new password using the confirmation code sent to them using
         /// an asynchronous call
         /// </summary>
-        /// <param name="confirmationCode">The confirmation code sent to the suer</param>
+        /// <param name="confirmationCode">The confirmation code sent to the user</param>
         /// <param name="newPassword">The new desired password for the user</param>
-        public virtual Task ConfirmForgotPasswordAsync(string confirmationCode, string newPassword, CancellationToken cancellationToken = default)
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual Task ConfirmForgotPasswordAsync(string confirmationCode, string newPassword, CancellationToken cancellationToken)
         {
             ConfirmForgotPasswordRequest confirmResetPassRequest =
                 CreateConfirmPasswordRequest(confirmationCode, newPassword);
@@ -213,7 +255,19 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="oldPass">The user's old password</param>
         /// <param name="newPass">The desired new password</param>
-        public virtual Task ChangePasswordAsync(string oldPass, string newPass, CancellationToken cancellationToken = default)
+        public virtual Task ChangePasswordAsync(string oldPass, string newPass)
+        {
+            return ChangePasswordAsync(oldPass, newPass, default);
+        }
+
+        /// <summary>
+        /// Allows an authenticated user to change their password using an
+        /// asynchronous call
+        /// </summary>
+        /// <param name="oldPass">The user's old password</param>
+        /// <param name="newPass">The desired new password</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual Task ChangePasswordAsync(string oldPass, string newPass, CancellationToken cancellationToken)
         {
             ChangePasswordRequest changePassRequest = CreateChangePasswordRequest(oldPass, newPass);
 
@@ -224,7 +278,17 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Gets the details for the current user using an asynchronous call
         /// </summary>
         /// <returns>Returns a tuple containing the user attributes and settings, in that order</returns>
-        public virtual Task<GetUserResponse> GetUserDetailsAsync(CancellationToken cancellationToken = default)
+        public virtual Task<GetUserResponse> GetUserDetailsAsync()
+        {
+            return GetUserDetailsAsync(default);
+        }
+
+        /// <summary>
+        /// Gets the details for the current user using an asynchronous call
+        /// </summary>
+        /// <returns>Returns a tuple containing the user attributes and settings, in that order</returns>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual Task<GetUserResponse> GetUserDetailsAsync(CancellationToken cancellationToken)
         {
             EnsureUserAuthenticated();
 
@@ -243,7 +307,20 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="medium">Name of the attribute the verification code is being sent to.
         /// Should be either email or phone_number.</param>
         /// <returns>Returns the delivery details for the attribute verification code request</returns>
-        public virtual Task GetAttributeVerificationCodeAsync(string medium, CancellationToken cancellationToken = default)
+        public virtual Task GetAttributeVerificationCodeAsync(string medium)
+        {
+            return GetAttributeVerificationCodeAsync(medium, default);
+        }
+
+        /// <summary>
+        /// Gets the attribute verification code for the specified attribute using
+        /// an asynchronous call
+        /// </summary>
+        /// <param name="medium">Name of the attribute the verification code is being sent to.
+        /// Should be either email or phone_number.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the delivery details for the attribute verification code request</returns>
+        public virtual Task GetAttributeVerificationCodeAsync(string medium, CancellationToken cancellationToken)
         {
             GetUserAttributeVerificationCodeRequest getAttributeCodeRequest =
                     CreateGetUserAttributeVerificationCodeRequest(medium);
@@ -254,7 +331,16 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// Sign-out from all devices associated with this user using an asynchronous call
         /// </summary>
-        public virtual Task GlobalSignOutAsync(CancellationToken cancellationToken = default)
+        public virtual Task GlobalSignOutAsync()
+        {
+            return GlobalSignOutAsync(default);
+        }
+
+        /// <summary>
+        /// Sign-out from all devices associated with this user using an asynchronous call
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual Task GlobalSignOutAsync(CancellationToken cancellationToken)
         {
             EnsureUserAuthenticated();
 
@@ -266,11 +352,19 @@ namespace Amazon.Extensions.CognitoAuthentication
             SessionTokens = null;
             return Provider.GlobalSignOutAsync(globalSignOutRequest, cancellationToken);
         }
+        /// <summary>
+        /// Deletes the current user using an asynchronous call
+        /// </summary>
+        public virtual Task DeleteUserAsync()
+        {
+            return DeleteUserAsync(default);
+        }
 
         /// <summary>
         /// Deletes the current user using an asynchronous call
         /// </summary>
-        public virtual Task DeleteUserAsync(CancellationToken cancellationToken = default)
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual Task DeleteUserAsync(CancellationToken cancellationToken)
         {
             EnsureUserAuthenticated();
 
@@ -287,7 +381,18 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="attributeName">Attribute to be verified. Should either be email or phone_number</param>
         /// <param name="verificationCode">The verification code for the attribute being verified</param>
-        public virtual Task VerifyAttributeAsync(string attributeName, string verificationCode, CancellationToken cancellationToken = default)
+        public virtual Task VerifyAttributeAsync(string attributeName, string verificationCode)
+        {
+            return VerifyAttributeAsync(attributeName, verificationCode, default);
+        }
+
+        /// <summary>
+        /// Verifies the given attribute using an asynchronous call
+        /// </summary>
+        /// <param name="attributeName">Attribute to be verified. Should either be email or phone_number</param>
+        /// <param name="verificationCode">The verification code for the attribute being verified</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual Task VerifyAttributeAsync(string attributeName, string verificationCode, CancellationToken cancellationToken)
         {
             VerifyUserAttributeRequest verifyUserAttributeRequest =
                 CreateVerifyUserAttributeRequest(attributeName, verificationCode);
@@ -300,7 +405,18 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// using an asynchronous call
         /// </summary>
         /// <param name="attributes">The attributes to be updated</param>
-        public virtual async Task UpdateAttributesAsync(IDictionary<string, string> attributes, CancellationToken cancellationToken = default)
+        public virtual async Task UpdateAttributesAsync(IDictionary<string, string> attributes)
+        {
+            await UpdateAttributesAsync(attributes, default);
+        }
+
+        /// <summary>
+        /// Updates the user's attributes defined in the attributes parameter (one at a time)
+        /// using an asynchronous call
+        /// </summary>
+        /// <param name="attributes">The attributes to be updated</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual async Task UpdateAttributesAsync(IDictionary<string, string> attributes, CancellationToken cancellationToken)
         {
             UpdateUserAttributesRequest updateUserAttributesRequest =
                 CreateUpdateUserAttributesRequest(attributes);
@@ -319,7 +435,18 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// an asynchronous call
         /// </summary>
         /// <param name="attributeNamesToDelete">List of attributes to delete</param>
-        public virtual async Task DeleteAttributesAsync(IList<string> attributeNamesToDelete, CancellationToken cancellationToken = default)
+        public virtual async Task DeleteAttributesAsync(IList<string> attributeNamesToDelete)
+        {
+            await DeleteAttributesAsync(attributeNamesToDelete, default);
+        }
+
+        /// <summary>
+        /// Deletes the attributes specified in the attributeNamesToDelete list using
+        /// an asynchronous call
+        /// </summary>
+        /// <param name="attributeNamesToDelete">List of attributes to delete</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual async Task DeleteAttributesAsync(IList<string> attributeNamesToDelete, CancellationToken cancellationToken)
         {
             DeleteUserAttributesRequest deleteUserAttributesRequest =
                 CreateDeleteUserAttributesRequest(attributeNamesToDelete);
@@ -341,7 +468,18 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// using an asynchronous call
         /// </summary>
         /// <param name="userSettings">Dictionary for the user MFA settings of the form [attribute, delivery medium]</param>
-        public virtual async Task SetUserSettingsAsync(IDictionary<string, string> userSettings, CancellationToken cancellationToken = default)
+        public virtual async Task SetUserSettingsAsync(IDictionary<string, string> userSettings)
+        {
+            await SetUserSettingsAsync(userSettings, default);
+        }
+
+        /// <summary>
+        /// Sets the MFAOptions to be the settings desibed in the userSettings dictionary
+        /// using an asynchronous call
+        /// </summary>
+        /// <param name="userSettings">Dictionary for the user MFA settings of the form [attribute, delivery medium]</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public virtual async Task SetUserSettingsAsync(IDictionary<string, string> userSettings, CancellationToken cancellationToken)
         {
             SetUserSettingsRequest setUserSettingsRequest = CreateSetUserSettingsRequest(userSettings);
 
@@ -361,7 +499,20 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="paginationToken">Token to continue earlier search</param>
         /// <returns>Returns a list of CognitoDevices associated with this user</returns>
         [Obsolete("This method is deprecated since it only lists the first page of devices. The method ListDevicesV2Async should be used instead which allows listing additional pages of devices.")]
-        public virtual async Task<List<CognitoDevice>> ListDevicesAsync(int limit, string paginationToken, CancellationToken cancellationToken = default)
+        public virtual async Task<List<CognitoDevice>> ListDevicesAsync(int limit, string paginationToken)
+        {
+            return await ListDevicesAsync(limit, paginationToken, default);
+        }
+
+        /// <summary>
+        /// Lists the CognitoDevices associated with this user using an asynchronous call
+        /// </summary>
+        /// <param name="limit">Maxmimum number of devices to be returned in this call</param>
+        /// <param name="paginationToken">Token to continue earlier search</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns a list of CognitoDevices associated with this user</returns>
+        [Obsolete("This method is deprecated since it only lists the first page of devices. The method ListDevicesV2Async should be used instead which allows listing additional pages of devices.")]
+        public virtual async Task<List<CognitoDevice>> ListDevicesAsync(int limit, string paginationToken, CancellationToken cancellationToken)
         {
             ListDevicesRequest listDevicesRequest = CreateListDevicesRequest(limit, paginationToken);
             ListDevicesResponse listDevicesReponse = await Provider.ListDevicesAsync(listDevicesRequest, cancellationToken).ConfigureAwait(false);
@@ -383,7 +534,21 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="limit">Maxmimum number of devices to be returned in this call</param>
         /// <param name="paginationToken">Token to continue earlier search</param>
         /// <returns>Returns underlying ListDevicesResponse that contains list of DeviceType objects along with PaginationToken.</returns>
-        public virtual async Task<ListDevicesResponse> ListDevicesV2Async(int limit, string paginationToken, CancellationToken cancellationToken = default)
+        public virtual async Task<ListDevicesResponse> ListDevicesV2Async(int limit, string paginationToken)
+        {
+            return await ListDevicesV2Async(limit, paginationToken, default);
+        }
+
+        /// <summary>
+        /// Executes the ListDevicesAsync service call to access device types associated with this user using an asynchronous call. 
+        /// The response returned contains DeviceType objects which could be used to construct list of CognitoDevice type objects and 
+        /// a PaginationToken which could be used to access remaining device types (if any).
+        /// </summary>
+        /// <param name="limit">Maxmimum number of devices to be returned in this call</param>
+        /// <param name="paginationToken">Token to continue earlier search</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns underlying ListDevicesResponse that contains list of DeviceType objects along with PaginationToken.</returns>
+        public virtual async Task<ListDevicesResponse> ListDevicesV2Async(int limit, string paginationToken, CancellationToken cancellationToken)
         {
             ListDevicesRequest listDevicesRequest = CreateListDevicesRequest(limit, paginationToken);
             return await Provider.ListDevicesAsync(listDevicesRequest, cancellationToken).ConfigureAwait(false);

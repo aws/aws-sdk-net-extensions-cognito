@@ -88,8 +88,25 @@ namespace Amazon.Extensions.CognitoAuthentication
         public Task SignUpAsync(string userID,
                            string password,
                            IDictionary<string, string> userAttributes,
+                           IDictionary<string, string> validationData)
+        {
+            return SignUpAsync(userID, password, userAttributes, validationData, default);
+        }
+
+        /// <summary>
+        /// Signs up the user with the specified parameters using an asynchronous call
+        /// </summary>
+        /// <param name="userID">The userID of the user being created</param>
+        /// <param name="password">The password of the user being created</param>
+        /// <param name="userAttributes">The user attributes of the user being created</param>
+        /// <param name="validationData">The validation data of the user being created</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the delivery details for the sign up request</returns>
+        public Task SignUpAsync(string userID,
+                           string password,
+                           IDictionary<string, string> userAttributes,
                            IDictionary<string, string> validationData,
-                           CancellationToken cancellationToken = default)
+                           CancellationToken cancellationToken)
         {
             SignUpRequest signUpUserRequest = CreateSignUpRequest(userID, password, userAttributes, validationData);
 
@@ -186,7 +203,18 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="userID">The userID of the corresponding user</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing a CognitoUser with the corresponding userID, with the Status and Attributes retrieved from Cognito.</returns>
-        public virtual async Task<CognitoUser> FindByIdAsync(string userID, CancellationToken cancellationToken = default)
+        public virtual async Task<CognitoUser> FindByIdAsync(string userID)
+        {
+            return await FindByIdAsync(userID, default);
+        }
+
+        /// <summary>
+        /// Queries Cognito and returns the CognitoUser with the corresponding userID
+        /// </summary>
+        /// <param name="userID">The userID of the corresponding user</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing a CognitoUser with the corresponding userID, with the Status and Attributes retrieved from Cognito.</returns>
+        public virtual async Task<CognitoUser> FindByIdAsync(string userID, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(userID))
                 throw new ArgumentException(nameof(userID));
@@ -214,7 +242,17 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Queries Cognito and returns the PasswordPolicyType associated with the pool.
         /// </summary>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the PasswordPolicyType of the pool.</returns>
-        public async Task<PasswordPolicyType> GetPasswordPolicyTypeAsync(CancellationToken cancellationToken = default)
+        public async Task<PasswordPolicyType> GetPasswordPolicyTypeAsync()
+        {
+            return await GetPasswordPolicyTypeAsync(default);
+        }
+
+        /// <summary>
+        /// Queries Cognito and returns the PasswordPolicyType associated with the pool.
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the PasswordPolicyType of the pool.</returns>
+        public async Task<PasswordPolicyType> GetPasswordPolicyTypeAsync(CancellationToken cancellationToken)
         {
             var response = await Provider.DescribeUserPoolAsync(new DescribeUserPoolRequest
             {
@@ -229,7 +267,18 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Caches the value in the ClientConfiguration private property.
         /// </summary>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the PasswordPolicyType of the pool.</returns>
-        public async Task<CognitoUserPoolClientConfiguration> GetUserPoolClientConfiguration(CancellationToken cancellationToken = default)
+        public async Task<CognitoUserPoolClientConfiguration> GetUserPoolClientConfiguration()
+        {
+            return await GetUserPoolClientConfiguration(default);
+        }
+
+        /// <summary>
+        /// Queries Cognito and returns the CognitoUserPoolClientConfiguration associated with the current pool client.
+        /// Caches the value in the ClientConfiguration private property.
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the PasswordPolicyType of the pool.</returns>
+        public async Task<CognitoUserPoolClientConfiguration> GetUserPoolClientConfiguration(CancellationToken cancellationToken)
         {
             if (ClientConfiguration == null)
             {
@@ -254,8 +303,23 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <returns>Returns the delivery details for the sign up request</returns>
         public Task AdminSignupAsync(string userID,
                            IDictionary<string, string> userAttributes,
+                           IDictionary<string, string> validationData)
+        {
+            return AdminSignupAsync(userID, userAttributes, validationData, default);
+        }
+
+        /// <summary>
+        /// Signs up the user with the specified parameters using an asynchronous call end triggers a temporary password sms or email message.
+        /// </summary>
+        /// <param name="userID">The userID of the user being created</param>
+        /// <param name="userAttributes">The user attributes of the user being created</param>
+        /// <param name="validationData">The validation data of the user being created</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the delivery details for the sign up request</returns>
+        public Task AdminSignupAsync(string userID,
+                           IDictionary<string, string> userAttributes,
                            IDictionary<string, string> validationData,
-                           CancellationToken cancellationToken = default)
+                           CancellationToken cancellationToken)
         {
             AdminCreateUserRequest signUpUserRequest = CreateAdminSignUpRequest(userID, userAttributes, validationData);
 

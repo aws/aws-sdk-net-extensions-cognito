@@ -40,7 +40,20 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// create an InitiateAuthAsync API call for SRP authentication</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithSrpAuthAsync(InitiateSrpAuthRequest srpRequest, CancellationToken cancellationToken = default)
+        public virtual async Task<AuthFlowResponse> StartWithSrpAuthAsync(InitiateSrpAuthRequest srpRequest)
+        {
+            return await StartWithSrpAuthAsync(srpRequest, default);
+        }
+
+        /// <summary>
+        /// Initiates the asynchronous SRP authentication flow
+        /// </summary>
+        /// <param name="srpRequest">InitiateSrpAuthRequest object containing the necessary parameters to
+        /// create an InitiateAuthAsync API call for SRP authentication</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual async Task<AuthFlowResponse> StartWithSrpAuthAsync(InitiateSrpAuthRequest srpRequest, CancellationToken cancellationToken)
         {
             if (srpRequest == null || string.IsNullOrEmpty(srpRequest.Password))
             {
@@ -203,7 +216,20 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// create an InitiateAuthAsync API call for custom authentication</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest, CancellationToken cancellationToken = default)
+        public virtual async Task<AuthFlowResponse> StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest)
+        {
+            return await StartWithCustomAuthAsync(customRequest, default);
+        }
+
+        /// <summary>
+        /// Initiates the asynchronous custom authentication flow
+        /// </summary>
+        /// <param name="customRequest">InitiateCustomAuthRequest object containing the necessary parameters to
+        /// create an InitiateAuthAsync API call for custom authentication</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual async Task<AuthFlowResponse> StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest, CancellationToken cancellationToken)
         {
             InitiateAuthRequest authRequest = new InitiateAuthRequest()
             {
@@ -233,7 +259,21 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// respond to the current custom authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToCustomAuthAsync(RespondToCustomChallengeRequest customRequest, CancellationToken cancellationToken = default)
+        public virtual async Task<AuthFlowResponse> RespondToCustomAuthAsync(RespondToCustomChallengeRequest customRequest)
+        {
+            return await RespondToCustomAuthAsync(customRequest, default);
+        }
+
+        /// <summary>
+        /// Uses the properties of the RespondToCustomChallengeRequest object to respond to the current 
+        /// custom authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="customRequest">RespondToCustomChallengeRequest object containing the necessary parameters to
+        /// respond to the current custom authentication challenge</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual async Task<AuthFlowResponse> RespondToCustomAuthAsync(RespondToCustomChallengeRequest customRequest, CancellationToken cancellationToken)
         {
             RespondToAuthChallengeRequest request = new RespondToAuthChallengeRequest()
             {
@@ -277,7 +317,22 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="passwordVerifier">The password verifier generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
         /// <param name="salt">The salt generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
         /// <returns></returns>
-        public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt, CancellationToken cancellationToken = default)
+        public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt)
+        {
+            return await ConfirmDeviceAsync(accessToken, deviceKey, deviceName, passwordVerifier, salt, default);
+        }
+
+        /// <summary>
+        /// Sends a confirmation request to Cognito for a new CognitoDevice
+        /// </summary>
+        /// <param name="accessToken">The user pool access token for from the InitiateAuth or other challenge response</param>
+        /// <param name="deviceKey">The device key for the associated CognitoDevice</param>
+        /// <param name="deviceName">The friendly name to be associated with the corresponding CognitoDevice</param>
+        /// <param name="passwordVerifier">The password verifier generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
+        /// <param name="salt">The salt generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns></returns>
+        public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt, CancellationToken cancellationToken)
         {
             var request = new ConfirmDeviceRequest
             {
@@ -301,7 +356,20 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="deviceKey">The device key for the associated CognitoDevice</param>
         /// <param name="deviceRememberedStatus">The device remembered status for the associated CognitoDevice</param>
         /// <returns></returns>
-        public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus, CancellationToken cancellationToken = default)
+        public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus)
+        {
+            return await UpdateDeviceStatusAsync(accessToken, deviceKey, deviceRememberedStatus, default);
+        }
+
+        /// <summary>
+        /// Updates the remembered status for a given CognitoDevice
+        /// </summary>
+        /// <param name="accessToken">The user pool access token for from the InitiateAuth or other challenge response</param>
+        /// <param name="deviceKey">The device key for the associated CognitoDevice</param>
+        /// <param name="deviceRememberedStatus">The device remembered status for the associated CognitoDevice</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns></returns>
+        public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus, CancellationToken cancellationToken)
         {
             var request = new UpdateDeviceStatusRequest
             {
@@ -312,7 +380,6 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             return await Provider.UpdateDeviceStatusAsync(request, cancellationToken);
         }
-
         /// <summary>
         /// Uses the properties of the RespondToSmsMfaRequest object to respond to the current MFA 
         /// authentication challenge using an asynchronous call
@@ -321,7 +388,21 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest, CancellationToken cancellationToken = default)
+        public virtual async Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest)
+        {
+            return await RespondToSmsMfaAuthAsync(smsMfaRequest, default);
+        }
+
+        /// <summary>
+        /// Uses the properties of the RespondToSmsMfaRequest object to respond to the current MFA 
+        /// authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="smsMfaRequest">RespondToSmsMfaRequest object containing the necessary parameters to
+        /// respond to the current SMS MFA authentication challenge</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual async Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest, CancellationToken cancellationToken)
         {
             return await RespondToMfaAuthAsync(smsMfaRequest, cancellationToken).ConfigureAwait(false);
         }
@@ -334,7 +415,21 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// respond to the current MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public async Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest, CancellationToken cancellationToken = default)
+        public async Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest)
+        {
+            return await RespondToMfaAuthAsync(mfaRequest, default);
+        }
+
+        /// <summary>
+        /// Uses the properties of the RespondToSmsMfaRequest object to respond to the current MFA 
+        /// authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="mfaRequest">RespondToMfaRequest object containing the necessary parameters to
+        /// respond to the current MFA authentication challenge</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public async Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest, CancellationToken cancellationToken)
         {
             RespondToAuthChallengeRequest challengeRequest = new RespondToAuthChallengeRequest
             {
@@ -386,7 +481,21 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, CancellationToken cancellationToken = default)
+        public virtual Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest)
+        {
+            return RespondToNewPasswordRequiredAsync(newPasswordRequest, null, default);
+        }
+
+        /// <summary>
+        /// Uses the properties of the RespondToNewPasswordRequiredRequest object to respond to the current new 
+        /// password required authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="newPasswordRequest">RespondToNewPasswordRequiredRequest object containing the necessary 
+        /// parameters to respond to the current SMS MFA authentication challenge</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, CancellationToken cancellationToken)
         {
             return RespondToNewPasswordRequiredAsync(newPasswordRequest, null, cancellationToken);
         }
@@ -401,7 +510,23 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes, CancellationToken cancellationToken = default)
+        public virtual async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes)
+        {
+            return await RespondToNewPasswordRequiredAsync(newPasswordRequest, requiredAttributes, default);
+        }
+
+        /// <summary>
+        /// Uses the properties of the RespondToNewPasswordRequiredRequest object to respond to the current new 
+        /// password required authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="newPasswordRequest">RespondToNewPasswordRequiredRequest object containing the necessary 
+        /// <param name="requiredAttributes">Optional dictionnary of attributes that may be required by the user pool
+        /// Each attribute key must be prefixed by "userAttributes."
+        /// parameters to respond to the current SMS MFA authentication challenge</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes, CancellationToken cancellationToken)
         {
             var challengeResponses = new Dictionary<string, string>()
             {
@@ -450,7 +575,20 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to initiate the refresh token authentication flow</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest, CancellationToken cancellationToken = default)
+        public virtual async Task<AuthFlowResponse> StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
+        {
+            return await StartWithRefreshTokenAuthAsync(refreshTokenRequest, default);
+        }
+
+        /// <summary>
+        /// Initiates the asynchronous refresh token authentication flow
+        /// </summary>
+        /// <param name="refreshTokenRequest">InitiateRefreshTokenAuthRequest object containing the necessary 
+        /// parameters to initiate the refresh token authentication flow</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual async Task<AuthFlowResponse> StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest, CancellationToken cancellationToken)
         {
             InitiateAuthRequest initiateAuthRequest = CreateRefreshTokenAuthRequest(refreshTokenRequest.AuthFlowType);
 
@@ -477,7 +615,20 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to initiate the ADMIN_NO_SRP_AUTH authentication flow</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithAdminNoSrpAuthAsync(InitiateAdminNoSrpAuthRequest adminAuthRequest, CancellationToken cancellationToken = default)
+        public virtual async Task<AuthFlowResponse> StartWithAdminNoSrpAuthAsync(InitiateAdminNoSrpAuthRequest adminAuthRequest)
+        {
+            return await StartWithAdminNoSrpAuthAsync(adminAuthRequest, default);
+        }
+
+        /// <summary>
+        /// Initiates the asynchronous ADMIN_NO_SRP_AUTH authentication flow
+        /// </summary>
+        /// <param name="adminAuthRequest">InitiateAdminNoSrpAuthRequest object containing the necessary 
+        /// parameters to initiate the ADMIN_NO_SRP_AUTH authentication flow</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual async Task<AuthFlowResponse> StartWithAdminNoSrpAuthAsync(InitiateAdminNoSrpAuthRequest adminAuthRequest, CancellationToken cancellationToken)
         {
             AdminInitiateAuthRequest initiateAuthRequest = CreateAdminAuthRequest(adminAuthRequest);
 
