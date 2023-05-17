@@ -156,7 +156,17 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Gets the device from the Cognito service using the device key and user's access 
         /// token using an asynchronous call
         /// </summary>
-        public async Task GetDeviceAsync(CancellationToken cancellationToken = default)
+        public async Task GetDeviceAsync()
+        {
+            await GetDeviceAsync(default);
+        }
+
+        /// <summary>
+        /// Gets the device from the Cognito service using the device key and user's access 
+        /// token using an asynchronous call
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public async Task GetDeviceAsync(CancellationToken cancellationToken)
         {
             GetDeviceRequest getDeviceRequest = CreateGetDeviceRequest();
 
@@ -170,7 +180,17 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Forgets the device associated with the CognitoDevice's device key using
         /// an asynchronous call
         /// </summary>
-        public Task ForgetDeviceAsync(CancellationToken cancellationToken = default)
+        public Task ForgetDeviceAsync()
+        {
+            return ForgetDeviceAsync(default);
+        }
+
+        /// <summary>
+        /// Forgets the device associated with the CognitoDevice's device key using
+        /// an asynchronous call
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public Task ForgetDeviceAsync(CancellationToken cancellationToken)
         {
             ForgetDeviceRequest forgetDeviceRequest = CreateForgetDeviceRequest();
             return User.Provider.ForgetDeviceAsync(forgetDeviceRequest, cancellationToken);
@@ -179,7 +199,16 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// Updates the device status to be remembered using an asynchronous call
         /// </summary>
-        public Task RememberThisDeviceAsync(CancellationToken cancellationToken = default)
+        public Task RememberThisDeviceAsync()
+        {
+            return RememberThisDeviceAsync(default);
+        }
+
+        /// <summary>
+        /// Updates the device status to be remembered using an asynchronous call
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public Task RememberThisDeviceAsync(CancellationToken cancellationToken)
         {
             UpdateDeviceStatusRequest updateRequest =
                 CreateUpdateDeviceStatusRequest(new DeviceRememberedStatusType(CognitoConstants.DeviceAttrRemembered));
@@ -190,7 +219,16 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// Updates the device status to not be remembered using an asynchronous call
         /// </summary>
-        public Task DoNotRememberThisDeviceAsync(CancellationToken cancellationToken = default)
+        public Task DoNotRememberThisDeviceAsync()
+        {
+            return DoNotRememberThisDeviceAsync(default);
+        }
+
+        /// <summary>
+        /// Updates the device status to not be remembered using an asynchronous call
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        public Task DoNotRememberThisDeviceAsync(CancellationToken cancellationToken)
         {
             UpdateDeviceStatusRequest updateRequest =
                     CreateUpdateDeviceStatusRequest(new DeviceRememberedStatusType(CognitoConstants.DeviceAttrNotRemembered));
