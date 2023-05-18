@@ -1,3 +1,6 @@
+### 2.4.2 (2023-05-18)
+* Fix the binary compatibility bug introduced in 2.4.1 by restoring the public async method overloads without CancellationToken arguments.
+
 ### 2.4.1 (2023-05-12)
 * Pull Request [#115](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/115), add optional CancellationToken arguments to async methods, thanks [GabrielHare](https://github.com/GabrielHare)
 
