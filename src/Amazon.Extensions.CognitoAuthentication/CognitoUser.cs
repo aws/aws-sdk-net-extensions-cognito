@@ -554,6 +554,62 @@ namespace Amazon.Extensions.CognitoAuthentication
             return await Provider.ListDevicesAsync(listDevicesRequest, cancellationToken).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Request code for authenticator app.
+        /// </summary>
+        /// <returns><see cref="AssociateSoftwareTokenResponse"/> with secret code.</returns>
+        public virtual async Task<AssociateSoftwareTokenResponse> AssociateSoftwareTokenAsync()
+        {
+            EnsureUserAuthenticated();
+
+            AssociateSoftwareTokenRequest request = new AssociateSoftwareTokenRequest
+            {
+                AccessToken = SessionTokens.AccessToken
+            };
+
+            return await Provider.AssociateSoftwareTokenAsync(request).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Verify code from authenticator app.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns><see cref="VerifySoftwareTokenResponse"/> which contains token verification status.</returns>
+        public virtual async Task<VerifySoftwareTokenResponse> VerifySoftwareTokenAsync(string code) {
+            if (string.IsNullOrEmpty(code))
+                throw new ArgumentNullException(nameof(code));
+
+            EnsureUserAuthenticated();
+            VerifySoftwareTokenRequest request = new VerifySoftwareTokenRequest
+            {
+                AccessToken = SessionTokens.AccessToken,
+                FriendlyDeviceName = Device?.GetDeviceName(),
+                UserCode = code
+            };
+
+            return await Provider.VerifySoftwareTokenAsync(request).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Update settings for software MFA settings.
+        /// </summary>
+        /// <param name="isPreferred">Software MFA preferred at sign in.</param>
+        /// <param name="isEnabled">Enable or disable software MFA.</param>
+        /// <returns></returns>
+        public async Task UpdateSoftwareMfaSettingsAsync(bool isPreferred, bool isEnabled)
+        {
+            EnsureUserAuthenticated();
+            SetUserMFAPreferenceRequest request = new SetUserMFAPreferenceRequest {
+                AccessToken = SessionTokens.AccessToken,
+                SoftwareTokenMfaSettings = new SoftwareTokenMfaSettingsType() {
+                    PreferredMfa = isPreferred,
+                    Enabled = isEnabled
+                }
+            };
+
+            await Provider.SetUserMFAPreferenceAsync(request).ConfigureAwait(false);
+        }
+
         private ConfirmSignUpRequest CreateConfirmSignUpRequest(string confirmationCode, bool forcedAliasCreation)
         {
             ConfirmSignUpRequest confirmRequest = new ConfirmSignUpRequest()
