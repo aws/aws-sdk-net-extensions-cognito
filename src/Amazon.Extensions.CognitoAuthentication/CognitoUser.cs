@@ -557,8 +557,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// Request code for authenticator app.
         /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
         /// <returns><see cref="AssociateSoftwareTokenResponse"/> with secret code.</returns>
-        public virtual async Task<AssociateSoftwareTokenResponse> AssociateSoftwareTokenAsync()
+        public virtual async Task<AssociateSoftwareTokenResponse> AssociateSoftwareTokenAsync(CancellationToken cancellationToken)
         {
             EnsureUserAuthenticated();
 
@@ -567,15 +568,16 @@ namespace Amazon.Extensions.CognitoAuthentication
                 AccessToken = SessionTokens.AccessToken
             };
 
-            return await Provider.AssociateSoftwareTokenAsync(request).ConfigureAwait(false);
+            return await Provider.AssociateSoftwareTokenAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Verify code from authenticator app.
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="code">Code from authenticator app.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
         /// <returns><see cref="VerifySoftwareTokenResponse"/> which contains token verification status.</returns>
-        public virtual async Task<VerifySoftwareTokenResponse> VerifySoftwareTokenAsync(string code) {
+        public virtual async Task<VerifySoftwareTokenResponse> VerifySoftwareTokenAsync(string code, CancellationToken cancellationToken) {
             if (string.IsNullOrEmpty(code))
                 throw new ArgumentNullException(nameof(code));
 
@@ -587,7 +589,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 UserCode = code
             };
 
-            return await Provider.VerifySoftwareTokenAsync(request).ConfigureAwait(false);
+            return await Provider.VerifySoftwareTokenAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -595,8 +597,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="isPreferred">Software MFA preferred at sign in.</param>
         /// <param name="isEnabled">Enable or disable software MFA.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
         /// <returns></returns>
-        public async Task UpdateSoftwareMfaSettingsAsync(bool isPreferred, bool isEnabled)
+        public async Task UpdateSoftwareMfaSettingsAsync(bool isPreferred, bool isEnabled, CancellationToken cancellationToken)
         {
             EnsureUserAuthenticated();
             SetUserMFAPreferenceRequest request = new SetUserMFAPreferenceRequest {
@@ -607,7 +610,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 }
             };
 
-            await Provider.SetUserMFAPreferenceAsync(request).ConfigureAwait(false);
+            await Provider.SetUserMFAPreferenceAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
         private ConfirmSignUpRequest CreateConfirmSignUpRequest(string confirmationCode, bool forcedAliasCreation)
