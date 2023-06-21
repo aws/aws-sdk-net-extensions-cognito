@@ -554,6 +554,65 @@ namespace Amazon.Extensions.CognitoAuthentication
             return await Provider.ListDevicesAsync(listDevicesRequest, cancellationToken).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Request code for authenticator app.
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns><see cref="AssociateSoftwareTokenResponse"/> with secret code.</returns>
+        public virtual async Task<AssociateSoftwareTokenResponse> AssociateSoftwareTokenAsync(CancellationToken cancellationToken)
+        {
+            EnsureUserAuthenticated();
+
+            AssociateSoftwareTokenRequest request = new AssociateSoftwareTokenRequest
+            {
+                AccessToken = SessionTokens.AccessToken
+            };
+
+            return await Provider.AssociateSoftwareTokenAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Verify code from authenticator app.
+        /// </summary>
+        /// <param name="code">Code from authenticator app.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns><see cref="VerifySoftwareTokenResponse"/> which contains token verification status.</returns>
+        public virtual async Task<VerifySoftwareTokenResponse> VerifySoftwareTokenAsync(string code, CancellationToken cancellationToken) {
+            if (string.IsNullOrEmpty(code))
+                throw new ArgumentNullException(nameof(code));
+
+            EnsureUserAuthenticated();
+            VerifySoftwareTokenRequest request = new VerifySoftwareTokenRequest
+            {
+                AccessToken = SessionTokens.AccessToken,
+                FriendlyDeviceName = Device?.GetDeviceName(),
+                UserCode = code
+            };
+
+            return await Provider.VerifySoftwareTokenAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Update settings for software MFA settings.
+        /// </summary>
+        /// <param name="isPreferred">Software MFA preferred at sign in.</param>
+        /// <param name="isEnabled">Enable or disable software MFA.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns></returns>
+        public async Task UpdateSoftwareMfaSettingsAsync(bool isPreferred, bool isEnabled, CancellationToken cancellationToken)
+        {
+            EnsureUserAuthenticated();
+            SetUserMFAPreferenceRequest request = new SetUserMFAPreferenceRequest {
+                AccessToken = SessionTokens.AccessToken,
+                SoftwareTokenMfaSettings = new SoftwareTokenMfaSettingsType() {
+                    PreferredMfa = isPreferred,
+                    Enabled = isEnabled
+                }
+            };
+
+            await Provider.SetUserMFAPreferenceAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
         private ConfirmSignUpRequest CreateConfirmSignUpRequest(string confirmationCode, bool forcedAliasCreation)
         {
             ConfirmSignUpRequest confirmRequest = new ConfirmSignUpRequest()
