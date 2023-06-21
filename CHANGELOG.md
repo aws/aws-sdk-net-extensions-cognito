@@ -1,3 +1,6 @@
+### 2.4.2 (2023-06-21)
+* Pull Request [#123](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/123) add support for software MFA. Thanks [DmitryProskurin](https://github.com/DmitryProskurin)
+
 ### 2.4.2 (2023-05-18)
 * Fix the binary compatibility bug introduced in 2.4.1 by restoring the public async method overloads without CancellationToken arguments.
 
