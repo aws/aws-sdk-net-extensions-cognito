@@ -66,7 +66,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             if (srpRequest.IsCustomAuthFlow)
             {
                 initiateRequest.AuthFlow = AuthFlowType.CUSTOM_AUTH;
-                initiateRequest.AuthParameters.Add("CHALLENGE_NAME", "SRP_A");
+                initiateRequest.AuthParameters.Add(CognitoConstants.ChlgParamChallengeName, CognitoConstants.ChlgParamSrpA);
             }
             InitiateAuthResponse initiateResponse = await Provider.InitiateAuthAsync(initiateRequest, cancellationToken).ConfigureAwait(false);
             UpdateUsernameAndSecretHash(initiateResponse.ChallengeParameters);
@@ -132,7 +132,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             
             RespondToAuthChallengeRequest authChallengeRequest = new RespondToAuthChallengeRequest()
             {
-                ChallengeName = "DEVICE_SRP_AUTH",
+                ChallengeName = ChallengeNameType.DEVICE_SRP_AUTH,
                 ClientId = ClientID,
                 Session = challenge.Session,
                 ChallengeResponses = new Dictionary<string, string>
@@ -143,9 +143,8 @@ namespace Amazon.Extensions.CognitoAuthentication
                 }
 
             };
-            if (!string.IsNullOrEmpty(ClientSecret))
+            if (!string.IsNullOrEmpty(SecretHash))
             {
-                SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(Username, ClientID, ClientSecret);
                 authChallengeRequest.ChallengeResponses.Add(CognitoConstants.ChlgParamSecretHash, SecretHash);
             }
             return authChallengeRequest;
@@ -192,9 +191,8 @@ namespace Amazon.Extensions.CognitoAuthentication
                 {CognitoConstants.ChlgParamDeviceKey, Device.DeviceKey }
             };
 
-            if (!string.IsNullOrEmpty(ClientSecret))
+            if (!string.IsNullOrEmpty(SecretHash))
             {
-                SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(Username, ClientID, ClientSecret);
                 srpAuthResponses.Add(CognitoConstants.ChlgParamSecretHash, SecretHash);
             }
 
@@ -814,9 +812,8 @@ namespace Amazon.Extensions.CognitoAuthentication
                 {CognitoConstants.ChlgParamTimestamp, timeStr },
             };
 
-            if (!string.IsNullOrEmpty(ClientSecret))
+            if (!string.IsNullOrEmpty(SecretHash))
             {
-                SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(Username, ClientID, ClientSecret);
                 srpAuthResponses.Add(CognitoConstants.ChlgParamSecretHash, SecretHash);
             }
 
