@@ -123,13 +123,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
 
             this.ClientSecret = clientSecret;
-            if (!string.IsNullOrEmpty(clientSecret))
-            {
-                this.SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(userID, clientID, clientSecret);
-            }
 
             this.UserID = userID;
-            this.Username = userID;
             if (!string.IsNullOrEmpty(username))
             {
                 this.Username = username;
@@ -137,6 +132,11 @@ namespace Amazon.Extensions.CognitoAuthentication
             else
             {
                 this.Username = userID;
+            }
+
+            if (!string.IsNullOrEmpty(clientSecret))
+            {
+                this.SecretHash = CognitoAuthHelper.GetUserPoolSecretHash(Username, clientID, clientSecret);
             }
 
             this.Status = status;
