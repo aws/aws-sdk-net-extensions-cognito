@@ -57,7 +57,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             if (srpRequest == null || string.IsNullOrEmpty(srpRequest.Password))
             {
-                throw new ArgumentNullException("Password required for authentication.", "srpRequest");
+                throw new ArgumentNullException(nameof(srpRequest), "Password required for authentication.");
             }
 
             Tuple<BigInteger, BigInteger> tupleAa = AuthenticationHelper.CreateAaTuple();
@@ -89,14 +89,13 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             RespondToAuthChallengeResponse verifierResponse =
                 await Provider.RespondToAuthChallengeAsync(challengeRequest, cancellationToken).ConfigureAwait(false);
-            var isDeviceAuthRequest = verifierResponse.AuthenticationResult == null && (!string.IsNullOrEmpty(srpRequest.DeviceGroupKey)
-                || !string.IsNullOrEmpty(srpRequest.DevicePass));
+
             #region Device-level authentication
-            if (isDeviceAuthRequest)
+            if (verifierResponse.ChallengeName == ChallengeNameType.DEVICE_SRP_AUTH)
             {
                 if (string.IsNullOrEmpty(srpRequest.DeviceGroupKey) || string.IsNullOrEmpty(srpRequest.DevicePass))
                 {
-                    throw new ArgumentNullException("Device Group Key and Device Pass required for authentication.", "srpRequest");
+                    throw new ArgumentNullException(nameof(srpRequest), $"{nameof(srpRequest.DeviceGroupKey)} and {nameof(srpRequest.DevicePass)} required for authentication with challenge {ChallengeNameType.DEVICE_SRP_AUTH}");
                 }
 
                 #region Device SRP Auth
@@ -429,6 +428,15 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// if one exists</returns>
         public async Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest, CancellationToken cancellationToken)
         {
+            if (mfaRequest == null)
+            {
+                throw new ArgumentNullException(nameof(mfaRequest));
+            }
+            if (mfaRequest.ChallengeNameType != ChallengeNameType.SMS_MFA && mfaRequest.ChallengeNameType != ChallengeNameType.SOFTWARE_TOKEN_MFA)
+            {
+                throw new ArgumentException($"{ChallengeNameType.SMS_MFA} or {ChallengeNameType.SOFTWARE_TOKEN_MFA} at {nameof(mfaRequest.ChallengeNameType)} required.", nameof(mfaRequest));
+            }
+
             RespondToAuthChallengeRequest challengeRequest = new RespondToAuthChallengeRequest
             {
                 ChallengeResponses = new Dictionary<string, string>
