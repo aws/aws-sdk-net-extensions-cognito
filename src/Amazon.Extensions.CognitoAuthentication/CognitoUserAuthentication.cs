@@ -40,9 +40,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// create an InitiateAuthAsync API call for SRP authentication</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithSrpAuthAsync(InitiateSrpAuthRequest srpRequest)
+        public virtual Task<AuthFlowResponse> StartWithSrpAuthAsync(InitiateSrpAuthRequest srpRequest)
         {
-            return await StartWithSrpAuthAsync(srpRequest, default);
+            return StartWithSrpAuthAsync(srpRequest, default);
         }
 
         /// <summary>
