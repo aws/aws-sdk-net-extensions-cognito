@@ -203,9 +203,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         /// <param name="userID">The userID of the corresponding user</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing a CognitoUser with the corresponding userID, with the Status and Attributes retrieved from Cognito.</returns>
-        public virtual async Task<CognitoUser> FindByIdAsync(string userID)
+        public virtual Task<CognitoUser> FindByIdAsync(string userID)
         {
-            return await FindByIdAsync(userID, default);
+            return FindByIdAsync(userID, default);
         }
 
         /// <summary>
@@ -242,9 +242,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Queries Cognito and returns the PasswordPolicyType associated with the pool.
         /// </summary>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the PasswordPolicyType of the pool.</returns>
-        public async Task<PasswordPolicyType> GetPasswordPolicyTypeAsync()
+        public Task<PasswordPolicyType> GetPasswordPolicyTypeAsync()
         {
-            return await GetPasswordPolicyTypeAsync(default);
+            return GetPasswordPolicyTypeAsync(default);
         }
 
         /// <summary>
@@ -267,9 +267,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Caches the value in the ClientConfiguration private property.
         /// </summary>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the PasswordPolicyType of the pool.</returns>
-        public async Task<CognitoUserPoolClientConfiguration> GetUserPoolClientConfiguration()
+        public Task<CognitoUserPoolClientConfiguration> GetUserPoolClientConfiguration()
         {
-            return await GetUserPoolClientConfiguration(default);
+            return GetUserPoolClientConfiguration(default);
         }
 
         /// <summary>

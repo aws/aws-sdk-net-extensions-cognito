@@ -216,9 +216,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// create an InitiateAuthAsync API call for custom authentication</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest)
+        public virtual Task<AuthFlowResponse> StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest)
         {
-            return await StartWithCustomAuthAsync(customRequest, default);
+            return StartWithCustomAuthAsync(customRequest, default);
         }
 
         /// <summary>
@@ -259,9 +259,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// respond to the current custom authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToCustomAuthAsync(RespondToCustomChallengeRequest customRequest)
+        public virtual Task<AuthFlowResponse> RespondToCustomAuthAsync(RespondToCustomChallengeRequest customRequest)
         {
-            return await RespondToCustomAuthAsync(customRequest, default);
+            return RespondToCustomAuthAsync(customRequest, default);
         }
 
         /// <summary>
@@ -317,9 +317,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="passwordVerifier">The password verifier generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
         /// <param name="salt">The salt generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
         /// <returns></returns>
-        public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt)
+        public Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt)
         {
-            return await ConfirmDeviceAsync(accessToken, deviceKey, deviceName, passwordVerifier, salt, default);
+            return ConfirmDeviceAsync(accessToken, deviceKey, deviceName, passwordVerifier, salt, default);
         }
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="salt">The salt generated from GenerateDeviceVerifier for the corresponding CognitoDevice</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
         /// <returns></returns>
-        public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt, CancellationToken cancellationToken)
+        public Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt, CancellationToken cancellationToken)
         {
             var request = new ConfirmDeviceRequest
             {
@@ -346,7 +346,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 }
             };
 
-            return await Provider.ConfirmDeviceAsync(request, cancellationToken);
+            return Provider.ConfirmDeviceAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -356,9 +356,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="deviceKey">The device key for the associated CognitoDevice</param>
         /// <param name="deviceRememberedStatus">The device remembered status for the associated CognitoDevice</param>
         /// <returns></returns>
-        public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus)
+        public Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus)
         {
-            return await UpdateDeviceStatusAsync(accessToken, deviceKey, deviceRememberedStatus, default);
+            return UpdateDeviceStatusAsync(accessToken, deviceKey, deviceRememberedStatus, default);
         }
 
         /// <summary>
@@ -369,7 +369,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="deviceRememberedStatus">The device remembered status for the associated CognitoDevice</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
         /// <returns></returns>
-        public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus, CancellationToken cancellationToken)
+        public Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus, CancellationToken cancellationToken)
         {
             var request = new UpdateDeviceStatusRequest
             {
@@ -378,7 +378,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 DeviceRememberedStatus = deviceRememberedStatus
             };
 
-            return await Provider.UpdateDeviceStatusAsync(request, cancellationToken);
+            return Provider.UpdateDeviceStatusAsync(request, cancellationToken);
         }
         /// <summary>
         /// Uses the properties of the RespondToSmsMfaRequest object to respond to the current MFA 
@@ -388,9 +388,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest)
+        public virtual Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest)
         {
-            return await RespondToSmsMfaAuthAsync(smsMfaRequest, default);
+            return RespondToSmsMfaAuthAsync(smsMfaRequest, default);
         }
 
         /// <summary>
@@ -402,9 +402,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest, CancellationToken cancellationToken)
+        public virtual Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest, CancellationToken cancellationToken)
         {
-            return await RespondToMfaAuthAsync(smsMfaRequest, cancellationToken).ConfigureAwait(false);
+            return RespondToMfaAuthAsync(smsMfaRequest, cancellationToken);
         }
 
         /// <summary>
@@ -415,9 +415,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// respond to the current MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public async Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest)
+        public Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest)
         {
-            return await RespondToMfaAuthAsync(mfaRequest, default);
+            return RespondToMfaAuthAsync(mfaRequest, default);
         }
 
         /// <summary>
@@ -510,9 +510,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes)
+        public virtual Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes)
         {
-            return await RespondToNewPasswordRequiredAsync(newPasswordRequest, requiredAttributes, default);
+            return RespondToNewPasswordRequiredAsync(newPasswordRequest, requiredAttributes, default);
         }
 
         /// <summary>
@@ -575,9 +575,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to initiate the refresh token authentication flow</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
+        public virtual Task<AuthFlowResponse> StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
         {
-            return await StartWithRefreshTokenAuthAsync(refreshTokenRequest, default);
+            return StartWithRefreshTokenAuthAsync(refreshTokenRequest, default);
         }
 
         /// <summary>
@@ -615,9 +615,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// parameters to initiate the ADMIN_NO_SRP_AUTH authentication flow</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
         /// if one exists</returns>
-        public virtual async Task<AuthFlowResponse> StartWithAdminNoSrpAuthAsync(InitiateAdminNoSrpAuthRequest adminAuthRequest)
+        public virtual Task<AuthFlowResponse> StartWithAdminNoSrpAuthAsync(InitiateAdminNoSrpAuthRequest adminAuthRequest)
         {
-            return await StartWithAdminNoSrpAuthAsync(adminAuthRequest, default);
+            return StartWithAdminNoSrpAuthAsync(adminAuthRequest, default);
         }
 
         /// <summary>

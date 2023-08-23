@@ -156,9 +156,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Gets the device from the Cognito service using the device key and user's access 
         /// token using an asynchronous call
         /// </summary>
-        public async Task GetDeviceAsync()
+        public Task GetDeviceAsync()
         {
-            await GetDeviceAsync(default);
+            return GetDeviceAsync(default);
         }
 
         /// <summary>

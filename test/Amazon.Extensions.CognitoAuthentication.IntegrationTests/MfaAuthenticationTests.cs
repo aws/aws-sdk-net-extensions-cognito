@@ -51,7 +51,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
            {
                MfaCode = "fakeMfaCode",
                SessionID = context.SessionID
-           }));
+           })).ConfigureAwait(false);
         }
 
         /// <summary>
