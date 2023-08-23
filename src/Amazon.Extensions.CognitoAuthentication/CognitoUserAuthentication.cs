@@ -218,7 +218,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// if one exists</returns>
         public virtual async Task<AuthFlowResponse> StartWithCustomAuthAsync(InitiateCustomAuthRequest customRequest)
         {
-            return await StartWithCustomAuthAsync(customRequest, default);
+            return await StartWithCustomAuthAsync(customRequest, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// if one exists</returns>
         public virtual async Task<AuthFlowResponse> RespondToCustomAuthAsync(RespondToCustomChallengeRequest customRequest)
         {
-            return await RespondToCustomAuthAsync(customRequest, default);
+            return await RespondToCustomAuthAsync(customRequest, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <returns></returns>
         public async Task<ConfirmDeviceResponse> ConfirmDeviceAsync(string accessToken, string deviceKey, string deviceName, string passwordVerifier, string salt)
         {
-            return await ConfirmDeviceAsync(accessToken, deviceKey, deviceName, passwordVerifier, salt, default);
+            return await ConfirmDeviceAsync(accessToken, deviceKey, deviceName, passwordVerifier, salt, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -346,7 +346,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 }
             };
 
-            return await Provider.ConfirmDeviceAsync(request, cancellationToken);
+            return await Provider.ConfirmDeviceAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -358,7 +358,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <returns></returns>
         public async Task<UpdateDeviceStatusResponse> UpdateDeviceStatusAsync(string accessToken, string deviceKey, string deviceRememberedStatus)
         {
-            return await UpdateDeviceStatusAsync(accessToken, deviceKey, deviceRememberedStatus, default);
+            return await UpdateDeviceStatusAsync(accessToken, deviceKey, deviceRememberedStatus, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -378,7 +378,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 DeviceRememberedStatus = deviceRememberedStatus
             };
 
-            return await Provider.UpdateDeviceStatusAsync(request, cancellationToken);
+            return await Provider.UpdateDeviceStatusAsync(request, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
         /// Uses the properties of the RespondToSmsMfaRequest object to respond to the current MFA 
@@ -390,7 +390,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// if one exists</returns>
         public virtual async Task<AuthFlowResponse> RespondToSmsMfaAuthAsync(RespondToSmsMfaRequest smsMfaRequest)
         {
-            return await RespondToSmsMfaAuthAsync(smsMfaRequest, default);
+            return await RespondToSmsMfaAuthAsync(smsMfaRequest, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// if one exists</returns>
         public async Task<AuthFlowResponse> RespondToMfaAuthAsync(RespondToMfaRequest mfaRequest)
         {
-            return await RespondToMfaAuthAsync(mfaRequest, default);
+            return await RespondToMfaAuthAsync(mfaRequest, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -512,7 +512,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// if one exists</returns>
         public virtual async Task<AuthFlowResponse> RespondToNewPasswordRequiredAsync(RespondToNewPasswordRequiredRequest newPasswordRequest, Dictionary<string, string> requiredAttributes)
         {
-            return await RespondToNewPasswordRequiredAsync(newPasswordRequest, requiredAttributes, default);
+            return await RespondToNewPasswordRequiredAsync(newPasswordRequest, requiredAttributes, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -577,7 +577,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// if one exists</returns>
         public virtual async Task<AuthFlowResponse> StartWithRefreshTokenAuthAsync(InitiateRefreshTokenAuthRequest refreshTokenRequest)
         {
-            return await StartWithRefreshTokenAuthAsync(refreshTokenRequest, default);
+            return await StartWithRefreshTokenAuthAsync(refreshTokenRequest, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -617,7 +617,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// if one exists</returns>
         public virtual async Task<AuthFlowResponse> StartWithAdminNoSrpAuthAsync(InitiateAdminNoSrpAuthRequest adminAuthRequest)
         {
-            return await StartWithAdminNoSrpAuthAsync(adminAuthRequest, default);
+            return await StartWithAdminNoSrpAuthAsync(adminAuthRequest, default).ConfigureAwait(false);
         }
 
         /// <summary>

@@ -28,7 +28,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
         [Fact]
         public async void TestFailedChangePassword()
         {
-            await Assert.ThrowsAsync<NotAuthorizedException>(() => user.ChangePasswordAsync("PassWord1!", "PassWord2!"));
+            await Assert.ThrowsAsync<NotAuthorizedException>(() => user.ChangePasswordAsync("PassWord1!", "PassWord2!")).ConfigureAwait(false);
         }
 
         // Tests that a CognitoUser object has a valid session object after being authenticated

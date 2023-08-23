@@ -65,7 +65,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             {
                 SessionID = context.SessionID,
                 NewPassword = "NewPassword1!"
-            });
+            }).ConfigureAwait(false);
 
             Assert.True(user.SessionTokens.IsValid());
         }
