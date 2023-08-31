@@ -1,4 +1,7 @@
-### 2.4.2 (2023-06-21)
+### 2.5.1 (2023-08-30)
+* Pull Request [#130](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/130) Add ConfigureAwait(false) to avoid sync context deadlocks. Thanks [Ryan Swenson](https://github.com/swensorm)
+
+### 2.5.0 (2023-06-21)
 * Pull Request [#123](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/123) add support for software MFA. Thanks [DmitryProskurin](https://github.com/DmitryProskurin)
 
 ### 2.4.2 (2023-05-18)
