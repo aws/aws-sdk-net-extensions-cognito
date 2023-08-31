@@ -158,7 +158,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         public async Task GetDeviceAsync()
         {
-            await GetDeviceAsync(default);
+            await GetDeviceAsync(default).ConfigureAwait(false);
         }
 
         /// <summary>

@@ -407,7 +407,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="attributes">The attributes to be updated</param>
         public virtual async Task UpdateAttributesAsync(IDictionary<string, string> attributes)
         {
-            await UpdateAttributesAsync(attributes, default);
+            await UpdateAttributesAsync(attributes, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="attributeNamesToDelete">List of attributes to delete</param>
         public virtual async Task DeleteAttributesAsync(IList<string> attributeNamesToDelete)
         {
-            await DeleteAttributesAsync(attributeNamesToDelete, default);
+            await DeleteAttributesAsync(attributeNamesToDelete, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -470,7 +470,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="userSettings">Dictionary for the user MFA settings of the form [attribute, delivery medium]</param>
         public virtual async Task SetUserSettingsAsync(IDictionary<string, string> userSettings)
         {
-            await SetUserSettingsAsync(userSettings, default);
+            await SetUserSettingsAsync(userSettings, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -501,7 +501,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         [Obsolete("This method is deprecated since it only lists the first page of devices. The method ListDevicesV2Async should be used instead which allows listing additional pages of devices.")]
         public virtual async Task<List<CognitoDevice>> ListDevicesAsync(int limit, string paginationToken)
         {
-            return await ListDevicesAsync(limit, paginationToken, default);
+            return await ListDevicesAsync(limit, paginationToken, default).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -536,7 +536,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <returns>Returns underlying ListDevicesResponse that contains list of DeviceType objects along with PaginationToken.</returns>
         public virtual async Task<ListDevicesResponse> ListDevicesV2Async(int limit, string paginationToken)
         {
-            return await ListDevicesV2Async(limit, paginationToken, default);
+            return await ListDevicesV2Async(limit, paginationToken, default).ConfigureAwait(false);
         }
 
         /// <summary>
