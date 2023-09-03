@@ -672,10 +672,9 @@ namespace Amazon.Extensions.CognitoAuthentication
                 }
             };
 
-            if (!string.IsNullOrEmpty(ClientSecret))
+            if (!string.IsNullOrEmpty(SecretHash))
             {
-                initiateAuthRequest.AuthParameters.Add(CognitoConstants.ChlgParamSecretHash,
-                                                    CognitoAuthHelper.GetUserPoolSecretHash(Username, ClientID, ClientSecret));
+                initiateAuthRequest.AuthParameters.Add(CognitoConstants.ChlgParamSecretHash, SecretHash);
             }
 
             if (Device != null && !string.IsNullOrEmpty(Device.DeviceKey))
