@@ -434,10 +434,6 @@ namespace Amazon.Extensions.CognitoAuthentication
             {
                 throw new ArgumentNullException(nameof(mfaRequest));
             }
-            if (mfaRequest.ChallengeNameType != ChallengeNameType.SMS_MFA && mfaRequest.ChallengeNameType != ChallengeNameType.SOFTWARE_TOKEN_MFA)
-            {
-                throw new ArgumentException($"{ChallengeNameType.SMS_MFA} or {ChallengeNameType.SOFTWARE_TOKEN_MFA} at {nameof(mfaRequest.ChallengeNameType)} required.", nameof(mfaRequest));
-            }
 
             RespondToAuthChallengeRequest challengeRequest = new RespondToAuthChallengeRequest
             {
