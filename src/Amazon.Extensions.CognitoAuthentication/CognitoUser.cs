@@ -773,7 +773,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             if (attributeNamesToDelete == null || attributeNamesToDelete.Count < 1)
             {
-                throw new ArgumentNullException("attributeNamesToDelete cannot be null or empty.", "attributeNamesToDelete");
+                throw new ArgumentNullException(nameof(attributeNamesToDelete), $"{nameof(attributeNamesToDelete)} cannot be null or empty.");
             }
 
             EnsureUserAuthenticated();
@@ -791,7 +791,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             if (userSettings == null || userSettings.Count < 1)
             {
-                throw new ArgumentNullException("userSettings cannot be null or empty.", "userSettings");
+                throw new ArgumentNullException(nameof(userSettings), $"{nameof(userSettings)} cannot be null or empty.");
             }
 
             EnsureUserAuthenticated();

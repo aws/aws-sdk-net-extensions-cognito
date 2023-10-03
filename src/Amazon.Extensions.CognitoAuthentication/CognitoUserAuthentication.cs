@@ -169,9 +169,9 @@ namespace Amazon.Extensions.CognitoAuthentication
             string salt = challenge.ChallengeParameters[CognitoConstants.ChlgParamSalt];
             BigInteger srpb = BigIntegerExtensions.FromUnsignedLittleEndianHex(challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB]);
 
-            if ((srpb.TrueMod(AuthenticationHelper.N)).Equals(BigInteger.Zero))
+            if (srpb.TrueMod(AuthenticationHelper.N).Equals(BigInteger.Zero))
             {
-                throw new ArgumentException("SRP error, B mod N cannot be zero.", "challenge");
+                throw new ArgumentException("SRP error, B mod N cannot be zero.", nameof(challenge));
             }
 
             string timeStr = DateTime.UtcNow.ToString("ddd MMM d HH:mm:ss \"UTC\" yyyy", CultureInfo.InvariantCulture);
@@ -506,8 +506,8 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Uses the properties of the RespondToNewPasswordRequiredRequest object to respond to the current new 
         /// password required authentication challenge using an asynchronous call
         /// </summary>
-        /// <param name="newPasswordRequest">RespondToNewPasswordRequiredRequest object containing the necessary 
-        /// <param name="requiredAttributes">Optional dictionnary of attributes that may be required by the user pool
+        /// <param name="newPasswordRequest">RespondToNewPasswordRequiredRequest object containing the necessary data</param>
+        /// <param name="requiredAttributes">Optional dictionary of attributes that may be required by the user pool
         /// Each attribute key must be prefixed by "userAttributes."
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
@@ -521,8 +521,8 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Uses the properties of the RespondToNewPasswordRequiredRequest object to respond to the current new 
         /// password required authentication challenge using an asynchronous call
         /// </summary>
-        /// <param name="newPasswordRequest">RespondToNewPasswordRequiredRequest object containing the necessary 
-        /// <param name="requiredAttributes">Optional dictionnary of attributes that may be required by the user pool
+        /// <param name="newPasswordRequest">RespondToNewPasswordRequiredRequest object containing the necessary data</param>
+        /// <param name="requiredAttributes">Optional dictionary of attributes that may be required by the user pool
         /// Each attribute key must be prefixed by "userAttributes."
         /// parameters to respond to the current SMS MFA authentication challenge</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
@@ -795,9 +795,9 @@ namespace Amazon.Extensions.CognitoAuthentication
             string salt = challenge.ChallengeParameters[CognitoConstants.ChlgParamSalt];
             BigInteger srpb = BigIntegerExtensions.FromUnsignedLittleEndianHex(challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB]);
 
-            if ((srpb.TrueMod(AuthenticationHelper.N)).Equals(BigInteger.Zero))
+            if (srpb.TrueMod(AuthenticationHelper.N).Equals(BigInteger.Zero))
             {
-                throw new ArgumentException("SRP error, B mod N cannot be zero.", "challenge");
+                throw new ArgumentException("SRP error, B mod N cannot be zero.", nameof(challenge));
             }
 
             DateTime timestamp = DateTime.UtcNow;
