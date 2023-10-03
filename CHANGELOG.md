@@ -1,3 +1,10 @@
+### 2.5.2 (2023-10-03)
+* Pull Request [#132](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/132) Adds code improvements to make it more idiomatic.
+* Pull Request [#127](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/127) Verifies the ChallengeName during SRP authentication.
+* Pull Request [#126](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/126) Fixes issues with the SecretHash initialization.
+
+Thanks [DmitryProskurin](https://github.com/DmitryProskurin) for the above changes.
+
 ### 2.5.1 (2023-08-30)
 * Pull Request [#130](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/130) Add ConfigureAwait(false) to avoid sync context deadlocks. Thanks [Ryan Swenson](https://github.com/swensorm)
 
