@@ -89,13 +89,12 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             if (deviceKey == null)
             {
-                throw new ArgumentNullException("deviceKey", "deviceKey cannot be null.");
+                throw new ArgumentNullException(nameof(deviceKey));
             }
 
             if(deviceAttributes == null)
             {
-                throw new ArgumentNullException("deviceAttributes", "deviceAttributes cannot be null.");
-
+                throw new ArgumentNullException(nameof(deviceAttributes));
             }
 
             this.DeviceKey = deviceKey;
@@ -115,7 +114,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             if (device == null)
             {
-                throw new ArgumentNullException("device", "Device cannot be null.");
+                throw new ArgumentNullException(nameof(device));
             }
 
             this.DeviceKey = device.DeviceKey;

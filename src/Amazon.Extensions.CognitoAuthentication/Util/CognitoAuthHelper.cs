@@ -118,7 +118,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         {
             if (hexString.Length % 2 != 0)
             {
-                throw new ArgumentException("Malformed hexString.", "hexString");
+                throw new ArgumentException("Malformed hexString.", nameof(hexString));
             }
 
             int stringLen = hexString.Length;

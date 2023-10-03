@@ -62,7 +62,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             if(!poolID.Contains("_"))
             {
-                throw new ArgumentException("PoolID should be of the form <region>_<poolname>.", "poolID");
+                throw new ArgumentException($"{nameof(poolID)} should be of the form <region>_<poolname>.", nameof(poolID));
             }
 
             this.PoolID = poolID;
@@ -133,7 +133,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
             else
             {
-                throw new ArgumentNullException("userAttributes", "userAttributes cannot be null.");
+                throw new ArgumentNullException(nameof(userAttributes));
             }
 
             List<AttributeType> validationDataList = 
@@ -344,7 +344,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             }
             else
             {
-                throw new ArgumentNullException(nameof(userAttributes), "userAttributes cannot be null.");
+                throw new ArgumentNullException(nameof(userAttributes));
             }
 
             List<AttributeType> validationDataList =
@@ -361,15 +361,15 @@ namespace Amazon.Extensions.CognitoAuthentication
         }
 
         /// <summary>
-        /// Resets the <paramref name="user"/>'s password to the specified <paramref name="newPassword"/> after
+        /// Resets the user's password to the specified <paramref name="newPassword"/> after
         /// validating the given password reset <paramref name="token"/>.
         /// </summary>
-        /// <param name="user">The user whose password should be reset.</param>
+        /// <param name="userID">The ID of user whose password should be reset.</param>
         /// <param name="token">The password reset token to verify.</param>
         /// <param name="newPassword">The new password to set if reset token verification succeeds.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
         /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
-        /// of the operation.
+        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="ConfirmForgotPasswordResponse"/>.
         /// </returns>
         public Task ConfirmForgotPassword(string userID, string token, string newPassword, CancellationToken cancellationToken)
         {
