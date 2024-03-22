@@ -63,6 +63,11 @@ namespace Amazon.Extensions.CognitoAuthentication
             Tuple<BigInteger, BigInteger> tupleAa = AuthenticationHelper.CreateAaTuple();
             InitiateAuthRequest initiateRequest = CreateSrpAuthRequest(tupleAa);
 
+            if (srpRequest.ClientMetadata != null)
+            {
+                initiateRequest.ClientMetadata = new Dictionary<string, string>(srpRequest.ClientMetadata);
+            }
+
             if (srpRequest.IsCustomAuthFlow)
             {
                 initiateRequest.AuthFlow = AuthFlowType.CUSTOM_AUTH;
