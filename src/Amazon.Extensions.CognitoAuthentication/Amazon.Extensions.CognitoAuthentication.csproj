@@ -28,7 +28,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <DelaySign>false</DelaySign>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.5.2</Version>
+    <Version>2.5.3</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -36,8 +36,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CognitoIdentity" Version="3.7.0.2" />
-    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.7.0.2" />
+    <PackageReference Include="AWSSDK.CognitoIdentity" Version="3.7.300.74" />
+    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.7.303.19" />
   </ItemGroup>
 
   <ItemGroup>

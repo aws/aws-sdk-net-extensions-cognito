@@ -27,7 +27,9 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
     {
         [ThreadStatic] private static SHA256 sha256 = null;
 
-        private static string assemblyFileVersion = null;
+        private static readonly string _assemblyVersion = GetAssemblyFileVersion();
+
+        private static readonly string _userAgentSuffix = $"lib/AWSDotNetCognito#{_assemblyVersion}";
         /// <summary>
         /// Property to access the thread-safe SHA256 member variable. 
         /// Creates a SHA256 instance if one does not exist.
@@ -44,23 +46,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
                 return sha256;
             }
         }
-    
-        internal static string AssemblyFileVersion
-        {
-            get
-            {
-                if (assemblyFileVersion == null)
-                {
-                    var assembly = typeof(CognitoAuthHelper).GetTypeInfo().Assembly;
-                    AssemblyFileVersionAttribute attribute = assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
 
-                    assemblyFileVersion = attribute == null ? "Unknown" : attribute.Version;
-                }
-                
-                return assemblyFileVersion;
-            }
-        }
-        
         /// <summary>
         /// Computes the secret hash for the user pool using the corresponding userID, clientID, 
         /// and client secret
@@ -161,15 +147,20 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
 
         internal static void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
         {
-            Amazon.Runtime.WebServiceRequestEventArgs args = e as Amazon.Runtime.WebServiceRequestEventArgs;
-            if (args == null || !args.Headers.ContainsKey(UserAgentHeader))
+            WebServiceRequestEventArgs args = e as WebServiceRequestEventArgs;
+            if (args == null || !args.Headers.ContainsKey(UserAgentHeader) || args.Headers[UserAgentHeader].Contains(_userAgentSuffix))
                 return;
 
-            var metric = " AWSDotNetCognito/" + AssemblyFileVersion;
-            if (!args.Headers[UserAgentHeader].Contains(metric))
-            {
-                args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + metric;
-            }
+            args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " " + _userAgentSuffix;
+        }
+
+        private static string GetAssemblyFileVersion()
+        {
+            var assembly = typeof(CognitoAuthHelper).GetTypeInfo().Assembly;
+            AssemblyFileVersionAttribute attribute = assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
+
+            var version = attribute == null ? "Unknown" : attribute.Version;
+            return version;
         }
     }
 }
