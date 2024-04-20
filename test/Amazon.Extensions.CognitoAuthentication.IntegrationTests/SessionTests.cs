@@ -19,6 +19,7 @@ using Xunit;
 
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication.Util;
+using System.Linq;
 
 namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 {
@@ -55,7 +56,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 }).ConfigureAwait(false);
             GetUserResponse userDetails = await user.GetUserDetailsAsync().ConfigureAwait(false);
 
-            Assert.True(string.Equals(userDetails.UserAttributes[2].Name, CognitoConstants.UserAttrEmail, StringComparison.Ordinal));
+            Assert.True(userDetails.UserAttributes.Any(x => string.Equals(x.Name, CognitoConstants.UserAttrEmail, StringComparison.Ordinal)));
             Assert.Empty(userDetails.MFAOptions);
         }
 
