@@ -1,3 +1,6 @@
+### 2.5.3 (2024-04-20)
+* Update User-Agent string
+
 ### 2.5.2 (2023-10-03)
 * Pull Request [#132](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/132) Adds code improvements to make it more idiomatic.
 * Pull Request [#127](https://github.com/aws/aws-sdk-net-extensions-cognito/pull/127) Verifies the ChallengeName during SRP authentication.
