@@ -1,3 +1,6 @@
+### 2.5.4 (2024-05-03)
+* Add ClientMetadata to InitiateAuthRequest during StartWithSrpAuthAsync. Thanks [willsmith9182](https://github.com/willsmith9182).
+
 ### 2.5.3 (2024-04-20)
 * Update User-Agent string
 
