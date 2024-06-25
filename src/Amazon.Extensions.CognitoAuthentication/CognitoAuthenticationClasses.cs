@@ -68,6 +68,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// applicable for custom authentication.
         /// </summary>
         public IDictionary<string, string> ClientMetadata { get; }
+
+        /// <summary>
+        /// The analytics metadata for collecting Amazon Pinpoint metrics.
+        /// </summary>
+        public AnalyticsMetadataType AnalyticsMetadata { get; set; }
     }
 
     /// <summary>
@@ -96,6 +101,10 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         public IDictionary<string, string> ClientMetadata { get; set; }
         /// <summary>
+        /// The analytics metadata for collecting Amazon Pinpoint metrics.
+        /// </summary>
+        public AnalyticsMetadataType AnalyticsMetadata { get; set; }
+        /// <summary>
         /// Enable custom auth flow
         /// https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#Using-SRP-password-verification-in-custom-authentication-flow
         /// </summary>
@@ -116,6 +125,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// The client metadata for the current authentication flow.
         /// </summary>
         public IDictionary<string, string> ClientMetadata { get; set; }
+
+        /// <summary>
+        /// The analytics metadata for collecting Amazon Pinpoint metrics.
+        /// </summary>
+        public AnalyticsMetadataType AnalyticsMetadata { get; set; }
     }
 
     /// <summary>
@@ -195,6 +209,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         public IDictionary<string, string> ClientMetadata { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
+        /// The analytics metadata for collecting Amazon Pinpoint metrics.
+        /// </summary>
+        public AnalyticsMetadataType AnalyticsMetadata { get; set; }
+
+        /// <summary>
         /// The sessionID for the current authentication flow.
         /// </summary>
         public string SessionID { get; set; }
@@ -214,5 +233,10 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Optional client metadata to provide in the Initiate Admin Authentication API call
         /// </summary>
         public IDictionary<string, string> ClientMetadata { get; set; }
+
+        /// <summary>
+        /// Optional analytics metadata for collecting Amazon Pinpoint metrics.
+        /// </summary>
+        public AnalyticsMetadataType AnalyticsMetadata { get; set; }
     }
 }
