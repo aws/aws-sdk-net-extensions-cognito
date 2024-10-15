@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 using Amazon;
@@ -44,7 +45,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
 
         [Fact]
         //Tests GetCognitoAWSCredentials
-        public async void TestGetCognitoAWSCredentials()
+        public async Task TestGetCognitoAWSCredentials()
         {
             string password = "PassWord1!";
             string poolRegion = user.UserPool.PoolID.Substring(0, user.UserPool.PoolID.IndexOf("_"));
@@ -54,7 +55,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
                     Password = password
-                }).ConfigureAwait(false);
+                });
 
             //Create identity pool
             identityClient = new AmazonCognitoIdentityClient(clientCredentials, clientRegion);
@@ -68,29 +69,29 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                     },
                     IdentityPoolName = "TestIdentityPool" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
 
-                }).ConfigureAwait(false);
+                });
             identityPoolId = poolResponse.IdentityPoolId;
 
             //Create role for identity pool
             managementClient = new AmazonIdentityManagementServiceClient(clientCredentials, clientRegion);
-            CreateRoleResponse roleResponse = managementClient.CreateRoleAsync(new CreateRoleRequest()
+            CreateRoleResponse roleResponse = await managementClient.CreateRoleAsync(new CreateRoleRequest()
             {
                 RoleName = "_TestRole_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
                 AssumeRolePolicyDocument = "{\"Version\": \"2012-10-17\",\"Statement\": [{\"Effect" +
                 "\": \"Allow\",\"Principal\": {\"Federated\": \"cognito-identity.amazonaws.com\"}," +
                 "\"Action\": \"sts:AssumeRoleWithWebIdentity\",\"Condition\": {\"StringEquals\": {" +
                 "\"cognito-identity.amazonaws.com:aud\": [\"" + identityPoolId + "\"]}}}]}"
-            }).Result;
+            });
             roleName = roleResponse.Role.RoleName;
 
             //Create and attach policy for role
-            CreatePolicyResponse policyResponse = managementClient.CreatePolicyAsync(new CreatePolicyRequest()
+            CreatePolicyResponse policyResponse = await managementClient.CreatePolicyAsync(new CreatePolicyRequest()
             {
                 PolicyDocument = "{\"Version\": \"2012-10-17\",\"Statement\": " +
                 "[{\"Effect\": \"Allow\",\"Action\": [\"mobileanalytics:PutEvents\",\"cog" +
                 "nito-sync:*\",\"cognito-identity:*\",\"s3:*\"],\"Resource\": [\"*\"]}]}",
                 PolicyName = "_Cognito_" + DateTime.UtcNow.ToString("yyyyMMdd_HHmmss"),
-            }).Result;
+            });
             policyArn = policyResponse.Policy.Arn;
 
             AttachRolePolicyRequest attachRequest = new AttachRolePolicyRequest()
@@ -98,7 +99,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                 PolicyArn = policyArn,
                 RoleName = roleName
             };
-            AttachRolePolicyResponse attachRolePolicyResponse = managementClient.AttachRolePolicyAsync(attachRequest).Result;
+            AttachRolePolicyResponse attachRolePolicyResponse = await managementClient.AttachRolePolicyAsync(attachRequest);
 
             //Set the role for the identity pool
             await identityClient.SetIdentityPoolRolesAsync(new SetIdentityPoolRolesRequest()
@@ -109,7 +110,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                     { "authenticated", roleResponse.Role.Arn },
                     { "unauthenticated", roleResponse.Role.Arn }
                 },
-            }).ConfigureAwait(false);
+            });
             
             //Create and test credentials
             CognitoAWSCredentials credentials = user.GetCognitoAWSCredentials(identityPoolId, clientRegion);
@@ -122,17 +123,17 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                 {
                     try
                     {
-                        bucketsResponse = await client.ListBucketsAsync(new ListBucketsRequest()).ConfigureAwait(false);
+                        bucketsResponse = await client.ListBucketsAsync(new ListBucketsRequest());
                         break;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        System.Threading.Thread.Sleep(5000);
+                        Thread.Sleep(5000);
                     }
                 }
 
                 Assert.True(null != bucketsResponse, "Failed to list buckets after 5 tries");
-                Assert.Equal(bucketsResponse.HttpStatusCode, System.Net.HttpStatusCode.OK);
+                Assert.Equal(System.Net.HttpStatusCode.OK, bucketsResponse.HttpStatusCode);
             }
         }
 

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 using Amazon.Runtime;
@@ -35,7 +36,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 
         //Tests MFA authentication flow
         [Fact]
-        public async void TestMfaAuthenticationFlow()
+        public async Task TestMfaAuthenticationFlow()
         {
             string password = "PassWord1!";
 
@@ -43,7 +44,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
                     Password = password
-                }).ConfigureAwait(false);
+                });
 
             Assert.Equal(context.ChallengeName, ChallengeNameType.SMS_MFA);
 
@@ -51,7 +52,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
            {
                MfaCode = "fakeMfaCode",
                SessionID = context.SessionID
-           })).ConfigureAwait(false);
+           }));
         }
 
         /// <summary>

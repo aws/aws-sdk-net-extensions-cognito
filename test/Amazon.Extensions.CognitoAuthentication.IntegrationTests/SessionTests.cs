@@ -27,9 +27,9 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
     {
         // Tests the ChangePassword method in CognitoUser to fail due to no valid session
         [Fact]
-        public async void TestFailedChangePassword()
+        public async Task TestFailedChangePassword()
         {
-            await Assert.ThrowsAsync<NotAuthorizedException>(() => user.ChangePasswordAsync("PassWord1!", "PassWord2!")).ConfigureAwait(false);
+            await Assert.ThrowsAsync<NotAuthorizedException>(() => user.ChangePasswordAsync("PassWord1!", "PassWord2!"));
         }
 
         // Tests that a CognitoUser object has a valid session object after being authenticated
@@ -40,7 +40,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
                     Password = "PassWord1!"
-                }).ConfigureAwait(false);
+                });
 
             Assert.True(user.SessionTokens.IsValid());
         }
@@ -53,10 +53,10 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
                     Password = "PassWord1!"
-                }).ConfigureAwait(false);
-            GetUserResponse userDetails = await user.GetUserDetailsAsync().ConfigureAwait(false);
+                });
+            GetUserResponse userDetails = await user.GetUserDetailsAsync();
 
-            Assert.True(userDetails.UserAttributes.Any(x => string.Equals(x.Name, CognitoConstants.UserAttrEmail, StringComparison.Ordinal)));
+            Assert.Contains(userDetails.UserAttributes, x => string.Equals(x.Name, CognitoConstants.UserAttrEmail, StringComparison.Ordinal));
             Assert.Empty(userDetails.MFAOptions);
         }
 
@@ -68,9 +68,9 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
                     Password = "PassWord1!"
-                }).ConfigureAwait(false);
+                });
 
-            await user.GlobalSignOutAsync().ConfigureAwait(false);
+            await user.GlobalSignOutAsync();
 
             Assert.Null(user.SessionTokens);
         }

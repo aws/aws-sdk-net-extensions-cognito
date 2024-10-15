@@ -57,7 +57,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
                     Password = password
-                }).ConfigureAwait(false);
+                });
 
             Assert.Equal(context.ChallengeName, ChallengeNameType.NEW_PASSWORD_REQUIRED);
 
@@ -65,7 +65,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             {
                 SessionID = context.SessionID,
                 NewPassword = "NewPassword1!"
-            }).ConfigureAwait(false);
+            });
 
             Assert.True(user.SessionTokens.IsValid());
         }
