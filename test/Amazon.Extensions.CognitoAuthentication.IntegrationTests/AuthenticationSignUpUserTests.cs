@@ -61,14 +61,14 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 { CognitoConstants.UserAttrEmail, "xxx@yyy.zzz"}
             };
 
-            await pool.SignUpAsync(userID, password, userAttributes, validationData).ConfigureAwait(false);
+            await pool.SignUpAsync(userID, password, userAttributes, validationData);
 
             ListUsersRequest listUsersRequest = new ListUsersRequest()
             {
                 Limit = 2,
                 UserPoolId = pool.PoolID
             };
-            ListUsersResponse listUsersResponse = await provider.ListUsersAsync(listUsersRequest).ConfigureAwait(false);
+            ListUsersResponse listUsersResponse = await provider.ListUsersAsync(listUsersRequest);
             bool containsUser55 = false;
 
             foreach (UserType user in listUsersResponse.Users)
@@ -84,9 +84,9 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 
         // Tests that ConfirmSignUp reaches the proper failure point with incorrect confirmation code
         [Fact]
-        public void TestConfirmSignUpFail()
+        public async Task TestConfirmSignUpFail()
         {
-            Assert.ThrowsAsync<CodeMismatchException>(() => user.ConfirmSignUpAsync("fakeConfirmationCode", false));
+            await Assert.ThrowsAsync<CodeMismatchException>(() => user.ConfirmSignUpAsync("fakeConfirmationCode", false));
         }
     }
 }
