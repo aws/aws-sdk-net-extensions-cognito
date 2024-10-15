@@ -9,7 +9,7 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
     public class BigIntegerExtensionsTests
     {
         [Fact]
-        public void TestFromHexPositive()
+        public void TestFromHexPositiveTest()
         {
             TestFromHexPositive("0", 0, 0);
             TestFromHexPositive("1", 1, 1);
@@ -53,7 +53,7 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
         }
 
         [Fact]
-        public void TestTrueMod()
+        public void TestTrueModTest()
         {
             TestTrueMod(10, 3, 1);
             TestTrueMod(10, 5, 0);
@@ -72,7 +72,7 @@ namespace Amazon.Extensions.CognitoAuthentication.UnitTests
         }
 
         [Fact]
-        public void TestFromBigEndianPositive()
+        public void TestFromBigEndianPositiveTest()
         {
             TestFromBigEndianPositive(300, new byte[] { 1, 44 }, 300);
             TestFromBigEndianPositive(-266, new byte[] { 254, 246 }, 65270);

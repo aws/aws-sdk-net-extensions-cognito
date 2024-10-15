@@ -54,7 +54,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 
         //Tests SRP authentication flow for web applications
         [Fact]
-        public async void TestGenericSrpAuthentication()
+        public async Task TestGenericSrpAuthentication()
         {
             string password = "PassWord1!";
 
@@ -62,7 +62,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
                     Password = password
-                }).ConfigureAwait(false);
+                });
 
             Assert.True(user.SessionTokens.IsValid());
         }
@@ -78,14 +78,14 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
                     Password = "PassWord1!"
-                }).ConfigureAwait(false);
+                });
 
             ListUsersRequest listUsersRequest = new ListUsersRequest()
             {
                 Limit = 60,
                 UserPoolId = pool.PoolID
             };
-            ListUsersResponse listUsersReponse = await provider.ListUsersAsync(listUsersRequest).ConfigureAwait(false);
+            ListUsersResponse listUsersReponse = await provider.ListUsersAsync(listUsersRequest);
             foreach (UserType listUser in listUsersReponse.Users)
             {
                 users.Add(listUser.Username);
@@ -93,9 +93,9 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 
             Assert.Contains(userID, users);
 
-            await user.DeleteUserAsync().ConfigureAwait(false);
+            await user.DeleteUserAsync();
 
-            listUsersReponse = await provider.ListUsersAsync(listUsersRequest).ConfigureAwait(false);
+            listUsersReponse = await provider.ListUsersAsync(listUsersRequest);
             users.Clear();
             foreach(UserType listUser in listUsersReponse.Users)
             {
