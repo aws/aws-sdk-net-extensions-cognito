@@ -41,19 +41,19 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// The creation time for the device. CreateDate can only be configured 
         /// through the constructor and once set cannot be changed.
         /// </summary>
-        public DateTime CreateDate { get; private set; }
+        public DateTime? CreateDate { get; private set; }
 
         /// <summary>
         /// The last modified time for the device. LastModified can only be configured 
         /// through the constructor and the GetDevice method.
         /// </summary>
-        public DateTime LastModified { get; private set; }
+        public DateTime? LastModified { get; private set; }
 
         /// <summary>
         /// The last authenticated time for the device. LastAuthenticated can only be configured 
         /// through the constructor and the GetDevice method.
         /// </summary>
-        public DateTime LastAuthenticated { get; private set; }
+        public DateTime? LastAuthenticated { get; private set; }
 
         /// <summary>
         /// The user associated with the device. User can only be configured 

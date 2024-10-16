@@ -731,7 +731,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 refreshToken = authResult.RefreshToken;
             }
 
-            return new CognitoUserSession(idToken, accessToken, refreshToken, currentTime, currentTime.AddSeconds(authResult.ExpiresIn));
+            return new CognitoUserSession(idToken, accessToken, refreshToken, currentTime, currentTime.AddSeconds(authResult.ExpiresIn ?? 0));
         }
 
         /// <summary>

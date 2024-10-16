@@ -57,7 +57,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             GetUserResponse userDetails = await user.GetUserDetailsAsync();
 
             Assert.Contains(userDetails.UserAttributes, x => string.Equals(x.Name, CognitoConstants.UserAttrEmail, StringComparison.Ordinal));
-            Assert.Empty(userDetails.MFAOptions);
+            Assert.Null(userDetails.MFAOptions);
         }
 
         //Tests the GlobalSignOut method
