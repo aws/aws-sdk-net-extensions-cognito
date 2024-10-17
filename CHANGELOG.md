@@ -1,3 +1,10 @@
+## Release 2024-10-17
+
+### Amazon.Extensions.CognitoAuthentication (3.0.0-preview.1)
+* Added .NET 8 target framework and marked as trimmable
+* Updated the .NET SDK dependencies to the latest version 4.0.0-preview.4
+* Add SourceLink support
+
 ## Release 2024-07-09
 
 ### Amazon.Extensions.CognitoAuthentication (2.5.5)
