@@ -126,7 +126,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         internal static List<AttributeType> CreateAttributeList(IDictionary<string, string> attributeDict)
         {
             List<AttributeType> attributeList = new List<AttributeType>();
-            foreach (KeyValuePair<string, string> data in attributeDict)
+            foreach (KeyValuePair<string, string> data in attributeDict ?? new Dictionary<string, string>())
             {
                 AttributeType attribute = new AttributeType()
                 {

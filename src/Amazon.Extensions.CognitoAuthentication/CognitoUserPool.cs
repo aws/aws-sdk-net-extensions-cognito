@@ -229,7 +229,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
                 return new CognitoUser(response.Username, ClientID, this, Provider, ClientSecret,
                     response.UserStatus.Value, response.Username,
-                    response.UserAttributes.ToDictionary(attribute => attribute.Name, attribute => attribute.Value));
+                    response.UserAttributes?.ToDictionary(attribute => attribute.Name, attribute => attribute.Value) ?? new Dictionary<string, string>());
 
             }
             catch (UserNotFoundException)
@@ -288,7 +288,9 @@ namespace Amazon.Extensions.CognitoAuthentication
                     UserPoolId = this.PoolID
                 }, cancellationToken).ConfigureAwait(false);
 
-                ClientConfiguration = new CognitoUserPoolClientConfiguration(response.UserPoolClient.ReadAttributes, response.UserPoolClient.WriteAttributes);
+                ClientConfiguration = new CognitoUserPoolClientConfiguration(
+                    response.UserPoolClient.ReadAttributes ?? new List<string>(), 
+                    response.UserPoolClient.WriteAttributes ?? new List<string>());
             }
 
             return ClientConfiguration;

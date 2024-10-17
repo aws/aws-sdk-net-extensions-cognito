@@ -73,7 +73,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             if (srpRequest.IsCustomAuthFlow)
             {
                 initiateRequest.AuthFlow = AuthFlowType.CUSTOM_AUTH;
-                initiateRequest.AuthParameters.Add(CognitoConstants.ChlgParamChallengeName, CognitoConstants.ChlgParamSrpA);
+                initiateRequest.AuthParameters?.Add(CognitoConstants.ChlgParamChallengeName, CognitoConstants.ChlgParamSrpA);
             }
             InitiateAuthResponse initiateResponse = await Provider.InitiateAuthAsync(initiateRequest, cancellationToken).ConfigureAwait(false);
             UpdateUsernameAndSecretHash(initiateResponse.ChallengeParameters);
@@ -172,6 +172,10 @@ namespace Amazon.Extensions.CognitoAuthentication
                                                                                    string devicePassword,
                                                                                    Tuple<BigInteger, BigInteger> tupleAa)
         {
+            if (challenge == null)
+                throw new ArgumentNullException(nameof(challenge), $"{nameof(challenge)} cannot be null");
+            if (challenge.ChallengeParameters == null)
+                throw new ArgumentNullException(nameof(challenge.ChallengeParameters), $"{nameof(challenge.ChallengeParameters)} cannot be null");
             string deviceKey = challenge.ChallengeParameters[CognitoConstants.ChlgParamDeviceKey];
             string username = challenge.ChallengeParameters[CognitoConstants.ChlgParamUsername];
             string secretBlock = challenge.ChallengeParameters[CognitoConstants.ChlgParamSecretBlock];
@@ -255,7 +259,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 initiateResponse.AuthenticationResult,
                 initiateResponse.ChallengeName,
                 initiateResponse.ChallengeParameters,
-                new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata));
+                new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata ?? new Dictionary<string, string>()));
         }
 
         /// <summary>
@@ -286,8 +290,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             {
                 ChallengeName = ChallengeNameType.CUSTOM_CHALLENGE,
                 ClientId = ClientID,
-                ChallengeResponses = new Dictionary<string, string>(customRequest.ChallengeParameters),
-                ClientMetadata = new Dictionary<string, string>(customRequest.ClientMetadata),
+                ChallengeResponses = new Dictionary<string, string>(customRequest.ChallengeParameters ?? new Dictionary<string, string>()),
+                ClientMetadata = new Dictionary<string, string>(customRequest.ClientMetadata ?? new Dictionary<string, string>()),
                 AnalyticsMetadata = customRequest.AnalyticsMetadata,
                 Session = customRequest.SessionID
             };
@@ -300,8 +304,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             return new AuthFlowResponse(authResponse.Session,
                 authResponse.AuthenticationResult,
                 authResponse.ChallengeName,
-                authResponse.ChallengeParameters,
-                new Dictionary<string, string>(authResponse.ResponseMetadata.Metadata));
+                authResponse.ChallengeParameters ?? new Dictionary<string, string>(),
+                new Dictionary<string, string>(authResponse.ResponseMetadata.Metadata ?? new Dictionary<string, string>()));
         }
 
         /// <summary>
@@ -469,8 +473,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             return new AuthFlowResponse(challengeResponse.Session,
                 challengeResponse.AuthenticationResult,
                 challengeResponse.ChallengeName,
-                challengeResponse.ChallengeParameters,
-                new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata));
+                challengeResponse.ChallengeParameters ?? new Dictionary<string, string>(),
+                new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata ?? new Dictionary<string, string>()));
         }
 
         /// <summary>
@@ -577,8 +581,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             return new AuthFlowResponse(challengeResponse.Session,
                 challengeResponse.AuthenticationResult,
                 challengeResponse.ChallengeName,
-                challengeResponse.ChallengeParameters,
-                new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata));
+                challengeResponse.ChallengeParameters ?? new Dictionary<string, string>(),
+                new Dictionary<string, string>(challengeResponse.ResponseMetadata.Metadata ?? new Dictionary<string, string>()));
         }
 
         /// <summary>
@@ -617,8 +621,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             return new AuthFlowResponse(initiateResponse.Session,
                 initiateResponse.AuthenticationResult,
                 initiateResponse.ChallengeName,
-                initiateResponse.ChallengeParameters,
-                new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata));
+                initiateResponse.ChallengeParameters ?? new Dictionary<string, string>(),
+                new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata ?? new Dictionary<string, string>()));
         }
 
         /// <summary>
@@ -653,8 +657,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             return new AuthFlowResponse(initiateResponse.Session,
                 initiateResponse.AuthenticationResult,
                 initiateResponse.ChallengeName,
-                initiateResponse.ChallengeParameters,
-                new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata));
+                initiateResponse.ChallengeParameters ?? new Dictionary<string, string>(),
+                new Dictionary<string, string>(initiateResponse.ResponseMetadata.Metadata ?? new Dictionary<string, string>()));
         }
 
         /// <summary>
@@ -715,7 +719,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 return;
             }
 
-            if (challengeParameters.ContainsKey(CognitoConstants.ChlgParamUsername))
+            if (challengeParamIsUsername)
             {
                 Username = challengeParameters[CognitoConstants.ChlgParamUsername];
             }
@@ -802,6 +806,10 @@ namespace Amazon.Extensions.CognitoAuthentication
                                                                                    string password,
                                                                                    Tuple<BigInteger, BigInteger> tupleAa)
         {
+            if (challenge == null)
+                throw new ArgumentNullException(nameof(challenge), $"{nameof(challenge)} cannot be null");
+            if (challenge.ChallengeParameters == null)
+                throw new ArgumentNullException(nameof(challenge.ChallengeParameters), $"{nameof(challenge.ChallengeParameters)} cannot be null");
             string username = challenge.ChallengeParameters[CognitoConstants.ChlgParamUsername];
             string poolName = PoolName;
             string secretBlock = challenge.ChallengeParameters[CognitoConstants.ChlgParamSecretBlock];
