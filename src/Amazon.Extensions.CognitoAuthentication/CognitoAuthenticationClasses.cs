@@ -39,8 +39,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             SessionID = sessionId;
             ChallengeName = challengeName;
             AuthenticationResult = authenticationResult;
-            ChallengeParameters = challengeParameters;
-            ClientMetadata = clientMetadata;
+            ChallengeParameters = challengeParameters ?? new Dictionary<string, string>();
+            ClientMetadata = clientMetadata ?? new Dictionary<string, string>();
         }
 
         /// <summary>

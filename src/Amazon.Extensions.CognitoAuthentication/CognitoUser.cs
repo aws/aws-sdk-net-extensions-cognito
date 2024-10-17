@@ -424,7 +424,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             await Provider.UpdateUserAttributesAsync(updateUserAttributesRequest, cancellationToken).ConfigureAwait(false);
 
             //Update the local Attributes property
-            foreach (KeyValuePair<string, string> entry in attributes)
+            foreach (KeyValuePair<string, string> entry in attributes ?? new Dictionary<string, string>())
             {
                 Attributes[entry.Key] = entry.Value;
             }
@@ -454,7 +454,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             await Provider.DeleteUserAttributesAsync(deleteUserAttributesRequest, cancellationToken).ConfigureAwait(false);
 
             //Update the local Attributes property
-            foreach (string attribute in attributeNamesToDelete)
+            foreach (string attribute in attributeNamesToDelete ?? new List<string>())
             {
                 if (Attributes.ContainsKey(attribute))
                 {
@@ -486,7 +486,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             await Provider.SetUserSettingsAsync(setUserSettingsRequest, cancellationToken).ConfigureAwait(false);
 
             //Update the local Settings property
-            foreach (KeyValuePair<string, string> entry in userSettings)
+            foreach (KeyValuePair<string, string> entry in userSettings ?? new Dictionary<string, string>())
             {
                 Settings[entry.Key] = entry.Value;
             }
@@ -518,7 +518,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             ListDevicesResponse listDevicesReponse = await Provider.ListDevicesAsync(listDevicesRequest, cancellationToken).ConfigureAwait(false);
             List<CognitoDevice> devicesList = new List<CognitoDevice>();
 
-            foreach (DeviceType device in listDevicesReponse.Devices)
+            foreach (DeviceType device in listDevicesReponse.Devices ?? new List<DeviceType>())
             {
                 devicesList.Add(new CognitoDevice(device, this));
             }

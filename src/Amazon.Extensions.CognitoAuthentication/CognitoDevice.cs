@@ -314,7 +314,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             Dictionary<string, string> attributesDict = new Dictionary<string, string>();
 
-            foreach(AttributeType attribute in attributes)
+            foreach(AttributeType attribute in attributes ?? new List<AttributeType>())
             {
                 attributesDict.Add(attribute.Name, attribute.Value);
             }
