@@ -1,3 +1,8 @@
+## Release 2025-02-27
+
+### Amazon.Extensions.CognitoAuthentication (3.0.0-preview.2)
+* Update .NET SDK dependencies to v4.0.0-preview8
+
 ## Release 2024-10-17
 
 ### Amazon.Extensions.CognitoAuthentication (3.0.0-preview.1)
