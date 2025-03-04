@@ -76,7 +76,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// </summary>
         /// <param name="username"> Username of CognitoUser</param>
         /// <param name="password"> Password of CognitoUser</param>
-        /// <param name="poolName"> PoolName of CognitoUserPool (from poolID: <region>_<poolName>)</param>
+        /// <param name="poolName"> PoolName of CognitoUserPool (from poolID: &lt;region&gt;_&lt;poolName&gt;)</param>
         /// <param name="tupleAa"> TupleAa from CreateAaTuple</param>
         /// <param name="saltString"> salt provided in ChallengeParameters from Cognito </param>
         /// <param name="srpbString"> srpb provided in ChallengeParameters from Cognito</param>
