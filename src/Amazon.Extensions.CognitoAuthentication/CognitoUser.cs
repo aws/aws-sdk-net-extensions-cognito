@@ -105,6 +105,8 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="provider">IAmazonCognitoIdentityProvider for the specified user pool</param>
         /// <param name="clientSecret">Client secret for the specified client, if exists</param>
         /// <param name="username">Username for user, if different from userID</param>
+        /// <param name="status">Status for user.</param>
+        /// <param name="attributes">User attributes.</param>
         public CognitoUser(string userID, string clientID,
                            CognitoUserPool pool,
                            IAmazonCognitoIdentityProvider provider,
