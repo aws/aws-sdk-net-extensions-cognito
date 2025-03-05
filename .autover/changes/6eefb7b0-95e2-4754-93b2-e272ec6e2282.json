@@ -1,0 +1,11 @@
+{
+    "Projects": [
+        {
+            "Name": "Amazon.Extensions.CognitoAuthentication",
+            "Type": "Patch",
+            "ChangelogMessages": [
+                "Update CognitoIdentity dependencies to address issue when deploying to iOS (https://github.com/aws/aws-sdk-net/issues/3689)"
+            ]
+        }
+    ]
+}
