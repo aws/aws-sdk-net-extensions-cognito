@@ -104,6 +104,12 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// The analytics metadata for collecting Amazon Pinpoint metrics.
         /// </summary>
         public AnalyticsMetadataType AnalyticsMetadata { get; set; }
+  
+        /// <summary>
+        /// Additional UserContextDataType 
+        /// </summary>
+        public UserContextDataType UserContextData { get; set; }
+        
         /// <summary>
         /// Enable custom auth flow
         /// https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#Using-SRP-password-verification-in-custom-authentication-flow
@@ -130,6 +136,11 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// The analytics metadata for collecting Amazon Pinpoint metrics.
         /// </summary>
         public AnalyticsMetadataType AnalyticsMetadata { get; set; }
+
+        /// <summary>
+        /// Additional UserContextDataType 
+        /// </summary>
+        public UserContextDataType UserContextData { get; set; }
     }
 
     /// <summary>
@@ -217,6 +228,10 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// The sessionID for the current authentication flow.
         /// </summary>
         public string SessionID { get; set; }
+        /// <summary>
+        /// Additional UserContextDataType 
+        /// </summary>
+        public UserContextDataType UserContextData { get; set; }
     }
 
     /// <summary>
@@ -238,5 +253,10 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// Optional analytics metadata for collecting Amazon Pinpoint metrics.
         /// </summary>
         public AnalyticsMetadataType AnalyticsMetadata { get; set; }
+
+        /// <summary>
+        /// Additional UserContextDataType 
+        /// </summary>
+        public UserContextDataType UserContextData { get; set; }
     }
 }

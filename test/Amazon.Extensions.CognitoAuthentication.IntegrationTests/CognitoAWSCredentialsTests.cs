@@ -21,6 +21,7 @@ using Xunit;
 
 using Amazon;
 using Amazon.CognitoIdentity;
+using Amazon.CognitoIdentityProvider.Model;
 using Amazon.CognitoIdentity.Model;
 using Amazon.Extensions.CognitoAuthentication;
 using Amazon.IdentityManagement;
@@ -54,7 +55,11 @@ namespace CognitoAuthentication.IntegrationTests.NET45
             AuthFlowResponse context =
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
-                    Password = password
+                    Password = password,
+                    UserContextData = new UserContextDataType {
+                        EncodedData = "AmazonCognitoAdvancedSecurityData_object",
+                        IpAddress = "192.0.2.1"
+                    }
                 });
 
             //Create identity pool
@@ -145,10 +150,10 @@ namespace CognitoAuthentication.IntegrationTests.NET45
         {
             try
             {
-                identityClient.DeleteIdentityPoolAsync(new DeleteIdentityPoolRequest()
-                {
-                    IdentityPoolId = identityPoolId
-                }).GetAwaiter().GetResult();
+                // identityClient.DeleteIdentityPoolAsync(new DeleteIdentityPoolRequest()
+                // {
+                //     IdentityPoolId = identityPoolId
+                // }).GetAwaiter().GetResult();
 
                 managementClient.DetachRolePolicyAsync(new DetachRolePolicyRequest()
                 {
@@ -166,7 +171,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                     RoleName = roleName
                 }).GetAwaiter().GetResult();
 
-                identityClient.Dispose();
+                // identityClient.Dispose();
                 managementClient.Dispose();
             }
             catch (Exception ex)
