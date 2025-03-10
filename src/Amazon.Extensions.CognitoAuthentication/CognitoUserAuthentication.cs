@@ -80,7 +80,6 @@ namespace Amazon.Extensions.CognitoAuthentication
                 initiateRequest.AuthFlow = AuthFlowType.CUSTOM_AUTH;
                 initiateRequest.AuthParameters.Add(CognitoConstants.ChlgParamChallengeName, CognitoConstants.ChlgParamSrpA);
             }
-
             InitiateAuthResponse initiateResponse = await Provider.InitiateAuthAsync(initiateRequest, cancellationToken).ConfigureAwait(false);
             UpdateUsernameAndSecretHash(initiateResponse.ChallengeParameters);
 

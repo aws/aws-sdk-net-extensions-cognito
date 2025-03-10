@@ -150,10 +150,10 @@ namespace CognitoAuthentication.IntegrationTests.NET45
         {
             try
             {
-                // identityClient.DeleteIdentityPoolAsync(new DeleteIdentityPoolRequest()
-                // {
-                //     IdentityPoolId = identityPoolId
-                // }).GetAwaiter().GetResult();
+                identityClient.DeleteIdentityPoolAsync(new DeleteIdentityPoolRequest()
+                {
+                    IdentityPoolId = identityPoolId
+                }).GetAwaiter().GetResult();
 
                 managementClient.DetachRolePolicyAsync(new DetachRolePolicyRequest()
                 {
@@ -171,7 +171,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
                     RoleName = roleName
                 }).GetAwaiter().GetResult();
 
-                // identityClient.Dispose();
+                identityClient.Dispose();
                 managementClient.Dispose();
             }
             catch (Exception ex)
