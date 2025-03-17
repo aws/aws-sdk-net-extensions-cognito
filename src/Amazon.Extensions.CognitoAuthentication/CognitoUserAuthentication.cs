@@ -765,12 +765,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             {
                 returnRequest.ClientMetadata = new Dictionary<string, string>(adminRequest.ClientMetadata);
             }
-
-            if (adminRequest.UserContextData != null)
-            {
-                returnRequest.UserContextData = adminRequest.UserContextData;
-            }
-
+           
             returnRequest.AnalyticsMetadata = adminRequest.AnalyticsMetadata;
 
             return returnRequest;
