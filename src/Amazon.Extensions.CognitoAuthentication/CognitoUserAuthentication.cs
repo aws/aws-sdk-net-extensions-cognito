@@ -93,7 +93,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             if (srpRequest.UserContextData != null)
             {
-                initiateRequest.UserContextData = srpRequest.UserContextData;
+                challengeRequest.UserContextData = srpRequest.UserContextData;
             }
 
             challengeRequest.AnalyticsMetadata = srpRequest.AnalyticsMetadata;
