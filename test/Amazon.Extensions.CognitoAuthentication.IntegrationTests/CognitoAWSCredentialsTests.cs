@@ -30,6 +30,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 
 using Amazon.Extensions.CognitoAuthentication.IntegrationTests;
+using Amazon.Runtime.Credentials;
 
 namespace CognitoAuthentication.IntegrationTests.NET45
 {
@@ -40,7 +41,7 @@ namespace CognitoAuthentication.IntegrationTests.NET45
         private string identityPoolId;
 
         private AmazonCognitoIdentityClient identityClient;
-        AWSCredentials clientCredentials = FallbackCredentialsFactory.GetCredentials();
+        AWSCredentials clientCredentials = DefaultAWSCredentialsIdentityResolver.GetCredentials();
         private AmazonIdentityManagementServiceClient managementClient;
 
         [Fact]
