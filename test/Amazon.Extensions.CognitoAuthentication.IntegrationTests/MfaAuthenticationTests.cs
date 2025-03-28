@@ -24,6 +24,7 @@ using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication.Util;
 using Amazon.IdentityManagement;
 using Amazon.IdentityManagement.Model;
+using Amazon.Runtime.Credentials;
 
 namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
 {
@@ -74,7 +75,7 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             List<SchemaAttributeType> requiredAttributes = new List<SchemaAttributeType>();
             List<string> verifiedAttributes = new List<string>();
 
-            var creds = FallbackCredentialsFactory.GetCredentials();
+            var creds = DefaultAWSCredentialsIdentityResolver.GetCredentials();
             var region = FallbackRegionFactory.GetRegionEndpoint();
 
             provider = new AmazonCognitoIdentityProviderClient(creds, region);
