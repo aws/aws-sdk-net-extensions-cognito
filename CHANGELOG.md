@@ -1,3 +1,8 @@
+## Release 2025-03-31
+
+### Amazon.Extensions.CognitoAuthentication (3.0.0-preview.3)
+* Update AWS SDK to Preview 11
+
 ## Release 2025-02-27
 
 ### Amazon.Extensions.CognitoAuthentication (3.0.0-preview.2)
