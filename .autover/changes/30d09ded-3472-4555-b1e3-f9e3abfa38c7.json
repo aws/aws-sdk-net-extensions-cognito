@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.CognitoAuthentication",
+      "Type": "Minor",
+      "ChangelogMessages": [
+        "Add support for UserContextData"
+      ]
+    }
+  ]
+}

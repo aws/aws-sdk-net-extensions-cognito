@@ -81,7 +81,7 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
-    /// Class containing the necessary properities to initiate SRP authentication flow
+    /// Class containing the necessary properties to initiate SRP authentication flow
     /// </summary>
     public class InitiateSrpAuthRequest
     {
@@ -98,7 +98,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         public string DeviceVerifier { get; set; }
         /// <summary>
-        /// The Device Key Group for the device associated with the corresponding CognitoUser
+        /// The Devce Key Group for the device associated with the corresponding CognitoUser
         /// </summary>
         public string DeviceGroupKey { get; set; }
         /// <summary>
@@ -123,7 +123,7 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
-    /// Class containing the necessary properities to initiate custom authentication flow
+    /// Class containing the necessary properties to initiate custom authentication flow
     /// </summary>
     public class InitiateCustomAuthRequest
     {
@@ -149,7 +149,7 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
-    /// Class containing the necessary properities to initiate either REFRESH_TOKEN or
+    /// Class containing the necessary properties to initiate either REFRESH_TOKEN or
     /// REFRESH_TOKEN_AUTH authentication
     /// </summary>
     public class InitiateRefreshTokenAuthRequest
@@ -162,7 +162,7 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
-    /// Class containing the necessary properities to respond to an MFA authentication challenge
+    /// Class containing the necessary properties to respond to an MFA authentication challenge
     /// </summary>
     public class RespondToMfaRequest
     {
@@ -183,7 +183,7 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
-    /// Class containing the necessary properities to respond to an MFA authentication challenge
+    /// Class containing the necessary properties to respond to an MFA authentication challenge
     /// </summary>
     public class RespondToSmsMfaRequest : RespondToMfaRequest
     {
@@ -194,7 +194,7 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
-    /// Class containing the necessary properities to respond to a new password required authentication challenge
+    /// Class containing the necessary properties to respond to a new password required authentication challenge
     /// </summary>
     public class RespondToNewPasswordRequiredRequest
     {
@@ -210,7 +210,7 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
-    /// Class containing the necessary properities to respond to a custom authentication challenge
+    /// Class containing the necessary properties to respond to a custom authentication challenge
     /// </summary>
     public class RespondToCustomChallengeRequest
     {
@@ -233,6 +233,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// The sessionID for the current authentication flow.
         /// </summary>
         public string SessionID { get; set; }
+
         /// <summary>
         /// Additional UserContextDataType 
         /// </summary>

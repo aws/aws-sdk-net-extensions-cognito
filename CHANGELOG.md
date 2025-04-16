@@ -1,8 +1,5 @@
 ## Release 2024-07-09
 
-### Amazon.Extensions.CognitoAuthentication (2.5.6)
-* Added support for UserContextData. 
-
 ### Amazon.Extensions.CognitoAuthentication (2.5.5)
 * Added support for analytics metadata for collecting Amazon Pinpoint metrics.
 
