@@ -98,7 +98,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// </summary>
         public string DeviceVerifier { get; set; }
         /// <summary>
-        /// The Devce Key Group for the device associated with the corresponding CognitoUser
+        /// The Device Key Group for the device associated with the corresponding CognitoUser
         /// </summary>
         public string DeviceGroupKey { get; set; }
         /// <summary>
