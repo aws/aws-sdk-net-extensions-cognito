@@ -258,11 +258,6 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <summary>
         /// Optional analytics metadata for collecting Amazon Pinpoint metrics.
         /// </summary>
-        public AnalyticsMetadataType AnalyticsMetadata { get; set; }
-
-        /// <summary>
-        /// Additional UserContextDataType 
-        /// </summary>
-        public UserContextDataType UserContextData { get; set; }
+        public AnalyticsMetadataType AnalyticsMetadata { get; set; }       
     }
 }

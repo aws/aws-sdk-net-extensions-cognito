@@ -88,7 +88,7 @@ namespace Amazon.Extensions.CognitoAuthentication
                 challengeRequest.ClientMetadata = new Dictionary<string, string>(srpRequest.ClientMetadata);
             }
 
-            initiateRequest.UserContextData = srpRequest.UserContextData;
+            challengeRequest.UserContextData = srpRequest.UserContextData;
 
             challengeRequest.AnalyticsMetadata = srpRequest.AnalyticsMetadata;
             
@@ -759,12 +759,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             {
                 returnRequest.ClientMetadata = new Dictionary<string, string>(adminRequest.ClientMetadata);
             }
-
-            if (adminRequest.UserContextData != null)
-            {
-                returnRequest.UserContextData = adminRequest.UserContextData;
-            }
-
+           
             returnRequest.AnalyticsMetadata = adminRequest.AnalyticsMetadata;
 
             return returnRequest;
