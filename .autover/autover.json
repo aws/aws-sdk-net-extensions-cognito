@@ -1,11 +1,11 @@
 {
-    "Projects": [
-        {
-            "Name": "Amazon.Extensions.CognitoAuthentication",
-            "Path": "src/Amazon.Extensions.CognitoAuthentication/Amazon.Extensions.CognitoAuthentication.csproj"
-        }
-    ],
-    "UseCommitsForChangelog": false,
-    "DefaultIncrementType": "Patch",
-    "ChangeFilesDetermineIncrementType": true
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.CognitoAuthentication",
+      "Path": "src/Amazon.Extensions.CognitoAuthentication/Amazon.Extensions.CognitoAuthentication.csproj"
+    }
+  ],
+  "UseCommitsForChangelog": false,
+  "DefaultIncrementType": "Patch",
+  "ChangeFilesDetermineIncrementType": true
 }
