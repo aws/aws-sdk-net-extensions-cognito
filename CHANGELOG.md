@@ -1,3 +1,8 @@
+## Release 2025-04-28
+
+### Amazon.Extensions.CognitoAuthentication (3.0.0)
+* Updating the .NET SDK dependencies to the latest version GA 4.0.0
+
 ## Release 2025-04-17
 
 ### Amazon.Extensions.CognitoAuthentication (2.5.6)
