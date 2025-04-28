@@ -29,8 +29,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CognitoIdentity" Version="4.0.0-preview.11" />
-    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="4.0.0-preview.11" />
+    <PackageReference Include="AWSSDK.CognitoIdentity" Version="4.0.0" />
+    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="4.0.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
