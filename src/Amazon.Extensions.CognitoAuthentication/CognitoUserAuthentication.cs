@@ -68,6 +68,8 @@ namespace Amazon.Extensions.CognitoAuthentication
                 initiateRequest.ClientMetadata = new Dictionary<string, string>(srpRequest.ClientMetadata);
             }
 
+            initiateRequest.UserContextData = srpRequest.UserContextData;
+
             initiateRequest.AnalyticsMetadata = srpRequest.AnalyticsMetadata;
             
             if (srpRequest.IsCustomAuthFlow)
@@ -85,6 +87,8 @@ namespace Amazon.Extensions.CognitoAuthentication
             {
                 challengeRequest.ClientMetadata = new Dictionary<string, string>(srpRequest.ClientMetadata);
             }
+
+            challengeRequest.UserContextData = srpRequest.UserContextData;
 
             challengeRequest.AnalyticsMetadata = srpRequest.AnalyticsMetadata;
             
@@ -247,7 +251,8 @@ namespace Amazon.Extensions.CognitoAuthentication
                 AuthParameters = new Dictionary<string, string>(customRequest.AuthParameters),
                 ClientId = ClientID,
                 ClientMetadata = new Dictionary<string, string>(customRequest.ClientMetadata),
-                AnalyticsMetadata = customRequest.AnalyticsMetadata
+                AnalyticsMetadata = customRequest.AnalyticsMetadata,
+                UserContextData = customRequest.UserContextData
             };
 
             InitiateAuthResponse initiateResponse = await Provider.InitiateAuthAsync(authRequest, cancellationToken).ConfigureAwait(false);
@@ -293,7 +298,8 @@ namespace Amazon.Extensions.CognitoAuthentication
                 ChallengeResponses = new Dictionary<string, string>(customRequest.ChallengeParameters ?? new Dictionary<string, string>()),
                 ClientMetadata = new Dictionary<string, string>(customRequest.ClientMetadata ?? new Dictionary<string, string>()),
                 AnalyticsMetadata = customRequest.AnalyticsMetadata,
-                Session = customRequest.SessionID
+                Session = customRequest.SessionID,
+                UserContextData = customRequest.UserContextData
             };
 
             RespondToAuthChallengeResponse authResponse =
@@ -550,7 +556,6 @@ namespace Amazon.Extensions.CognitoAuthentication
                 { CognitoConstants.ChlgParamNewPassword, newPasswordRequest.NewPassword},
                 { CognitoConstants.ChlgParamUsername, Username }
             };
-
             if (requiredAttributes != null)
             {
                 foreach (KeyValuePair<string, string> attribute in requiredAttributes)
@@ -758,7 +763,7 @@ namespace Amazon.Extensions.CognitoAuthentication
             {
                 returnRequest.ClientMetadata = new Dictionary<string, string>(adminRequest.ClientMetadata);
             }
-
+           
             returnRequest.AnalyticsMetadata = adminRequest.AnalyticsMetadata;
 
             return returnRequest;

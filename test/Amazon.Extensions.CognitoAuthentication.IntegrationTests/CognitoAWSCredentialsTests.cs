@@ -21,6 +21,7 @@ using Xunit;
 
 using Amazon;
 using Amazon.CognitoIdentity;
+using Amazon.CognitoIdentityProvider.Model;
 using Amazon.CognitoIdentity.Model;
 using Amazon.Extensions.CognitoAuthentication;
 using Amazon.IdentityManagement;
@@ -55,7 +56,11 @@ namespace CognitoAuthentication.IntegrationTests.NET45
             AuthFlowResponse context =
                 await user.StartWithSrpAuthAsync(new InitiateSrpAuthRequest()
                 {
-                    Password = password
+                    Password = password,
+                    UserContextData = new UserContextDataType {
+                        EncodedData = "AmazonCognitoAdvancedSecurityData_object",
+                        IpAddress = "192.0.2.1"
+                    }
                 });
 
             //Create identity pool

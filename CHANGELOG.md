@@ -1,3 +1,8 @@
+## Release 2025-04-17
+
+### Amazon.Extensions.CognitoAuthentication (2.5.6)
+* Add support for UserContextData
+
 ## Release 2025-03-31
 
 ### Amazon.Extensions.CognitoAuthentication (3.0.0-preview.3)
