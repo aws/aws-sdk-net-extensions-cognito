@@ -194,6 +194,17 @@ namespace Amazon.Extensions.CognitoAuthentication
     }
 
     /// <summary>
+    /// Class containing the necessary properties to respond to an Email MFA authentication challenge
+    /// </summary>
+    public class RespondToEmailMfaRequest : RespondToMfaRequest
+    {
+        /// <summary>
+        /// The challenge name type for the current authentication flow.
+        /// </summary>
+        public override ChallengeNameType ChallengeNameType { get { return ChallengeNameType.EMAIL_OTP; } set { } }
+    }
+
+    /// <summary>
     /// Class containing the necessary properties to respond to a new password required authentication challenge
     /// </summary>
     public class RespondToNewPasswordRequiredRequest
