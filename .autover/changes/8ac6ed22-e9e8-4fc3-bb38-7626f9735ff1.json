@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.CognitoAuthentication",
+      "Type": "Minor",
+      "ChangelogMessages": [
+        "Added support for Email MFA authentication challenge."
+      ]
+    }
+  ]
+}
