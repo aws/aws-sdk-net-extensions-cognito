@@ -426,6 +426,33 @@ namespace Amazon.Extensions.CognitoAuthentication
         }
 
         /// <summary>
+        /// Uses the properties of the RespondToEmailMfaRequest object to respond to the current MFA 
+        /// authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="emailMfaRequest">RespondToEmailMfaRequest object containing the necessary parameters to
+        /// respond to the current Email MFA authentication challenge</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual async Task<AuthFlowResponse> RespondToEmailMfaAuthAsync(RespondToEmailMfaRequest emailMfaRequest)
+        {
+            return await RespondToEmailMfaAuthAsync(emailMfaRequest, default).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Uses the properties of the RespondToEmailMfaRequest object to respond to the current MFA 
+        /// authentication challenge using an asynchronous call
+        /// </summary>
+        /// <param name="emailMfaRequest">RespondToEmailMfaRequest object containing the necessary parameters to
+        /// respond to the current Email MFA authentication challenge</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation</param>
+        /// <returns>Returns the AuthFlowResponse object that can be used to respond to the next challenge, 
+        /// if one exists</returns>
+        public virtual async Task<AuthFlowResponse> RespondToEmailMfaAuthAsync(RespondToEmailMfaRequest emailMfaRequest, CancellationToken cancellationToken)
+        {
+            return await RespondToMfaAuthAsync(emailMfaRequest, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Uses the properties of the RespondToSmsMfaRequest object to respond to the current MFA 
         /// authentication challenge using an asynchronous call
         /// </summary>
@@ -492,6 +519,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             if (challengeNameType == ChallengeNameType.SMS_MFA) return CognitoConstants.ChlgParamSmsMfaCode;
             if (challengeNameType == ChallengeNameType.SOFTWARE_TOKEN_MFA) return CognitoConstants.ChlgParamSoftwareTokenMfaCode;
+            if (challengeNameType == ChallengeNameType.EMAIL_OTP) return CognitoConstants.ChlgParamEmailMfaCode;
 
             return null;
         }
