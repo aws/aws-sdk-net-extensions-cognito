@@ -1,3 +1,8 @@
+## Release 2025-06-03
+
+### Amazon.Extensions.CognitoAuthentication (3.1.0)
+* Added support for Email MFA authentication challenge.
+
 ## Release 2025-04-28
 
 ### Amazon.Extensions.CognitoAuthentication (3.0.0)
