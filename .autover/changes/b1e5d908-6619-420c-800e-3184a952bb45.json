@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.CognitoAuthentication",
+      "Type": "Patch",
+      "ChangelogMessages": [
+        "Fix Auth with device and device confirmation"
+      ]
+    }
+  ]
+}

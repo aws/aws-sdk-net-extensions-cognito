@@ -193,7 +193,7 @@ namespace Amazon.Extensions.CognitoAuthentication
 
             string timeStr = DateTime.UtcNow.ToString("ddd MMM d HH:mm:ss \"UTC\" yyyy", CultureInfo.InvariantCulture);
 
-            var claimBytes = AuthenticationHelper.AuthenticateDevice(username, deviceKey, devicePassword, deviceKeyGroup, salt,
+            var claimBytes = AuthenticationHelper.AuthenticateDevice(deviceKey, devicePassword, deviceKeyGroup, salt,
                 challenge.ChallengeParameters[CognitoConstants.ChlgParamSrpB], secretBlock, timeStr, tupleAa);
 
 
@@ -321,9 +321,9 @@ namespace Amazon.Extensions.CognitoAuthentication
         /// <param name="deviceKey">The DeviceKey for the associated CognitoDevice</param>
         /// <param name="devicePass">The random password for the associated CognitoDevice</param>
         /// <returns></returns>
-        public DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string devicePass, string username)
+        public DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string devicePass, string deviceKey)
         {
-            return AuthenticationHelper.GenerateDeviceVerifier(deviceGroupKey, devicePass, username);
+            return AuthenticationHelper.GenerateDeviceVerifier(deviceGroupKey, devicePass, deviceKey);
         }
 
         /// <summary>
