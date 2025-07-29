@@ -162,14 +162,14 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// </summary>
         /// <param name="deviceGroupKey">The Group Key of the CognitoDevice</param>
         /// <param name="devicePass">A random password for the CognitoDevice (used in the future for logging in via this device)</param>
-        /// <param name="username">The username of the CognitoDevice user</param>
+        /// <param name="deviceKey">The DeviceKey for the associated CognitoDevice</param>
         /// <returns></returns>
-        public static DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string devicePass, string username)
+        public static DeviceSecretVerifierConfigType GenerateDeviceVerifier(string deviceGroupKey, string devicePass, string deviceKey)
         {
             Random r = new Random();
             byte[] userIdContent = CognitoAuthHelper.CombineBytes(
                 Encoding.UTF8.GetBytes(deviceGroupKey),
-                Encoding.UTF8.GetBytes(username),
+                Encoding.UTF8.GetBytes(deviceKey),
                 Encoding.UTF8.GetBytes(":"),
                 Encoding.UTF8.GetBytes(devicePass)
             );
@@ -198,7 +198,6 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// <summary>
         /// Generates the claim for authenticating a device through the SRP protocol
         /// </summary>
-        /// <param name="username"> Username of Cognito User</param>
         /// <param name="deviceKey"> Key of CognitoDevice</param>
         /// <param name="devicePassword"> Password of CognitoDevice</param>
         /// <param name="deviceGroupKey"> GroupKey of CognitoDevice</param>
@@ -209,7 +208,6 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// <param name="tupleAa"> TupleAa from CreateAaTuple</param>
         /// <returns>Returns the claim for authenticating the given user</returns>
         public static byte[] AuthenticateDevice(
-            string username,
             string deviceKey,
             string devicePassword,
             string deviceGroupKey,
@@ -226,7 +224,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
             var salt = BigIntegerExtensions.FromUnsignedLittleEndianHex(saltString);
             var secretBlockBytes = Convert.FromBase64String(secretBlockBase64);
             // Need to generate the key to hash the response based on our A and what AWS sent back
-            var key = GetDeviceAuthenticationKey(username, devicePassword, deviceGroupKey, tupleAa, B, salt);
+            var key = GetDeviceAuthenticationKey(deviceKey, devicePassword, deviceGroupKey, tupleAa, B, salt);
 
             // HMAC our data with key (HKDF(S)) (the shared secret)
             var msg = CognitoAuthHelper.CombineBytes(
@@ -245,7 +243,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// <summary>
         /// Creates the Device Password Authentication Key based on the SRP protocol
         /// </summary>
-        /// <param name="username"> Username of Cognito User</param>
+        /// <param name="deviceKey">The DeviceKey for the associated CognitoDevice</param>
         /// <param name="devicePass">Password of CognitoDevice</param>
         /// <param name="deviceGroup">GroupKey of CognitoDevice</param>
         /// <param name="Aa">Returned from TupleAa</param>
@@ -253,7 +251,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         /// <param name="salt">BigInteger salt from AWS ChallengeParameters</param>
         /// <returns>Returns the password authentication key for the SRP protocol</returns>
         public static byte[] GetDeviceAuthenticationKey(
-            string username,
+            string deviceKey,
             string devicePass,
             string deviceGroup,
             Tuple<BigInteger, BigInteger> Aa,
@@ -272,7 +270,7 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
             }
 
             // x = H(salt | H(deviceGroupKey | deviceKey | ":" | devicePassword))
-            byte[] deviceContent = CognitoAuthHelper.CombineBytes(Encoding.UTF8.GetBytes(deviceGroup), Encoding.UTF8.GetBytes(username),
+            byte[] deviceContent = CognitoAuthHelper.CombineBytes(Encoding.UTF8.GetBytes(deviceGroup), Encoding.UTF8.GetBytes(deviceKey),
                                         Encoding.UTF8.GetBytes(":"), Encoding.UTF8.GetBytes(devicePass));
             byte[] deviceHash = CognitoAuthHelper.Sha256.ComputeHash(deviceContent);
             byte[] xBytes = CognitoAuthHelper.CombineBytes(salt.ToBigEndianByteArray(), deviceHash);
