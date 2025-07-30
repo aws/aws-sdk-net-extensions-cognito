@@ -1,3 +1,8 @@
+## Release 2025-07-29
+
+### Amazon.Extensions.CognitoAuthentication (3.1.1)
+* Fix Auth with device and device confirmation
+
 ## Release 2025-06-03
 
 ### Amazon.Extensions.CognitoAuthentication (3.1.0)
