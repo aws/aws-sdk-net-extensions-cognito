@@ -1,7 +1,7 @@
 ## Release 2025-07-29
 
 ### Amazon.Extensions.CognitoAuthentication (3.1.1)
-* Fix Auth with device and device confirmation
+* **BREAKING CHANGE**: Fix Auth with device and device confirmation. The third parameter in `GenerateDeviceVerifier()` method has been renamed from `username` to `deviceKey`. Existing code will compile but fail at runtime - update calls to pass the device key instead of username.
 
 ## Release 2025-06-03
 
