@@ -27,23 +27,32 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
     {
         public AuthenticationSignUpUserTests() : base()
         {
-            SignUpRequest signUpRequest = new SignUpRequest()
+            try
             {
-                ClientId = pool.ClientID,
-                Password = "PassWord1!",
-                Username = "User5",
-                UserAttributes = new List<AttributeType>()
+                SignUpRequest signUpRequest = new SignUpRequest()
                 {
-                    new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"},
-                },
-                ValidationData = new List<AttributeType>()
-                {
-                   new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"}
-                }
-            };
+                    ClientId = pool.ClientID,
+                    Password = "PassWord1!",
+                    Username = "User5",
+                    UserAttributes = new List<AttributeType>()
+                    {
+                        new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"},
+                    },
+                    ValidationData = new List<AttributeType>()
+                    {
+                       new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"}
+                    }
+                };
 
-            SignUpResponse signUpResponse = provider.SignUpAsync(signUpRequest).Result;
-            user = new CognitoUser("User5", pool.ClientID, pool, provider);
+                SignUpResponse signUpResponse = provider.SignUpAsync(signUpRequest).Result;
+                user = new CognitoUser("User5", pool.ClientID, pool, provider);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"AuthenticationSignUpUserTests constructor failed: {ex.Message}");
+                Dispose(); // Clean up the user pool that was created in base constructor
+                throw;     // Re-throw so test still fails as expected
+            }
         }
 
         // Tests the SignUp method (using random, dummy email)
