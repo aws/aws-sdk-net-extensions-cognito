@@ -61,14 +61,16 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
         /// </summary>
         public MfaAuthenticationTests()
         {
-            //Delete pool created by BaseAuthenticationTestClass
-            if(pool != null)
+            try
             {
-                provider.DeleteUserPoolAsync(new DeleteUserPoolRequest()
+                //Delete pool created by BaseAuthenticationTestClass
+                if(pool != null)
                 {
-                    UserPoolId = pool.PoolID
-                }).Wait();
-            }
+                    provider.DeleteUserPoolAsync(new DeleteUserPoolRequest()
+                    {
+                        UserPoolId = pool.PoolID
+                    }).Wait();
+                }
 
             UserPoolPolicyType passwordPolicy = new UserPoolPolicyType();
             List<SchemaAttributeType> requiredAttributes = new List<SchemaAttributeType>();
@@ -216,6 +218,13 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
             AdminConfirmSignUpResponse confirmResponse = provider.AdminConfirmSignUpAsync(confirmRequest).Result;
 
             this.user = new CognitoUser("User5", clientCreated.ClientId, pool, provider);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"MfaAuthenticationTests constructor failed: {ex.Message}");
+                Dispose(); // Clean up any resources that were created
+                throw;     // Re-throw so test still fails as expected
+            }
         }
 
         /// <summary>
