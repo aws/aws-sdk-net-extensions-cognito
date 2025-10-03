@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Xunit;
@@ -26,30 +27,39 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
     {
         public AuthenticationConfirmUserTests() : base()
         {
-            SignUpRequest signUpRequest = new SignUpRequest()
+            try
             {
-                ClientId = pool.ClientID,
-                Password = "PassWord1!",
-                Username = "User5",
-                UserAttributes = new List<AttributeType>()
+                SignUpRequest signUpRequest = new SignUpRequest()
                 {
-                    new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"},
-                },
-                ValidationData = new List<AttributeType>()
+                    ClientId = pool.ClientID,
+                    Password = "PassWord1!",
+                    Username = "User5",
+                    UserAttributes = new List<AttributeType>()
+                    {
+                        new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"},
+                    },
+                    ValidationData = new List<AttributeType>()
+                    {
+                       new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"}
+                    }
+                };
+
+                SignUpResponse signUpResponse = provider.SignUpAsync(signUpRequest).Result;
+
+                AdminConfirmSignUpRequest confirmRequest = new AdminConfirmSignUpRequest()
                 {
-                   new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"}
-                }
-            };
-
-            SignUpResponse signUpResponse = provider.SignUpAsync(signUpRequest).Result;
-
-            AdminConfirmSignUpRequest confirmRequest = new AdminConfirmSignUpRequest()
+                    Username = "User5",
+                    UserPoolId = pool.PoolID
+                };
+                AdminConfirmSignUpResponse confirmResponse = provider.AdminConfirmSignUpAsync(confirmRequest).Result;
+                user = new CognitoUser("User5", pool.ClientID, pool, provider);
+            }
+            catch (Exception ex)
             {
-                Username = "User5",
-                UserPoolId = pool.PoolID
-            };
-            AdminConfirmSignUpResponse confirmResponse = provider.AdminConfirmSignUpAsync(confirmRequest).Result;
-            user = new CognitoUser("User5", pool.ClientID, pool, provider);
+                Console.WriteLine($"AuthenticationConfirmUserTests constructor failed: {ex.Message}");
+                Dispose(); // Clean up the user pool that was created in base constructor
+                throw;     // Re-throw so test still fails as expected
+            }
         }
 
         //Tests SRP authentication flow for web applications

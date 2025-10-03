@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Xunit;
@@ -27,24 +28,33 @@ namespace Amazon.Extensions.CognitoAuthentication.IntegrationTests
     {
         public AuthenticationCreateUserTests() : base()
         {
-            AdminCreateUserRequest createUserRequest = new AdminCreateUserRequest()
+            try
             {
-                TemporaryPassword = "PassWord1!",
-                Username = "User5",
-                UserAttributes = new List<AttributeType>()
+                AdminCreateUserRequest createUserRequest = new AdminCreateUserRequest()
                 {
-                    new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"},
-                },
-                ValidationData = new List<AttributeType>()
-                {
-                    new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"}
-                },
-                UserPoolId = pool.PoolID
-            };
+                    TemporaryPassword = "PassWord1!",
+                    Username = "User5",
+                    UserAttributes = new List<AttributeType>()
+                    {
+                        new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"},
+                    },
+                    ValidationData = new List<AttributeType>()
+                    {
+                        new AttributeType() {Name=CognitoConstants.UserAttrEmail, Value="xxx@yyy.zzz"}
+                    },
+                    UserPoolId = pool.PoolID
+                };
 
-            AdminCreateUserResponse createReponse = provider.AdminCreateUserAsync(createUserRequest).Result;
+                AdminCreateUserResponse createReponse = provider.AdminCreateUserAsync(createUserRequest).Result;
 
-            user = new CognitoUser("User5", pool.ClientID, pool, provider);
+                user = new CognitoUser("User5", pool.ClientID, pool, provider);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"AuthenticationCreateUserTests constructor failed: {ex.Message}");
+                Dispose(); // Clean up the user pool that was created in base constructor
+                throw;     // Re-throw so test still fails as expected
+            }
         }
 
         // Tests the sessionauthentication process with a NEW_PASSWORD_REQURIED flow
