@@ -148,10 +148,10 @@ namespace Amazon.Extensions.CognitoAuthentication.Util
         internal static void ServiceClientBeforeRequestEvent(object sender, RequestEventArgs e)
         {
             WebServiceRequestEventArgs args = e as WebServiceRequestEventArgs;
-            if (args == null || !args.Headers.ContainsKey(UserAgentHeader) || args.Headers[UserAgentHeader].Contains(_userAgentSuffix))
-                return;
-
-            args.Headers[UserAgentHeader] = args.Headers[UserAgentHeader] + " " + _userAgentSuffix;
+            if (args != null && args.Request is Amazon.Runtime.Internal.IAmazonWebServiceRequest internalRequest && !internalRequest.UserAgentDetails.GetCustomUserAgentComponents().Contains(_userAgentSuffix))
+            {
+                internalRequest.UserAgentDetails.AddUserAgentComponent(_userAgentSuffix);
+            }
         }
 
         private static string GetAssemblyFileVersion()
