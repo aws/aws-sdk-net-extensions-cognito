@@ -1,3 +1,8 @@
+## Release 2026-06-08
+
+### Amazon.Extensions.CognitoAuthentication (3.1.5)
+* Add xml documentation to NuGet package
+
 ## Release 2026-03-12
 
 ### Amazon.Extensions.CognitoAuthentication (3.1.4)
