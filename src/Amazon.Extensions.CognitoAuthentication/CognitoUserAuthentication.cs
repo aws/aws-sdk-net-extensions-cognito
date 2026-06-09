@@ -900,7 +900,7 @@ namespace Amazon.Extensions.CognitoAuthentication
         {
             EnsureUserAuthenticated();
 
-            string poolRegion = UserPool.PoolID.Substring(0, UserPool.PoolID.IndexOf("_"));
+            string poolRegion = UserPool.PoolID.Substring(0, UserPool.PoolID.IndexOf("_", StringComparison.InvariantCultureIgnoreCase));
             string providerName = "cognito-idp." + poolRegion + ".amazonaws.com/" + UserPool.PoolID;
 
             CognitoAWSCredentials credentials = new CognitoAWSCredentials(identityPoolID, identityPoolRegion);
