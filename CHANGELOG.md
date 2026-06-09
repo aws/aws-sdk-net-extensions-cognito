@@ -1,3 +1,9 @@
+## Release 2026-06-09
+
+### Amazon.Extensions.CognitoAuthentication (3.1.5)
+* Fix the method CognitoUser.GetCognitoAWSCredentials when the system localization is th-TH.
+* Add xml documentation to NuGet package
+
 ## Release 2026-03-12
 
 ### Amazon.Extensions.CognitoAuthentication (3.1.4)
