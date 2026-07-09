@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - dev
+      - v3sdk-release
       - 'feature/**'
 
 permissions: {}
