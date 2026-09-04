@@ -1,0 +1,11 @@
+{
+  "Projects": [
+    {
+      "Name": "Amazon.Extensions.CognitoAuthentication",
+      "Type": "Patch",
+      "ChangelogMessages": [
+        "Complete Source Link configuration: add deterministic build, CI-gated ContinuousIntegrationBuild, RepositoryType, and explicit SourceRoot so published packages carry commit-pinned Source Link metadata (fixes #245)."
+      ]
+    }
+  ]
+}

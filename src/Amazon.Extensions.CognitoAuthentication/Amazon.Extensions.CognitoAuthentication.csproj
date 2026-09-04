@@ -13,12 +13,16 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/aws/aws-sdk-net-extensions-cognito/</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <Company>Amazon Web Services</Company>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\public.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Deterministic>true</Deterministic>
+    <!-- Enabled only on CI so local developer builds keep full absolute paths for debugging. -->
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true' or '$(TF_BUILD)' == 'true' or '$(CODEBUILD_BUILD_ID)' != ''">true</ContinuousIntegrationBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -39,5 +43,16 @@
   <ItemGroup>
     <None Include="../../LICENSE" Pack="true" PackagePath="" />
     <None Include="../../icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <!-- SourceRoot so CI packing from a .git-less archive still emits commit-pinned Source Link.
+       Rooted at the repository root (two levels up from this project) so mapped document
+       paths keep their src/... prefix. Guarded on SourceRevisionId so local developer builds
+       are unaffected. -->
+  <ItemGroup Condition="'$(SourceRevisionId)' != ''">
+    <SourceRoot Include="$(MSBuildThisFileDirectory)../../"
+                SourceControl="git"
+                RepositoryUrl="$(RepositoryUrl)"
+                RevisionId="$(SourceRevisionId)" />
   </ItemGroup>
 </Project>
